@@ -199,13 +199,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .card-pwd-inline .pwd-copy.copied{background:#22c55e;border-color:#22c55e;color:#fff}
 
 /* ============ EDDIE TAB ============ */
-.eddie-hero{padding:32px 48px;background:linear-gradient(135deg,#1e1b4b 0%,#4c1d95 60%,#7c3aed 100%);color:#fff;border-bottom:1px solid #e8eaf0}
-.eddie-hero h2{font-size:24px;font-weight:800;margin-bottom:8px;letter-spacing:-.02em}
-.eddie-hero p{font-size:14px;opacity:.85;max-width:900px;line-height:1.6}
-.eddie-stats{display:flex;gap:32px;margin-top:20px;flex-wrap:wrap}
-.eddie-stat{display:flex;flex-direction:column}
-.eddie-stat .val{font-size:28px;font-weight:800}
-.eddie-stat .lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;opacity:.75;margin-top:4px}
 
 .eddie-body{padding:32px 48px;max-width:1600px;margin:0 auto}
 .eddie-block{background:#fff;border:1px solid #e8eaf0;border-radius:14px;margin-bottom:24px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
@@ -236,6 +229,38 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .eddie-impact{font-weight:800;color:#4f46e5;font-size:14px;white-space:nowrap}
 .eddie-tickets{font-size:12px;color:#64748b;white-space:nowrap}
 .eddie-empty{padding:32px 24px;text-align:center;color:#94a3b8;font-size:13px;font-style:italic}
+
+/* ============ SIDEBAR LAYOUT ============ */
+body{background:#f5f6fa}
+.app{display:none}
+.app.unlocked{display:block}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:240px;background:#0f0f1e;color:#fff;display:flex;flex-direction:column;z-index:80;box-shadow:2px 0 12px rgba(0,0,0,.12)}
+.sidebar-brand{padding:22px 20px 18px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sidebar-brand .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:13px;letter-spacing:.02em;color:#fff}
+.sidebar-brand .logo-dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,#4f46e5,#7c3aed);box-shadow:0 0 0 4px rgba(99,102,241,.18)}
+.sidebar-brand .tag{font-size:10px;color:#7c8194;text-transform:uppercase;letter-spacing:.08em;margin-top:6px;font-weight:700}
+.sidebar-nav{flex:1;padding:14px 12px;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
+.sidebar-nav .nav-sect{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#5b5f75;font-weight:700;padding:14px 12px 6px}
+.sidebar-nav .nav-item{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:8px;color:#c3c7d9;text-decoration:none;font-size:13px;font-weight:600;cursor:pointer;border:0;background:none;text-align:left;width:100%;transition:all .15s;font-family:inherit}
+.sidebar-nav .nav-item:hover{background:rgba(255,255,255,.05);color:#fff}
+.sidebar-nav .nav-item.active{background:linear-gradient(90deg,rgba(99,102,241,.22),rgba(124,58,237,.08));color:#fff;box-shadow:inset 2px 0 0 #7c3aed}
+.sidebar-nav .nav-item .icon{width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;opacity:.8}
+.sidebar-nav .nav-item.active .icon{opacity:1}
+.sidebar-nav .nav-item .count{margin-left:auto;background:rgba(99,102,241,.18);color:#a5b4fc;font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px}
+.sidebar-nav .nav-item.active .count{background:#7c3aed;color:#fff}
+.sidebar-foot{padding:14px 20px;border-top:1px solid rgba(255,255,255,.08);font-size:10px;color:#5b5f75;line-height:1.5}
+.content-wrap{margin-left:240px;min-height:100vh}
+.header{padding:40px 48px 36px}
+@media(max-width:900px){
+  .sidebar{position:relative;width:100%;height:auto;flex-direction:row;align-items:center;padding:0 12px}
+  .sidebar-brand{border-bottom:0;border-right:1px solid rgba(255,255,255,.08);padding:14px 16px}
+  .sidebar-nav{flex:1;flex-direction:row;padding:8px;overflow-x:auto;gap:4px}
+  .sidebar-nav .nav-sect{display:none}
+  .sidebar-nav .nav-item{flex-shrink:0;padding:8px 14px}
+  .sidebar-foot{display:none}
+  .content-wrap{margin-left:0}
+}
+
 </style>
 </head>
 <body>
@@ -258,24 +283,40 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <div class="app" id="app">
 
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="logo"><span class="logo-dot"></span> Cloud Humans</div>
+    <div class="tag">Action Plan Map</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-sect">Visão geral</div>
+    <button class="nav-item active" id="nav-dashboard" onclick="navigate('dashboard')">
+      <span class="icon">&#9638;</span> Dashboard geral <span class="count" id="nav-count-dashboard">—</span>
+    </button>
+    <div class="nav-sect">Macro divisões de ações</div>
+    <button class="nav-item" id="nav-content" onclick="navigate('content')">
+      <span class="icon">&#128218;</span> Base de conteúdo <span class="count" id="nav-count-content">—</span>
+    </button>
+    <button class="nav-item" id="nav-configs" onclick="navigate('configs')">
+      <span class="icon">&#9881;</span> Configs <span class="count" id="nav-count-configs">—</span>
+    </button>
+    <button class="nav-item" id="nav-eddie" onclick="navigate('eddie')">
+      <span class="icon">&#9889;</span> Eddies &amp; Agêntico <span class="count" id="nav-count-eddie">—</span>
+    </button>
+  </nav>
+  <div class="sidebar-foot">Dados Metabase · últimos 30 dias<br>Gerado pela skill <strong>/ch-action-plan</strong></div>
+</aside>
+
+<div class="content-wrap">
+
 <div class="header">
-  <h1>Action Plan Map — Cloud Humans</h1>
-  <div class="subtitle">Mapeamento de planos de acao potenciais em todos os projetos ativos, com impacto estimado em Retencao e CSAT. Cards verdes possuem plano executado.</div>
+  <h1 id="header-title">Action Plan Map — Cloud Humans</h1>
+  <div class="subtitle" id="header-sub">Mapeamento de planos de acao potenciais em todos os projetos ativos, com impacto estimado em Retencao e CSAT. Cards verdes possuem plano executado.</div>
   <div class="meta">
     <span>Dados de retencao: ultimos 30 dias</span>
     <span>Gerado em 06/04/2026</span>
     <span id="project-count-meta"></span>
   </div>
-</div>
-
-<!-- TABS BAR -->
-<div class="tabs-bar">
-  <button class="tab-btn active" id="tab-btn-dashboard" onclick="switchTab('dashboard')">
-    Dashboard geral <span class="tab-count" id="tab-count-dashboard">—</span>
-  </button>
-  <button class="tab-btn" id="tab-btn-eddie" onclick="switchTab('eddie')">
-    Oportunidades Eddie <span class="tab-count" id="tab-count-eddie">—</span>
-  </button>
 </div>
 
 <!-- TAB: DASHBOARD -->
@@ -378,16 +419,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <!-- TAB: EDDIE -->
 <div class="tab-pane" id="tab-eddie">
-  <div class="eddie-hero">
-    <h2>Oportunidades Eddie</h2>
-    <p>Visão centralizada do time de Edge sobre onde construir, transformar ou adaptar Eddies. As ações dos planos executados são classificadas em três grandes blocos e priorizadas por impacto estimado em tickets totais.</p>
-    <div class="eddie-stats">
-      <div class="eddie-stat"><div class="val" id="eddie-total-actions">—</div><div class="lbl">Ações mapeadas</div></div>
-      <div class="eddie-stat"><div class="val" id="eddie-total-impact">—</div><div class="lbl">Tickets recuperáveis (soma)</div></div>
-      <div class="eddie-stat"><div class="val" id="eddie-total-tickets">—</div><div class="lbl">Tickets impactáveis (soma)</div></div>
-      <div class="eddie-stat"><div class="val" id="eddie-total-clients">—</div><div class="lbl">Clientes com oportunidades Eddie</div></div>
-    </div>
-  </div>
   <div class="eddie-body">
     <div class="eddie-block" data-bucket="errors">
       <div class="eddie-block-head">
@@ -443,8 +474,123 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
+<!-- TAB: CONTENT (placeholder) -->
+<div class="tab-pane" id="tab-content">
+  <div class="eddie-body">
+    <div class="eddie-block">
+      <div class="eddie-block-head">
+        <div class="left">
+          <div class="num">1</div>
+          <div>
+            <h3>Novos conteúdos — no_relevant_content</h3>
+            <div class="sub">Temas sem cobertura na IDS que geraram transferência para N2</div>
+          </div>
+        </div>
+        <div class="totals">
+          <div class="total-chip"><span class="k">Ações</span><span class="v" id="bucket-content_new-count">—</span></div>
+          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-content_new-impact">—</span></div>
+          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-content_new-tickets">—</span></div>
+        </div>
+      </div>
+      <div id="bucket-content_new-list"><div class="eddie-empty">Em breve — esta aba consolidará, por cliente, as ações de criação de novo conteúdo IDS (tipo <code>content_new</code>) geradas pela skill <code>/ch-action-plan</code>.</div></div>
+    </div>
+    <div class="eddie-block">
+      <div class="eddie-block-head">
+        <div class="left">
+          <div class="num">2</div>
+          <div>
+            <h3>Melhoria de conteúdos N1 existentes</h3>
+            <div class="sub">Conteúdos com baixo score de qualidade, clareza ou resolutividade</div>
+          </div>
+        </div>
+        <div class="totals">
+          <div class="total-chip"><span class="k">Ações</span><span class="v" id="bucket-content_improve-count">—</span></div>
+          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-content_improve-impact">—</span></div>
+          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-content_improve-tickets">—</span></div>
+        </div>
+      </div>
+      <div id="bucket-content_improve-list"><div class="eddie-empty">Em breve — ações do tipo <code>content_improve</code>.</div></div>
+    </div>
+    <div class="eddie-block">
+      <div class="eddie-block-head">
+        <div class="left">
+          <div class="num">3</div>
+          <div>
+            <h3>Consolidação — duplicatas / loops</h3>
+            <div class="sub">Conteúdos duplicados ou com seção repetida que prejudicam retenção</div>
+          </div>
+        </div>
+        <div class="totals">
+          <div class="total-chip"><span class="k">Ações</span><span class="v" id="bucket-content_dedupe-count">—</span></div>
+          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-content_dedupe-impact">—</span></div>
+          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-content_dedupe-tickets">—</span></div>
+        </div>
+      </div>
+      <div id="bucket-content_dedupe-list"><div class="eddie-empty">Em breve — ações do tipo <code>content_dedupe</code>.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: CONFIGS (placeholder) -->
+<div class="tab-pane" id="tab-configs">
+  <div class="eddie-body">
+    <div class="eddie-block">
+      <div class="eddie-block-head">
+        <div class="left">
+          <div class="num">1</div>
+          <div>
+            <h3>Ativar features esperadas</h3>
+            <div class="sub">Features que deveriam estar ligadas (clarification, FUP, more_interactions, etc.)</div>
+          </div>
+        </div>
+        <div class="totals">
+          <div class="total-chip"><span class="k">Ações</span><span class="v" id="bucket-config_enable-count">—</span></div>
+          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-config_enable-impact">—</span></div>
+          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-config_enable-tickets">—</span></div>
+        </div>
+      </div>
+      <div id="bucket-config_enable-list"><div class="eddie-empty">Em breve — esta aba consolidará, por cliente, as ações de ativação de configs (tipo <code>config_enable</code>) geradas pela skill <code>/ch-action-plan</code>.</div></div>
+    </div>
+    <div class="eddie-block">
+      <div class="eddie-block-head">
+        <div class="left">
+          <div class="num">2</div>
+          <div>
+            <h3>Ajuste de thresholds e parâmetros</h3>
+            <div class="sub">Valores de threshold, limites de repetição e confiança N2</div>
+          </div>
+        </div>
+        <div class="totals">
+          <div class="total-chip"><span class="k">Ações</span><span class="v" id="bucket-config_tune-count">—</span></div>
+          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-config_tune-impact">—</span></div>
+          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-config_tune-tickets">—</span></div>
+        </div>
+      </div>
+      <div id="bucket-config_tune-list"><div class="eddie-empty">Em breve — ações do tipo <code>config_tune</code>.</div></div>
+    </div>
+    <div class="eddie-block">
+      <div class="eddie-block-head">
+        <div class="left">
+          <div class="num">3</div>
+          <div>
+            <h3>Correção de configuração incorreta</h3>
+            <div class="sub">Configurações explicitamente erradas identificadas na auditoria</div>
+          </div>
+        </div>
+        <div class="totals">
+          <div class="total-chip"><span class="k">Ações</span><span class="v" id="bucket-config_fix-count">—</span></div>
+          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-config_fix-impact">—</span></div>
+          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-config_fix-tickets">—</span></div>
+        </div>
+      </div>
+      <div id="bucket-config_fix-list"><div class="eddie-empty">Em breve — ações do tipo <code>config_fix</code>.</div></div>
+    </div>
+  </div>
+</div>
+
 <div class="footer">Gerado por ClaudIA · Cloud Humans · Action Plan Map · Dados Metabase ultimos 30 dias</div>
 
+</div><!-- /.content-wrap -->
 </div><!-- /.app -->
 
 <script>
@@ -630,11 +776,12 @@ function buildOwnerFilter(){
 function init(){
   document.getElementById('card-grid').innerHTML=projects.map(renderCard).join('');
   document.getElementById('project-count-meta').textContent=projects.length+' projetos (Active + Onboarding)';
-  document.getElementById('tab-count-dashboard').textContent=projects.length;
+  const ncd=document.getElementById('nav-count-dashboard');if(ncd)ncd.textContent=projects.length;
   buildStackedBar();
   buildOwnerFilter();
   sortCards();
   buildEddieTab();
+  navigate(routeFromHash());
 }
 
 function copyReportPwd(btn, pwd){
@@ -646,26 +793,64 @@ function copyReportPwd(btn, pwd){
   });
 }
 
-function switchTab(name){
+const ROUTE_TITLES = {
+  'dashboard': ['Action Plan Map — Cloud Humans', 'Mapeamento de planos de acao potenciais em todos os projetos ativos, com impacto estimado em Retencao e CSAT. Cards verdes possuem plano executado.'],
+  'content': ['Base de conteúdo', 'Macro divisão — ações de criação, melhoria e consolidação de conteúdos da IDS geradas pelos planos de ação de cada cliente.'],
+  'configs': ['Configurações', 'Macro divisão — ações de ativação de features, ajuste de thresholds e correção de configurações do ClaudIA identificadas nos planos de ação.'],
+  'eddie': ['Eddies & Agêntico', 'Macro divisão — onde construir, transformar ou adaptar Eddies. Inclui Eddies tradicionais com erros, transformações para o modelo agêntico (Claudia Agêntica) e novos Eddies a partir de temas N2.']
+};
+function navigate(name){
+  if(!ROUTE_TITLES[name]) name = 'dashboard';
   document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('tab-'+name).classList.add('active');
-  document.getElementById('tab-btn-'+name).classList.add('active');
+  document.querySelectorAll('.sidebar-nav .nav-item').forEach(b=>b.classList.remove('active'));
+  const pane = document.getElementById('tab-'+name);
+  if(pane) pane.classList.add('active');
+  const nav = document.getElementById('nav-'+name);
+  if(nav) nav.classList.add('active');
+  const [t, s] = ROUTE_TITLES[name];
+  const ht = document.getElementById('header-title'); if(ht) ht.textContent = t;
+  const hs = document.getElementById('header-sub'); if(hs) hs.textContent = s;
+  const hash = '#/'+name;
+  if(location.hash !== hash){ history.replaceState(null, '', hash); }
+  window.scrollTo(0,0);
 }
+function routeFromHash(){
+  const h = (location.hash||'').replace(/^#\/?/, '').split('?')[0];
+  return ROUTE_TITLES[h] ? h : 'dashboard';
+}
+window.addEventListener('hashchange', ()=>navigate(routeFromHash()));
+// Back-compat
+function switchTab(name){ navigate(name); }
 
-/* ====== Eddie tab builder ====== */
-function classifyEddieAction(title, desc){
-  const t = ((title||'')+' '+(desc||'')).toLowerCase();
-  // Check if it's Eddie/Edge-related at all
-  const isEddie = /\beddie\b|\bedges?\b|automatiz|agentic|agêntic|agentico|conversacion|forward_to_human|venda.*bot/.test(t);
+/* ====== Eddie tab builder ======
+ * Classifier prefers an explicit action.type field set by the /ch-action-plan skill:
+ *   - 'eddie_error'         → bucket 1 (fix existing Eddie with high error rate)
+ *   - 'eddie_to_agentic'    → bucket 2 (transform traditional Eddie into agentic/tool-using model)
+ *   - 'n2_to_eddie'         → bucket 3 (create new Eddie from high-volume N2 theme)
+ * Falls back to keyword heuristics for legacy plans.
+ * Agentic detection (bucket 2) requires evidence of real-time data / API / tool execution —
+ * NOT mere config tweaks. Based on Claudia Agêntica doc: the distinction is the ability
+ * to execute tools / API calls to fetch real-time or personalized data vs. answering
+ * only from static KB content.
+ */
+function classifyEddieAction(action){
+  // 1) Prefer explicit type from skill
+  const explicit = (action.type||'').toLowerCase();
+  if(explicit === 'eddie_error') return 'errors';
+  if(explicit === 'eddie_to_agentic' || explicit === 'agentic_transformation') return 'conversational';
+  if(explicit === 'n2_to_eddie' || explicit === 'new_eddie') return 'n2toedge';
+  // 2) Keyword fallback for legacy plans (without explicit action.type).
+  // IMPORTANT: Bucket 2 (agentic transformation) is intentionally NOT populated via heuristics.
+  // Identifying an Eddie as a candidate for the agentic model requires the primary evaluation
+  // of the /ch-action-plan skill (which knows the Claudia Agêntica definition: tool/API execution
+  // vs. static-KB answers). Keyword matching here produces false positives like config tweaks
+  // being mislabeled as transformations. Legacy plans therefore show bucket 2 empty until they
+  // are regenerated with the updated skill.
+  const t = (((action.title||'')+' '+(action.desc||'')).toLowerCase());
+  const isEddie = /\beddie\b|\bedges?\b|automatiz/.test(t);
   if(!isEddie) return null;
-  // Bucket 2 — transform into conversational / agentic model
-  if(/conversacion|agentic|agêntic|agentico|forward_to_human|venda.*bot|handoff/.test(t)) return 'conversational';
-  // Bucket 1 — existing Eddies with high error rate / need fixes
   if(/erro|error|corrigir|investigar|altissim|alto.*volume|taxa.*erro|high.*error|fix/.test(t)) return 'errors';
-  // Bucket 3 — N2 content that can become a new Eddie
   if(/automatiz|n2|criar.*conte|novos?.*edd|top.*n2|cobertos.*edd|construir.*edd/.test(t)) return 'n2toedge';
-  // Fallback: if it mentions Eddie but no clear category, treat as errors (existing Eddie ops)
   return 'errors';
 }
 
@@ -677,7 +862,7 @@ function buildEddieTab(){
   projects.forEach(p => {
     if(!p.plan || !p.plan.actions) return;
     p.plan.actions.forEach(a => {
-      const bucket = classifyEddieAction(a.title, a.desc);
+      const bucket = classifyEddieAction(a);
       if(!bucket) return;
       buckets[bucket].push({
         client: p.name,
@@ -689,7 +874,8 @@ function buildEddieTab(){
         desc: a.desc,
         impact_est: a.impact_est || 0,
         impact_tickets: a.impact_tickets || 0,
-        conversion_rate: a.conversion_rate || 0
+        conversion_rate: a.conversion_rate || 0,
+        type: a.type || ''
       });
       totalClients.add(p.name);
       totalActions++;
@@ -716,18 +902,22 @@ function buildEddieTab(){
     }
     let html = '<table class="eddie-table"><thead><tr>'
       + '<th style="width:18%">Cliente</th>'
+      + '<th style="width:11%">Saúde</th>'
       + '<th>Ação</th>'
-      + '<th style="width:8%">Prio</th>'
-      + '<th style="width:14%">Impacto estimado</th>'
-      + '<th style="width:12%">Tickets impact.</th>'
+      + '<th style="width:7%">Prio</th>'
+      + '<th style="width:13%">Impacto estimado</th>'
+      + '<th style="width:11%">Tickets impact.</th>'
       + '</tr></thead><tbody>';
     rows.forEach(r => {
       const clientName = r.client.replace(/_/g,' ');
       const tierChip = r.tier ? '<span class="chip">'+r.tier+'</span>' : '';
       const convPct = r.conversion_rate ? Math.round(r.conversion_rate*100)+'%' : '—';
+      const healthCat = hc(r.clientRet);
+      const healthLabel = hl(healthCat);
       html += '<tr>'
         + '<td><div class="eddie-client">'+clientName+tierChip+'</div>'
         +   '<div style="font-size:11px;color:#94a3b8;margin-top:2px">'+fn(r.clientTotal)+' tickets · '+r.clientRet+'% ret</div></td>'
+        + '<td><span class="meta-chip health-'+healthCat+'" style="white-space:nowrap">'+healthLabel+'</span></td>'
         + '<td><div class="eddie-action-title">'+r.title+'</div><div class="eddie-action-desc">'+r.desc+'</div></td>'
         + '<td><span class="eddie-priority '+r.priority.toLowerCase()+'">'+r.priority+'</span></td>'
         + '<td><div class="eddie-impact">+'+fn(r.impact_est)+' N1</div><div class="eddie-tickets">'+pct(r.impact_est, r.clientTotal)+' do total</div></td>'
@@ -742,7 +932,7 @@ function buildEddieTab(){
   document.getElementById('eddie-total-impact').textContent = '+'+fn(totalImpact);
   document.getElementById('eddie-total-tickets').textContent = fn(totalTickets);
   document.getElementById('eddie-total-clients').textContent = totalClients.size;
-  document.getElementById('tab-count-eddie').textContent = totalActions;
+  const nce=document.getElementById('nav-count-eddie');if(nce)nce.textContent=totalActions;
 }
 
 // ====== Lock screen handlers ======
