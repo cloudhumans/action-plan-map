@@ -189,6 +189,43 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .tab-btn.active .tab-count{background:#4f46e5;color:#fff}
 .tab-pane{display:none}
 .tab-pane.active{display:block}
+.how-wrap{max-width:1100px}
+.how-intro{background:linear-gradient(135deg,#1b1f33,#14172a);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:22px 26px;margin-bottom:20px}
+.how-intro h2{margin:0 0 8px;font-size:18px;color:#fff}
+.how-intro p{margin:6px 0;color:#c3c7d9;font-size:13px;line-height:1.55}
+.how-intro .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:14px}
+.how-intro .step{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:12px 14px}
+.how-intro .step .n{display:inline-block;width:22px;height:22px;line-height:22px;text-align:center;background:#7c3aed;color:#fff;border-radius:50%;font-size:11px;font-weight:800;margin-right:6px}
+.how-intro .step .t{color:#fff;font-size:12px;font-weight:700;margin-bottom:4px}
+.how-intro .step .d{color:#8f93a8;font-size:11px;line-height:1.4}
+.macro-block{background:#14172a;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px 22px;margin-bottom:18px}
+.macro-head{display:flex;align-items:center;gap:14px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.07)}
+.macro-head .icn{font-size:24px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:rgba(124,58,237,.15);border-radius:10px}
+.macro-head h3{margin:0;font-size:15px;color:#fff}
+.macro-head .desc{color:#8f93a8;font-size:12px;margin-top:3px;line-height:1.4}
+.macro-head .count-badge{margin-left:auto;background:rgba(99,102,241,.18);color:#a5b4fc;font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px}
+.type-list{display:flex;flex-direction:column;gap:8px}
+.type-item{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:10px;overflow:hidden;transition:border-color .15s}
+.type-item.open{border-color:rgba(124,58,237,.4)}
+.type-head{display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer;user-select:none}
+.type-head:hover{background:rgba(255,255,255,.03)}
+.type-head .type-code{font-family:ui-monospace,monospace;font-size:11px;color:#a5b4fc;background:rgba(99,102,241,.12);padding:3px 8px;border-radius:6px;flex-shrink:0}
+.type-head .type-label{flex:1;color:#fff;font-size:13px;font-weight:600}
+.type-head .type-conv{font-size:11px;color:#8f93a8;font-weight:700}
+.type-head .type-conv strong{color:#34d399}
+.type-head .arrow{color:#8f93a8;transition:transform .2s;font-size:10px}
+.type-item.open .arrow{transform:rotate(90deg)}
+.type-body{display:none;padding:4px 18px 16px 18px;border-top:1px solid rgba(255,255,255,.05);background:rgba(0,0,0,.15)}
+.type-item.open .type-body{display:block}
+.type-body .row{margin-top:12px}
+.type-body .row .k{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#8f93a8;font-weight:700;margin-bottom:4px}
+.type-body .row .v{color:#c3c7d9;font-size:12px;line-height:1.55}
+.type-body .triggers{display:flex;flex-wrap:wrap;gap:6px}
+.type-body .triggers span{background:rgba(239,68,68,.1);color:#fca5a5;font-size:11px;padding:3px 9px;border-radius:999px;border:1px solid rgba(239,68,68,.2)}
+.type-body .example{background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.18);border-radius:8px;padding:10px 12px;color:#6ee7b7;font-size:12px;font-style:italic}
+.type-body .exec{background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.18);border-radius:8px;padding:10px 12px;color:#c7d2fe;font-size:12px;font-family:ui-monospace,monospace}
+.type-body .ref-link{display:inline-block;margin-top:8px;color:#a5b4fc;font-size:11px;text-decoration:none;border-bottom:1px dashed #6366f1}
+.type-body .ref-link:hover{color:#fff}
 
 /* ============ CARD PASSWORD BADGE ============ */
 .card-pwd-inline{display:inline-flex;align-items:center;gap:6px;margin-left:8px;padding:6px 10px;background:linear-gradient(135deg,#eef2ff 0%,#f5f3ff 100%);border:1px dashed #7c3aed;border-radius:7px;font-size:11px;color:#4f46e5}
@@ -302,6 +339,10 @@ body{background:#f5f6fa}
     </button>
     <button class="nav-item" id="nav-eddie" onclick="navigate('eddie')">
       <span class="icon">&#9889;</span> Eddies &amp; Agêntico <span class="count" id="nav-count-eddie">—</span>
+    </button>
+    <div class="nav-sect">Documentação</div>
+    <button class="nav-item" id="nav-how" onclick="navigate('how')">
+      <span class="icon">&#128712;</span> Como funciona <span class="count" id="nav-count-how">26</span>
     </button>
   </nav>
   <div class="sidebar-foot">Dados Metabase · últimos 30 dias<br>Gerado pela skill <strong>/ch-action-plan</strong></div>
@@ -588,6 +629,23 @@ body{background:#f5f6fa}
   </div>
 </div>
 
+<!-- TAB: COMO FUNCIONA -->
+<div class="tab-pane" id="tab-how">
+  <div class="how-wrap">
+    <div class="how-intro">
+      <h2>Como a skill /ch-action-plan funciona</h2>
+      <p>A skill <code>/ch-action-plan</code> gera um <strong>plano de ação priorizado</strong> para qualquer cliente Cloud Humans, cruzando dados do Metabase, IDS e configs do ClaudIA. Cada ação recomendada recebe um <code>type</code> canônico que a classifica em uma das 3 macro divisões abaixo.</p>
+      <div class="steps">
+        <div class="step"><div class="t"><span class="n">1</span>Coleta</div><div class="d">Busca métricas do cliente no Metabase (retenção, volumes, Top N2, GenCX, erros Eddie, motivos).</div></div>
+        <div class="step"><div class="t"><span class="n">2</span>Diagnóstico</div><div class="d">Avalia gaps em 3 eixos: conteúdos N1 faltantes/fracos, configs mal ajustadas e Eddies (tradicionais vs agênticos).</div></div>
+        <div class="step"><div class="t"><span class="n">3</span>Priorização</div><div class="d">Calcula impacto estimado (tickets × conversion_rate do type) e ordena em P0 / P1 / P2.</div></div>
+        <div class="step"><div class="t"><span class="n">4</span>Registro</div><div class="d">Grava cada ação com <code>type</code> canônico no plano + atualiza este dashboard (Action Plan Map).</div></div>
+      </div>
+    </div>
+    <div id="how-macros"><div class="eddie-empty">Carregando taxonomia de action types…</div></div>
+  </div>
+</div>
+
 <div class="footer">Gerado por ClaudIA · Cloud Humans · Action Plan Map · Dados Metabase ultimos 30 dias</div>
 
 </div><!-- /.content-wrap -->
@@ -781,7 +839,70 @@ function init(){
   buildOwnerFilter();
   sortCards();
   buildEddieTab();
+  loadActionTypes();
   navigate(routeFromHash());
+}
+
+/* ====== Action Types registry (loads data/action_types.json) ====== */
+let ACTION_TYPES_DB = null;
+async function loadActionTypes(){
+  try{
+    const res = await fetch('data/action_types.json');
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    ACTION_TYPES_DB = await res.json();
+    renderHowTab();
+  }catch(e){
+    const host = document.getElementById('how-macros');
+    if(host) host.innerHTML = '<div class="eddie-empty">Não foi possível carregar <code>data/action_types.json</code>: '+e.message+'</div>';
+  }
+}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function renderHowTab(){
+  if(!ACTION_TYPES_DB) return;
+  const host = document.getElementById('how-macros');
+  if(!host) return;
+  const macros = ACTION_TYPES_DB.macro_divisions || {};
+  const types = ACTION_TYPES_DB.action_types || [];
+  const order = ['content','configs','eddie'];
+  let html = '';
+  order.forEach(m=>{
+    const meta = macros[m]; if(!meta) return;
+    const list = types.filter(t=>t.macro===m);
+    html += '<div class="macro-block"><div class="macro-head">'+
+      '<div class="icn">'+(meta.icon||'•')+'</div>'+
+      '<div><h3>'+esc(meta.label)+'</h3><div class="desc">'+esc(meta.description)+'</div></div>'+
+      '<div class="count-badge">'+list.length+' types</div></div>'+
+      '<div class="type-list">';
+    list.forEach((t,i)=>{
+      const conv = Math.round((t.conversion_rate||0)*100);
+      const trig = (t.triggers||[]).map(x=>'<span>'+esc(x)+'</span>').join('');
+      const ref = t.reference?'<a class="ref-link" href="'+esc(t.reference)+'" target="_blank">Ver referência ↗</a>':'';
+      html += '<div class="type-item" data-idx="'+m+'-'+i+'">'+
+        '<div class="type-head" onclick="toggleType(this)">'+
+          '<span class="type-code">'+esc(t.type)+'</span>'+
+          '<span class="type-label">'+esc(t.label)+'</span>'+
+          '<span class="type-conv">conv. <strong>'+conv+'%</strong></span>'+
+          '<span class="arrow">▶</span>'+
+        '</div>'+
+        '<div class="type-body">'+
+          '<div class="row"><div class="k">Descrição</div><div class="v">'+esc(t.description)+'</div></div>'+
+          (trig?'<div class="row"><div class="k">Triggers — quando usar</div><div class="v triggers">'+trig+'</div></div>':'')+
+          (t.execution?'<div class="row"><div class="k">Onde executar</div><div class="v"><div class="exec">'+esc(t.execution)+'</div></div></div>':'')+
+          (t.example?'<div class="row"><div class="k">Exemplo</div><div class="v"><div class="example">'+esc(t.example)+'</div></div></div>':'')+
+          '<div class="row"><div class="k">Taxa de conversão padrão</div><div class="v">'+conv+'% — aplicada ao volume de tickets impactados para estimar a redução.</div></div>'+
+          ref+
+        '</div>'+
+      '</div>';
+    });
+    html += '</div></div>';
+  });
+  host.innerHTML = html;
+  const navCount = document.getElementById('nav-count-how');
+  if(navCount) navCount.textContent = types.length;
+}
+function toggleType(head){
+  const item = head.closest('.type-item');
+  if(item) item.classList.toggle('open');
 }
 
 function copyReportPwd(btn, pwd){
@@ -797,7 +918,8 @@ const ROUTE_TITLES = {
   'dashboard': ['Action Plan Map — Cloud Humans', 'Mapeamento de planos de acao potenciais em todos os projetos ativos, com impacto estimado em Retencao e CSAT. Cards verdes possuem plano executado.'],
   'content': ['Base de conteúdo', 'Macro divisão — ações de criação, melhoria e consolidação de conteúdos da IDS geradas pelos planos de ação de cada cliente.'],
   'configs': ['Configurações', 'Macro divisão — ações de ativação de features, ajuste de thresholds e correção de configurações do ClaudIA identificadas nos planos de ação.'],
-  'eddie': ['Eddies & Agêntico', 'Macro divisão — onde construir, transformar ou adaptar Eddies. Inclui Eddies tradicionais com erros, transformações para o modelo agêntico (Claudia Agêntica) e novos Eddies a partir de temas N2.']
+  'eddie': ['Eddies & Agêntico', 'Macro divisão — onde construir, transformar ou adaptar Eddies. Inclui Eddies tradicionais com erros, transformações para o modelo agêntico (Claudia Agêntica) e novos Eddies a partir de temas N2.'],
+  'how': ['Como funciona', 'Explicação da skill /ch-action-plan e catálogo completo dos action types canônicos (Base de Conteúdo, Configurações e Eddies & Agêntico).']
 };
 function navigate(name){
   if(!ROUTE_TITLES[name]) name = 'dashboard';
@@ -928,10 +1050,16 @@ function buildEddieTab(){
     listEl.innerHTML = html;
   });
 
-  document.getElementById('eddie-total-actions').textContent = totalActions;
-  document.getElementById('eddie-total-impact').textContent = '+'+fn(totalImpact);
-  document.getElementById('eddie-total-tickets').textContent = fn(totalTickets);
-  document.getElementById('eddie-total-clients').textContent = totalClients.size;
+  // (eddie-total-* elements were removed with the old eddie-hero — guarded for safety)
+  ['eddie-total-actions','eddie-total-impact','eddie-total-tickets','eddie-total-clients'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){
+      if(id==='eddie-total-actions')el.textContent=totalActions;
+      else if(id==='eddie-total-impact')el.textContent='+'+fn(totalImpact);
+      else if(id==='eddie-total-tickets')el.textContent=fn(totalTickets);
+      else if(id==='eddie-total-clients')el.textContent=totalClients.size;
+    }
+  });
   const nce=document.getElementById('nav-count-eddie');if(nce)nce.textContent=totalActions;
 }
 

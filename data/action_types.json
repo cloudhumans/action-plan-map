@@ -1,0 +1,292 @@
+{
+  "_meta": {
+    "description": "Registro canônico dos action types aceitos pela skill /ch-action-plan. Cada ação gerada por um plano deve referenciar um dos types aqui listados via o campo 'type' em actions[].type. Este arquivo é a fonte de verdade para o dashboard Action Plan Map e para exports externos.",
+    "schema_version": 2,
+    "updated_at": "2026-04-09"
+  },
+  "macro_divisions": {
+    "content": {
+      "label": "Base de Conteúdo",
+      "description": "Ações que criam, melhoram, consolidam ou removem conteúdos da IDS (base de conhecimento N1 da ClaudIA).",
+      "default_conversion_rate": 0.35,
+      "icon": "📚"
+    },
+    "configs": {
+      "label": "Configurações",
+      "description": "Ações que alteram flags, thresholds, prompts e parâmetros do ClaudIA sem mexer em conteúdo ou Eddies.",
+      "default_conversion_rate": 0.35,
+      "icon": "⚙"
+    },
+    "eddie": {
+      "label": "Eddies & Agêntico",
+      "description": "Ações que criam, transformam, corrigem ou descontinuam Eddies — incluindo transformação para o modelo agêntico (ClaudIA Agêntica).",
+      "default_conversion_rate": 0.40,
+      "icon": "⚡"
+    }
+  },
+  "action_types": [
+    {
+      "type": "content_new",
+      "macro": "content",
+      "label": "Criar novo conteúdo N1",
+      "description": "Criar conteúdo que não existe na IDS para um tema identificado por no_relevant_content / N2 por ausência de cobertura.",
+      "conversion_rate": 0.60,
+      "triggers": ["no_relevant_content", "tema N2 sem cobertura", "pergunta recorrente sem resposta"],
+      "execution": "Hub → aba Gerar IDS → tipo FAQ ou IDS Generator",
+      "example": "Criar FAQ sobre política de reembolso (pergunta recorrente sem conteúdo atual)"
+    },
+    {
+      "type": "content_improve",
+      "macro": "content",
+      "label": "Melhorar conteúdo N1 existente",
+      "description": "Reescrever ou enriquecer conteúdo existente com baixo score de resolutividade, clareza ou acionabilidade.",
+      "conversion_rate": 0.25,
+      "triggers": ["baixo score na ids-quality-eval", "GenCX ruim no conteúdo", "FUP negativo em tema específico"],
+      "execution": "Hub → IDS → editar conteúdo",
+      "example": "Reescrever resposta sobre troca de senha para ser mais direta"
+    },
+    {
+      "type": "content_dedupe",
+      "macro": "content",
+      "label": "Consolidar duplicatas",
+      "description": "Mesclar ou remover conteúdos semanticamente duplicados que confundem o classificador.",
+      "conversion_rate": 0.40,
+      "triggers": ["ids-duplicate-analysis com similaridade > 0.85", "múltiplos conteúdos concorrendo pela mesma intenção"],
+      "execution": "Hub → IDS → mesclar/remover",
+      "example": "Consolidar 3 conteúdos sobre 'cancelamento' em um único"
+    },
+    {
+      "type": "content_split",
+      "macro": "content",
+      "label": "Quebrar conteúdo genérico",
+      "description": "Separar conteúdo genérico demais em múltiplos específicos por sub-intenção, quando um único texto tenta cobrir muitos casos.",
+      "conversion_rate": 0.35,
+      "triggers": ["conteúdo com múltiplas seções", "baixa resolutividade por excesso de escopo"],
+      "execution": "Hub → IDS → criar N conteúdos específicos",
+      "example": "Quebrar 'Dúvidas sobre pagamento' em Cartão / Boleto / PIX"
+    },
+    {
+      "type": "content_restrict",
+      "macro": "content",
+      "label": "Restringir escopo do conteúdo",
+      "description": "Ajustar o título / tags / contexto de um conteúdo que está sendo acionado em casos errados.",
+      "conversion_rate": 0.30,
+      "triggers": ["conteúdo acionado fora do contexto previsto", "alto false-positive de match"],
+      "execution": "Hub → IDS → editar metadados e exemplos",
+      "example": "Restringir conteúdo 'login' para não capturar perguntas de cadastro"
+    },
+    {
+      "type": "content_remove",
+      "macro": "content",
+      "label": "Remover conteúdo obsoleto",
+      "description": "Remover conteúdo desatualizado, incorreto ou nocivo que está gerando respostas ruins.",
+      "conversion_rate": 0.20,
+      "triggers": ["conteúdo desatualizado", "informação incorreta", "baixíssimo uso + baixo score"],
+      "execution": "Hub → IDS → deletar",
+      "example": "Remover conteúdo com preço antigo que foi atualizado"
+    },
+    {
+      "type": "content_reclassify",
+      "macro": "content",
+      "label": "Reclassificar tag/intenção",
+      "description": "Mudar a tag ou o mapeamento de intenção de um conteúdo existente para que seja acionado no contexto correto.",
+      "conversion_rate": 0.25,
+      "triggers": ["conteúdo N1 marcado como N2 por erro", "tag incorreta", "classificação errada no diagnóstico"],
+      "execution": "Hub → IDS → editar tags",
+      "example": "Reclassificar conteúdo 'status de pedido' de N2 para N1"
+    },
+    {
+      "type": "content_n2_to_n1",
+      "macro": "content",
+      "label": "Promover conteúdo N2 para N1",
+      "description": "Habilitar conteúdo atualmente marcado como N2 para responder direto em N1 (não é criar novo Eddie — é habilitar resposta existente).",
+      "conversion_rate": 0.15,
+      "triggers": ["N2 conservador sem justificativa clara", "conteúdo N2 com alto volume"],
+      "execution": "Hub → IDS → mudar nível para N1",
+      "example": "Habilitar 'horário de funcionamento' (hoje N2) como resposta N1 direta"
+    },
+    {
+      "type": "content_loop_fix",
+      "macro": "content",
+      "label": "Corrigir loop / seção repetida",
+      "description": "Completar conteúdo parcial que está causando a ClaudIA repetir a mesma seção em loop.",
+      "conversion_rate": 0.40,
+      "triggers": ["repeated_section_limit acionado", "usuário recebe mesma resposta 2x"],
+      "execution": "Hub → IDS → completar conteúdo",
+      "example": "Adicionar passos finais em tutorial que terminava no meio"
+    },
+
+    {
+      "type": "config_enable",
+      "macro": "configs",
+      "label": "Ativar feature esperada",
+      "description": "Ativar flag/feature do ClaudIA que deveria estar ligada segundo as boas práticas.",
+      "conversion_rate": 0.70,
+      "triggers": ["feature documentada está OFF", "auditoria Q1-D diferente do esperado"],
+      "execution": "CloudBlocks → configurações do projeto",
+      "example": "Ativar more_user_interactions, clarification_enabled, fup_active"
+    },
+    {
+      "type": "config_disable",
+      "macro": "configs",
+      "label": "Desativar feature prejudicial",
+      "description": "Desligar feature que está prejudicando a performance do projeto específico.",
+      "conversion_rate": 0.40,
+      "triggers": ["feature ligada mas gerando erro", "flag experimental mal configurada"],
+      "execution": "CloudBlocks → configurações do projeto",
+      "example": "Desativar start_with_bot em projeto onde está causando fricção"
+    },
+    {
+      "type": "config_tune",
+      "macro": "configs",
+      "label": "Ajustar threshold/parâmetro",
+      "description": "Modificar valor numérico de threshold, limite ou parâmetro do ClaudIA.",
+      "conversion_rate": 0.35,
+      "triggers": ["repeated_section_limit muito baixo", "confidence_n2_threshold desalinhado", "enlightenment_limit curto demais"],
+      "execution": "CloudBlocks → configurações avançadas",
+      "example": "Aumentar repeated_section_limit de 2 para 3"
+    },
+    {
+      "type": "config_fix",
+      "macro": "configs",
+      "label": "Corrigir configuração incorreta",
+      "description": "Corrigir config que está explicitamente errada ou aponta para recurso inexistente.",
+      "conversion_rate": 0.60,
+      "triggers": ["config aponta para ID inexistente", "valor inválido", "typo em nome"],
+      "execution": "CloudBlocks → corrigir campo",
+      "example": "Corrigir flow_id que aponta para flow deletado"
+    },
+    {
+      "type": "config_flowprompt",
+      "macro": "configs",
+      "label": "Ajustar FlowPrompt de intenção",
+      "description": "Editar FlowPrompt específico que controla comportamento para uma intenção.",
+      "conversion_rate": 0.40,
+      "triggers": ["comportamento errado em intenção específica", "FlowPrompt vazio ou genérico demais"],
+      "execution": "CloudBlocks → FlowPrompts",
+      "example": "Ajustar FlowPrompt de 'cancelamento' para incluir instrução de retenção"
+    },
+    {
+      "type": "config_tone",
+      "macro": "configs",
+      "label": "Ajustar tom de voz / prompt base",
+      "description": "Modificar Base Prompt ou tone_of_voice_enabled para alinhar comunicação do ClaudIA ao tom do cliente.",
+      "conversion_rate": 0.20,
+      "triggers": ["CSAT baixo por percepção de tom", "cliente reclama de frieza/formalidade"],
+      "execution": "CloudBlocks → Base Prompt / Tone of Voice",
+      "example": "Ajustar tom para informal + usar emojis em contexto B2C"
+    },
+    {
+      "type": "config_fup",
+      "macro": "configs",
+      "label": "Ajustar ProblemResolvedChecker / FUP",
+      "description": "Ativar ou afinar o Follow-Up automático que valida se o problema foi resolvido.",
+      "conversion_rate": 0.50,
+      "triggers": ["FUP desligado", "fup_autodetect OFF", "alta taxa de 'não resolvido' manual"],
+      "execution": "CloudBlocks → FUP / ProblemResolvedChecker",
+      "example": "Ativar fup_active + fup_autodetect"
+    },
+    {
+      "type": "config_clarification",
+      "macro": "configs",
+      "label": "Ajustar Clarificação",
+      "description": "Ativar ou configurar o módulo de clarificação/classificação para reduzir ambiguidade.",
+      "conversion_rate": 0.35,
+      "triggers": ["clarification_enabled OFF", "alta taxa de N2 por 'não entendi'"],
+      "execution": "CloudBlocks → Clarification",
+      "example": "Ativar clarification_enabled + aumentar enlightenment_limit para 3"
+    },
+    {
+      "type": "config_frustration",
+      "macro": "configs",
+      "label": "Ajustar Frustration Detection",
+      "description": "Ativar ou calibrar detecção de frustração para handover proativo.",
+      "conversion_rate": 0.30,
+      "triggers": ["N2 por frustração alto", "frustration_detection OFF"],
+      "execution": "CloudBlocks → Frustration Detection",
+      "example": "Ativar frustration_detection com threshold médio"
+    },
+    {
+      "type": "config_handover",
+      "macro": "configs",
+      "label": "Ajustar regras de handover",
+      "description": "Modificar transfer messages, FORWARD_TO_HUMAN_CHECK ou regras que decidem quando transferir para humano.",
+      "conversion_rate": 0.30,
+      "triggers": ["handover excessivo", "transfer message genérica", "FORWARD_TO_HUMAN_CHECK mal configurado"],
+      "execution": "CloudBlocks → Handover Rules / Transfer Messages",
+      "example": "Reduzir transfer_messages de 3 para 1 em intenções simples"
+    },
+
+    {
+      "type": "eddie_error",
+      "macro": "eddie",
+      "label": "Corrigir erro em Eddie existente",
+      "description": "Corrigir bug, timeout, falha de API ou erro técnico em Eddie tradicional já publicado.",
+      "conversion_rate": 0.60,
+      "triggers": ["alta taxa de erro Eddie", "Q2-GenCX-Eddie com erro > threshold", "logs de erro recorrentes"],
+      "execution": "Time de engenharia / CloudBlocks → Eddie debug",
+      "example": "Corrigir timeout no Eddie de consulta de pedidos"
+    },
+    {
+      "type": "eddie_improve",
+      "macro": "eddie",
+      "label": "Melhorar Eddie existente",
+      "description": "Ajustar Eddie tradicional existente sem transformação arquitetural — ex: melhorar prompt, adicionar validações, tratar edge cases.",
+      "conversion_rate": 0.35,
+      "triggers": ["GenCX médio do Eddie abaixo da média", "edge cases não tratados", "flow incompleto"],
+      "execution": "Hub → Eddie Flows → editar",
+      "example": "Adicionar validação de CPF no Eddie de cadastro"
+    },
+    {
+      "type": "eddie_to_agentic",
+      "macro": "eddie",
+      "label": "Transformar Eddie em modelo agêntico",
+      "description": "Reestruturar Eddie tradicional (respostas estáticas da IDS) em modelo ClaudIA Agêntica (tool/API execution em tempo real). Requer evidência de dados dinâmicos, APIs disponíveis e alto volume.",
+      "conversion_rate": 0.50,
+      "triggers": ["dados dependentes do usuário", "handover só para consultar sistema", "APIs do cliente já existentes", "alto volume + erro no Eddie atual"],
+      "execution": "CloudBlocks → Agentic Configuration → Tool Descriptions (Judge/Supervisor/Sub-agent)",
+      "example": "Transformar Eddie de 'onde está meu pedido' de resposta genérica para consulta real via API /orders/{id}",
+      "reference": "https://cloudchat.cloudhumans.com/hc/claudia-agentica/articles/1775478290-o-que-e-a-claud_ia-agentica"
+    },
+    {
+      "type": "eddie_new",
+      "macro": "eddie",
+      "label": "Criar novo Eddie do zero",
+      "description": "Construir novo Eddie para tema que ainda não é tratado nem por N1 nem por Eddie, mas tem fluxo previsível.",
+      "conversion_rate": 0.25,
+      "triggers": ["tema novo com volume crescente", "fluxo previsível mas sem automação"],
+      "execution": "Hub → Eddie Flows → novo",
+      "example": "Criar Eddie novo para agendamento de entrega"
+    },
+    {
+      "type": "n2_to_eddie",
+      "macro": "eddie",
+      "label": "Novo Eddie a partir de tema N2",
+      "description": "Criar novo Eddie tradicional para tema hoje respondido apenas em N2, com potencial de automação.",
+      "conversion_rate": 0.15,
+      "triggers": ["tema N2 de alto volume", "automatizabilidade ALTA", "APIs do cliente disponíveis"],
+      "execution": "Hub → Eddie Flows → novo (baseado em análise de Q2-TopN2)",
+      "example": "Criar Eddie para 'solicitar 2a via de boleto' (hoje N2 com 200 tickets/mês)"
+    },
+    {
+      "type": "eddie_tool_add",
+      "macro": "eddie",
+      "label": "Adicionar tool/API a Eddie agêntico",
+      "description": "Expandir Eddie agêntico existente com nova ferramenta (API, MCP) para cobrir mais sub-intenções.",
+      "conversion_rate": 0.45,
+      "triggers": ["Eddie agêntico cobrindo só parte do fluxo", "sub-intenção identificada sem tool"],
+      "execution": "CloudBlocks → Agentic → adicionar sub-agent + tool description",
+      "example": "Adicionar tool de 'atualizar endereço' no Eddie agêntico de perfil"
+    },
+    {
+      "type": "eddie_retire",
+      "macro": "eddie",
+      "label": "Descontinuar Eddie",
+      "description": "Desativar Eddie com baixa performance ou uso onde o custo de manter supera o benefício.",
+      "conversion_rate": 0.10,
+      "triggers": ["Eddie com uso baixíssimo + erro alto", "fluxo substituído por outra abordagem"],
+      "execution": "Hub → Eddie Flows → desativar",
+      "example": "Desativar Eddie legado de consulta que foi substituído por agêntico"
+    }
+  ]
+}
