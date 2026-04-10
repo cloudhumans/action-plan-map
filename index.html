@@ -29,17 +29,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .legend-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
 .legend-dot.critical{background:#ef4444}.legend-dot.attention{background:#f59e0b}.legend-dot.reasonable{background:#3b82f6}.legend-dot.good{background:#14b8a6}.legend-dot.excellent{background:#22c55e}
 
-/* HOW IT WORKS */
-.how-section{padding:0 48px 24px;background:#fff;border-bottom:1px solid #e8eaf0}
-.how-toggle{background:none;border:1px solid #e2e8f0;border-radius:10px;padding:12px 20px;cursor:pointer;font-size:13px;font-weight:600;color:#F97316;display:flex;align-items:center;gap:8px;transition:all .2s;width:100%}
-.how-toggle:hover{background:#f8fafc;border-color:#FED7AA}
-.how-content{display:none;padding:20px;background:#f8fafc;border-radius:10px;margin-top:12px;font-size:13px;color:#475569;line-height:1.8}
-.how-content.open{display:block}
-.how-content h4{font-size:14px;font-weight:700;color:#1e293b;margin:16px 0 6px}
-.how-content h4:first-child{margin-top:0}
-.how-content table{width:100%;border-collapse:collapse;margin:8px 0 16px;font-size:12px}
-.how-content table th{text-align:left;padding:6px 12px;background:#e2e8f0;font-weight:700;color:#334155}
-.how-content table td{padding:6px 12px;border-bottom:1px solid #e2e8f0}
+/* HOW IT WORKS (removed from dashboard, now lives in its own tab) */
 
 /* CONTROLS */
 .controls{padding:8px 48px;background:#fff;border-bottom:1px solid #e8eaf0;display:flex;gap:12px;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:100}
@@ -145,7 +135,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .card-date{font-size:11px;color:#94a3b8}
 .footer{text-align:center;padding:28px;font-size:12px;color:#94a3b8;border-top:1px solid #e8eaf0;margin-top:16px}
 
-@media(max-width:900px){.header,.main,.controls,.stacked-section,.how-section{padding-left:20px;padding-right:20px}.grid{grid-template-columns:1fr}}
+@media(max-width:900px){.header,.main,.controls,.stacked-section{padding-left:20px;padding-right:20px}.grid{grid-template-columns:1fr}}
 
 /* ============ LOCK SCREEN ============ */
 .lock{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
@@ -227,39 +217,95 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .type-body .ref-link{display:inline-block;margin-top:8px;color:#FDBA74;font-size:11px;text-decoration:none;border-bottom:1px dashed #F97316}
 .type-body .ref-link:hover{color:#fff}
 
-/* ============ 3-LAYER ARCHITECTURE SECTION ============ */
-.arch-section{background:#fff;border-radius:14px;padding:24px;margin-bottom:24px;border:1px solid #e8eaf0}
-.arch-header{margin-bottom:20px}
-.arch-header h2{font-size:18px;font-weight:700;color:#1e293b;margin-bottom:6px}
-.arch-header p{font-size:13px;color:#64748b;line-height:1.6}
-.arch-layers{display:grid;grid-template-columns:1fr;gap:16px}
-.arch-layer{border-radius:12px;overflow:hidden;border:1px solid #e8eaf0;background:#f8fafc}
-.arch-layer-head{padding:16px 18px;display:flex;align-items:center;gap:12px;background:#fff;border-bottom:1px solid #e8eaf0;cursor:pointer;user-select:none}
-.arch-layer-num{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;flex-shrink:0}
-.arch-layer-1 .arch-layer-num{background:#F97316}
-.arch-layer-2 .arch-layer-num{background:#EA580C}
-.arch-layer-3 .arch-layer-num{background:#059669}
-.arch-layer-info h3{font-size:15px;font-weight:700;color:#1e293b;margin-bottom:2px}
-.arch-layer-info p{font-size:12px;color:#64748b}
-.arch-layer-body{display:none;padding:18px;background:#fff}
-.arch-layer.expanded .arch-layer-body{display:block}
-.arch-layer-1 .arch-layer-body{background:#FFF7ED}
-.arch-layer-2 .arch-layer-body{background:#FEF3C7}
-.arch-layer-3 .arch-layer-body{background:#F0FDF4}
-.arch-skill{background:#fff;border-radius:10px;padding:14px;margin-bottom:12px;border:1px solid #e2e8f0}
-.arch-skill-name{font-family:ui-monospace,monospace;font-size:12px;font-weight:700;color:#F97316;margin-bottom:4px}
-.arch-skill-desc{font-size:12px;color:#475569;line-height:1.5}
-.arch-macro-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:12px}
-.arch-macro{background:#fff;border-radius:10px;padding:14px;border:1px solid #e2e8f0}
-.arch-macro-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #e8eaf0}
-.arch-macro-icon{font-size:18px}
-.arch-macro-title{font-size:13px;font-weight:700;color:#1e293b}
-.arch-macro-sub{font-size:11px;color:#94a3b8}
-.arch-skill-list{display:flex;flex-direction:column;gap:8px}
-.arch-skill-item{background:#f8fafc;border-radius:8px;padding:8px 10px;border:1px solid #e2e8f0;font-family:ui-monospace,monospace;font-size:11px;font-weight:600;color:#F97316}
-.arch-skill-item.exists{color:#059669}
-.arch-skill-item.placeholder{color:#d97706;font-style:italic}
-.arch-impact{background:#fff;border-radius:8px;padding:12px;border:1px solid #e8eaf0;margin-top:12px;font-size:12px;color:#475569;line-height:1.5}
+/* ============ 3-LAYER ARCHITECTURE — VISUAL DIAGRAM ============ */
+.arch-hero{background:linear-gradient(135deg,#1a1a1a 0%,#1f1f1f 50%,#2a2a2a 100%);border-radius:16px;padding:36px 32px;margin-bottom:28px;position:relative;overflow:hidden}
+.arch-hero::before{content:'';position:absolute;right:-80px;top:-80px;width:300px;height:300px;background:radial-gradient(circle,rgba(249,115,22,.25),transparent 70%);border-radius:50%}
+.arch-hero::after{content:'';position:absolute;left:-60px;bottom:-100px;width:220px;height:220px;background:radial-gradient(circle,rgba(234,88,12,.15),transparent 70%);border-radius:50%}
+.arch-hero *{position:relative;z-index:1}
+.arch-hero h2{font-size:22px;font-weight:800;color:#fff;margin-bottom:12px;letter-spacing:-.02em}
+.arch-hero .arch-desc{font-size:14px;color:#c3c7d9;line-height:1.7;max-width:800px}
+.arch-hero .arch-desc strong{color:#FDBA74}
+
+/* FUNNEL VISUAL */
+.funnel-visual{background:linear-gradient(135deg,#18181b,#1c1917);border-radius:16px;padding:32px 24px;margin-bottom:28px;border:1px solid rgba(255,255,255,.06);position:relative;overflow:hidden}
+.funnel-visual::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.015'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+
+/* Layer rows */
+.funnel-layer{margin-bottom:0;position:relative;z-index:1}
+.funnel-layer-label{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.funnel-layer-num{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0}
+.funnel-layer-num.l1{background:linear-gradient(135deg,#F97316,#EA580C)}
+.funnel-layer-num.l2{background:linear-gradient(135deg,#EA580C,#C2410C)}
+.funnel-layer-num.l3{background:linear-gradient(135deg,#059669,#047857)}
+.funnel-layer-title{font-size:14px;font-weight:700;color:#fff}
+.funnel-layer-sub{font-size:11px;color:#8f93a8;margin-top:1px}
+
+/* Skill card (Layer 1) */
+.skill-card{background:rgba(249,115,22,.06);border:1px solid rgba(249,115,22,.2);border-radius:12px;padding:18px 20px;display:flex;gap:16px;align-items:flex-start}
+.skill-card-icon{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#F97316,#EA580C);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.skill-card-info{flex:1}
+.skill-card-name{font-family:ui-monospace,monospace;font-size:13px;font-weight:700;color:#FDBA74;margin-bottom:4px;display:inline-block;background:rgba(249,115,22,.12);padding:2px 10px;border-radius:6px}
+.skill-card-desc{font-size:12px;color:#c3c7d9;line-height:1.55;margin-top:6px}
+.skill-card-io{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap}
+.skill-card-io span{font-size:11px;color:#8f93a8}
+.skill-card-io span strong{color:#FDBA74}
+
+/* Pipeline steps (Layer 1 detail) */
+.pipeline{display:flex;gap:0;margin-top:16px;flex-wrap:wrap}
+.pipeline-step{flex:1;min-width:140px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px 16px;position:relative;text-align:center}
+.pipeline-step .pip-title{font-size:11px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.pipeline-step .pip-detail{font-size:10px;color:#8f93a8;line-height:1.45}
+.pipeline-arrow{display:flex;align-items:center;justify-content:center;width:36px;flex-shrink:0;color:rgba(249,115,22,.5);font-size:20px;font-weight:300}
+
+/* Layer connector arrow */
+.funnel-connector{display:flex;justify-content:center;padding:12px 0}
+.funnel-connector .conn-arrow{width:2px;height:28px;background:linear-gradient(to bottom,rgba(249,115,22,.4),rgba(249,115,22,.15));position:relative}
+.funnel-connector .conn-arrow::after{content:'';position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid rgba(249,115,22,.35)}
+
+/* Hypothesis pills */
+.hypo-section{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px 18px;margin-bottom:4px}
+.hypo-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#8f93a8;margin-bottom:10px}
+.hypo-pills{display:flex;flex-wrap:wrap;gap:8px}
+.hypo-pill{font-size:11px;padding:6px 14px;border-radius:999px;font-weight:600;display:flex;align-items:center;gap:6px}
+.hypo-pill .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.hypo-pill.content{background:rgba(249,115,22,.1);color:#FDBA74;border:1px solid rgba(249,115,22,.2)}.hypo-pill.content .dot{background:#F97316}
+.hypo-pill.eddie{background:rgba(234,88,12,.1);color:#FED7AA;border:1px solid rgba(234,88,12,.2)}.hypo-pill.eddie .dot{background:#EA580C}
+.hypo-pill.configs{background:rgba(5,150,105,.1);color:#6ee7b7;border:1px solid rgba(5,150,105,.2)}.hypo-pill.configs .dot{background:#059669}
+.hypo-pill.gencx{background:rgba(239,68,68,.1);color:#fca5a5;border:1px solid rgba(239,68,68,.2)}.hypo-pill.gencx .dot{background:#ef4444}
+
+/* Layer 2: Macro columns */
+.macro-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:900px){.macro-cols{grid-template-columns:1fr}}
+.macro-col{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:16px;transition:border-color .2s}
+.macro-col:hover{border-color:rgba(249,115,22,.25)}
+.macro-col-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.06)}
+.macro-col-icon{font-size:18px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:8px;flex-shrink:0}
+.macro-col-icon.mc-content{background:rgba(249,115,22,.15)}
+.macro-col-icon.mc-eddie{background:rgba(234,88,12,.15)}
+.macro-col-icon.mc-configs{background:rgba(5,150,105,.15)}
+.macro-col-title{font-size:13px;font-weight:700;color:#fff}
+.macro-col-sub{font-size:10px;color:#8f93a8;margin-top:1px}
+.skill-pill{display:flex;align-items:center;gap:6px;padding:7px 10px;border-radius:8px;font-family:ui-monospace,monospace;font-size:11px;font-weight:600;margin-bottom:6px;transition:background .15s}
+.skill-pill:last-child{margin-bottom:0}
+.skill-pill.active{background:rgba(5,150,105,.08);border:1px solid rgba(5,150,105,.2);color:#6ee7b7}
+.skill-pill.active::before{content:'';width:7px;height:7px;border-radius:50%;background:#22c55e;flex-shrink:0}
+.skill-pill.planned{background:rgba(249,115,22,.06);border:1px dashed rgba(249,115,22,.25);color:#FDBA74;font-style:italic}
+.skill-pill.planned::before{content:'';width:7px;height:7px;border-radius:50%;background:#F97316;flex-shrink:0;opacity:.5}
+
+/* Layer 3: Output summary */
+.output-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:900px){.output-row{grid-template-columns:1fr}}
+.output-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:16px}
+.output-card-head{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.output-card-head.oc-content{color:#FDBA74}
+.output-card-head.oc-eddie{color:#FED7AA}
+.output-card-head.oc-configs{color:#6ee7b7}
+.output-types{display:flex;flex-wrap:wrap;gap:4px}
+.output-type{font-family:ui-monospace,monospace;font-size:10px;padding:3px 8px;border-radius:5px;background:rgba(255,255,255,.05);color:#c3c7d9;border:1px solid rgba(255,255,255,.06);transition:all .15s}
+.output-type:hover{background:rgba(249,115,22,.1);border-color:rgba(249,115,22,.25);color:#FDBA74}
+
+/* Override old arch-impact used inside loadActionTypes */
+.arch-impact{background:rgba(255,255,255,.04);border-radius:8px;padding:12px;border:1px solid rgba(255,255,255,.07);margin-top:12px;font-size:12px;color:#c3c7d9;line-height:1.5}
 
 /* ============ CARD PASSWORD BADGE ============ */
 .card-pwd-inline{display:inline-flex;align-items:center;gap:6px;margin-left:8px;padding:6px 10px;background:linear-gradient(135deg,#FFF7ED 0%,#f5f3ff 100%);border:1px dashed #EA580C;border-radius:7px;font-size:11px;color:#F97316}
@@ -416,28 +462,6 @@ body{background:#f5f6fa}
   </div>
 </div>
 
-<div class="how-section">
-  <button class="how-toggle" onclick="document.getElementById('how-content').classList.toggle('open')">
-    <span style="font-size:18px">&#9432;</span> Como este dashboard funciona — clique para expandir
-  </button>
-  <div class="how-content" id="how-content">
-    <h4>Objetivo</h4>
-    Este dashboard mapeia todos os projetos ativos da Cloud Humans e serve como ponto central para priorizar onde executar planos de acao (skill <code>/ch-action-plan</code>). Cada card e um projeto que pode ter seu plano de acao executado, gerando um diagnostico com acoes priorizadas e estimativas de impacto.
-
-    <h4>Categorias de saude</h4>
-    <table>
-      <tr><th>Categoria</th><th>Retencao N1</th><th>Significado</th></tr>
-      <tr><td style="color:#dc2626;font-weight:700">Critico</td><td>&lt; 30%</td><td>Projeto em risco. Menos de 1/3 dos tickets resolvidos pela ClaudIA. Requer acao imediata.</td></tr>
-      <tr><td style="color:#d97706;font-weight:700">Atencao</td><td>30% a 40%</td><td>Abaixo do esperado. Ha espaco significativo para melhoria com acoes focadas.</td></tr>
-      <tr><td style="color:#2563eb;font-weight:700">Razoavel</td><td>40% a 50%</td><td>Funcionando mas com potencial. Otimizacoes podem gerar ganhos relevantes.</td></tr>
-      <tr><td style="color:#0d9488;font-weight:700">Bom</td><td>50% a 70%</td><td>Performance saudavel. Ajustes finos para maximizar valor.</td></tr>
-      <tr><td style="color:#059669;font-weight:700">Excelente</td><td>70%+</td><td>Performance de referencia. Manter e buscar otimizacoes incrementais.</td></tr>
-    </table>
-
-    <h4>Como usar</h4>
-    1. Filtre por CS Owner para ver seus clientes. 2. Ordene por retencao (menor) ou impacto (maior) para priorizar. 3. Para qualquer card pendente, rode <code>/ch-action-plan [nome do projeto]</code> para gerar o plano completo. 4. Os resultados serao adicionados automaticamente ao dashboard.
-  </div>
-</div>
 
 <div class="controls">
   <input type="text" class="search-box" placeholder="Buscar projeto..." id="search" oninput="applyFilters()">
@@ -1013,104 +1037,167 @@ function loadActionTypes(){
   const wrap = document.getElementById('how-content-main');
   wrap.innerHTML = '';
 
-  // 3-LAYER ARCHITECTURE SECTION
-  const archSection = document.createElement('div');
-  archSection.className = 'arch-section';
-  archSection.innerHTML = `
-    <div class="arch-header">
-      <h2>Arquitetura de 3 Camadas</h2>
-      <p>Como o sistema de planos de acao funciona: do diagnostico generalista, passando por analises especializadas, ate os planos detalhados com action types canonicos.</p>
-    </div>
-    <div class="arch-layers">
-      <!-- LAYER 1: DIAGNOSTICO GENERALISTA -->
-      <div class="arch-layer arch-layer-1 expanded">
-        <div class="arch-layer-head" onclick="this.closest('.arch-layer').classList.toggle('expanded')">
-          <div class="arch-layer-num">1</div>
-          <div class="arch-layer-info"><h3>Diagnostico Generalista</h3><p>Avaliacao macro de cada cliente: retencao, volumes, Top N2, configs, Eddies, GenCX</p></div>
-        </div>
-        <div class="arch-layer-body">
-          <div class="arch-skill">
-            <div class="arch-skill-name">📊 /ch-action-plan</div>
-            <div class="arch-skill-desc">Skill central que busca dados do Metabase em 3 layers (panorama → aprofundamento → auditoria), diagnostica gaps em Conteudo, Configs e Eddies, quantifica impacto em tickets e prioriza em P0/P1/P2.</div>
-            <div class="arch-impact"><strong>Input:</strong> nome do cliente | <strong>Output:</strong> plano de acao priorizado + JSON com action.type canonica</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- LAYER 2: ANALISES ESPECIALIZADAS -->
-      <div class="arch-layer arch-layer-2 expanded">
-        <div class="arch-layer-head" onclick="this.closest('.arch-layer').classList.toggle('expanded')">
-          <div class="arch-layer-num">2</div>
-          <div class="arch-layer-info"><h3>Analises Especializadas</h3><p>Skills que aprofundam hipoteses especificas com analises dedicadas por macro divisao</p></div>
-        </div>
-        <div class="arch-layer-body">
-          <div class="arch-macro-cols">
-            <!-- CONTENT -->
-            <div class="arch-macro">
-              <div class="arch-macro-head">
-                <div class="arch-macro-icon">📚</div>
-                <div><div class="arch-macro-title">Base de Conteudo</div><div class="arch-macro-sub">IDS, respostas N1, gaps</div></div>
-              </div>
-              <div class="arch-skill-list">
-                <span class="arch-skill-item exists">/ids-quality-eval</span>
-                <span class="arch-skill-item exists">/ids-duplicate-analysis</span>
-                <span class="arch-skill-item exists">/ids-gap-analysis</span>
-                <span class="arch-skill-item exists">/ids-no-relevant-content</span>
-                <span class="arch-skill-item placeholder">/content-performance</span>
-              </div>
-            </div>
-            <!-- EDDIE -->
-            <div class="arch-macro">
-              <div class="arch-macro-head">
-                <div class="arch-macro-icon">⚡</div>
-                <div><div class="arch-macro-title">Eddie & Agentica</div><div class="arch-macro-sub">Fluxos, erros, transformacao</div></div>
-              </div>
-              <div class="arch-skill-list">
-                <span class="arch-skill-item placeholder">/eddie-error-analysis</span>
-                <span class="arch-skill-item placeholder">/eddie-agentic-readiness</span>
-                <span class="arch-skill-item placeholder">/eddie-flow-optimizer</span>
-                <span class="arch-skill-item placeholder">/eddie-coverage-map</span>
-              </div>
-            </div>
-            <!-- CONFIGS -->
-            <div class="arch-macro">
-              <div class="arch-macro-head">
-                <div class="arch-macro-icon">⚙️</div>
-                <div><div class="arch-macro-title">Configuracoes</div><div class="arch-macro-sub">Features, thresholds, prompts</div></div>
-              </div>
-              <div class="arch-skill-list">
-                <span class="arch-skill-item placeholder">/config-audit</span>
-                <span class="arch-skill-item placeholder">/config-benchmark</span>
-                <span class="arch-skill-item placeholder">/config-impact-sim</span>
-                <span class="arch-skill-item placeholder">/flowprompt-eval</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- LAYER 3: PLANO DE ACAO DETALHADO -->
-      <div class="arch-layer arch-layer-3 expanded">
-        <div class="arch-layer-head" onclick="this.closest('.arch-layer').classList.toggle('expanded')">
-          <div class="arch-layer-num">3</div>
-          <div class="arch-layer-info"><h3>Plano de Acao Detalhado</h3><p>26 action types canonicos priorizados (P0→P2) com impacto estimado em tickets e conversion rate</p></div>
-        </div>
-        <div class="arch-layer-body">
-          <div class="arch-impact">Cada acao recebe obrigatoriamente um <code style="background:rgba(249,115,22,.15);padding:2px 6px;border-radius:4px;color:#F97316">action.type</code> canonico. O type determina a classificacao no dashboard (aba Conteudo, Configs ou Eddie), a taxa de conversao padrao e permite exportacao cross-cliente. Fonte de verdade: <code>data/action_types.json</code></div>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:12px">
-            <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:12px"><div style="font-size:11px;font-weight:700;color:#F97316;margin-bottom:6px;text-transform:uppercase">📚 Base de Conteudo</div><div style="font-size:11px;color:#475569">content_new, content_improve, content_dedupe, content_split, content_restrict, content_remove, content_reclassify, content_n2_to_n1, content_loop_fix</div></div>
-            <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:12px"><div style="font-size:11px;font-weight:700;color:#EA580C;margin-bottom:6px;text-transform:uppercase">⚡ Eddie & Agentica</div><div style="font-size:11px;color:#475569">eddie_error, eddie_improve, eddie_to_agentic, eddie_new, n2_to_eddie, eddie_tool_add, eddie_retire</div></div>
-            <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:12px"><div style="font-size:11px;font-weight:700;color:#059669;margin-bottom:6px;text-transform:uppercase">⚙️ Configuracoes</div><div style="font-size:11px;color:#475569">config_enable, config_disable, config_tune, config_fix, config_flowprompt, config_tone, config_fup, config_clarification, config_frustration, config_handover</div></div>
-          </div>
-        </div>
-      </div>
+  // ─── HERO: TITLE + EXPLANATION PARAGRAPH ───
+  const hero = document.createElement('div');
+  hero.className = 'arch-hero';
+  hero.innerHTML = `
+    <h2>Arquitetura de 3 Camadas</h2>
+    <div class="arch-desc">
+      O sistema de planos de acao da Cloud Humans opera como um <strong>funil de diagnostico</strong>. Na primeira camada, um diagnostico generalista analisa metricas macro de cada cliente — retencao, volume, motivos de transferencia para N2, erros de Eddie e scores de qualidade — e identifica hipoteses de melhoria. Essas hipoteses alimentam a segunda camada, onde <strong>skills especializadas</strong> aprofundam cada frente (conteudo, configuracoes, eddies) com analises dedicadas. O resultado final converge na terceira camada: um <strong>plano de acao detalhado</strong> com acoes priorizadas (P0 a P2), cada uma classificada por um <code style="background:rgba(0,0,0,.3);padding:2px 8px;border-radius:4px;color:#FDBA74">action.type</code> canonico, com impacto estimado em tickets recuperaveis e taxa de conversao esperada.
     </div>
   `;
-  wrap.appendChild(archSection);
+  wrap.appendChild(hero);
 
+  // ─── FUNNEL VISUAL DIAGRAM ───
+  const funnel = document.createElement('div');
+  funnel.className = 'funnel-visual';
+  funnel.innerHTML = `
+
+    <!-- ═══ LAYER 1: DIAGNOSTICO GENERALISTA ═══ -->
+    <div class="funnel-layer">
+      <div class="funnel-layer-label">
+        <div class="funnel-layer-num l1">1</div>
+        <div><div class="funnel-layer-title">Diagnostico Generalista</div>
+        <div class="funnel-layer-sub">Avaliacao macro de cada cliente: retencao, volumes, Top N2, configs, Eddies, GenCX</div></div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-card-icon">🎯</div>
+        <div class="skill-card-info">
+          <div class="skill-card-name">/ch-action-plan</div>
+          <div class="skill-card-desc">Skill central. Busca dados do Metabase em 3 layers (panorama → aprofundamento → auditoria), diagnostica gaps em <strong style="color:#FDBA74">Conteudo</strong>, <strong style="color:#FDBA74">Configs</strong> e <strong style="color:#FDBA74">Eddies</strong>, quantifica impacto em tickets e prioriza em P0/P1/P2.</div>
+          <div class="skill-card-io">
+            <span><strong>Input:</strong> nome do cliente (ou metricas coladas / PDF)</span>
+            <span><strong>Output:</strong> plano de acao priorizado + JSON com action.type</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pipeline">
+        <div class="pipeline-step"><div class="pip-title">Layer 1</div><div class="pip-detail">Retencao, volume, motivos N2, snapshot configs</div></div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-step"><div class="pip-title">Layer 2</div><div class="pip-detail">GenCX, CSAT/tag, TopN2, erros Eddie</div></div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-step"><div class="pip-title">Diagnostico</div><div class="pip-detail">Causa provavel + impacto estimado por acao</div></div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-step"><div class="pip-title">Output</div><div class="pip-detail">Plano P0/P1/P2 + JSON com action.type canonico</div></div>
+      </div>
+    </div>
+
+    <div class="funnel-connector"><div class="conn-arrow"></div></div>
+
+    <!-- HYPOTHESES BRIDGE -->
+    <div class="hypo-section">
+      <div class="hypo-title">Hipoteses geradas alimentam a Camada 2</div>
+      <div class="hypo-pills">
+        <div class="hypo-pill content"><span class="dot"></span>IDS com gaps / conteudos fracos / duplicatas</div>
+        <div class="hypo-pill eddie"><span class="dot"></span>Eddies com alta taxa de erro / candidatos a agentico</div>
+        <div class="hypo-pill configs"><span class="dot"></span>Features OFF / thresholds mal ajustados</div>
+        <div class="hypo-pill gencx"><span class="dot"></span>GenCX/CSAT baixos em tags especificas</div>
+      </div>
+    </div>
+
+    <div class="funnel-connector"><div class="conn-arrow"></div></div>
+
+    <!-- ═══ LAYER 2: ANALISES ESPECIALIZADAS ═══ -->
+    <div class="funnel-layer">
+      <div class="funnel-layer-label">
+        <div class="funnel-layer-num l2">2</div>
+        <div><div class="funnel-layer-title">Analises Especializadas</div>
+        <div class="funnel-layer-sub">Skills dedicadas que aprofundam cada hipotese com dados granulares</div></div>
+      </div>
+
+      <div class="macro-cols">
+        <!-- CONTENT -->
+        <div class="macro-col">
+          <div class="macro-col-head">
+            <div class="macro-col-icon mc-content">📚</div>
+            <div><div class="macro-col-title">Base de Conteudo</div><div class="macro-col-sub">IDS, respostas N1, gaps</div></div>
+          </div>
+          <div class="skill-pill active">/ids-quality-eval</div>
+          <div class="skill-pill active">/ids-duplicate-analysis</div>
+          <div class="skill-pill active">/ids-gap-analysis</div>
+          <div class="skill-pill active">/ids-no-relevant-content</div>
+          <div class="skill-pill planned">/content-performance</div>
+        </div>
+        <!-- EDDIE -->
+        <div class="macro-col">
+          <div class="macro-col-head">
+            <div class="macro-col-icon mc-eddie">⚡</div>
+            <div><div class="macro-col-title">Eddie & Agentica</div><div class="macro-col-sub">Fluxos, erros, transformacao</div></div>
+          </div>
+          <div class="skill-pill planned">/eddie-error-analysis</div>
+          <div class="skill-pill planned">/eddie-agentic-readiness</div>
+          <div class="skill-pill planned">/eddie-flow-optimizer</div>
+          <div class="skill-pill planned">/eddie-coverage-map</div>
+        </div>
+        <!-- CONFIGS -->
+        <div class="macro-col">
+          <div class="macro-col-head">
+            <div class="macro-col-icon mc-configs">⚙️</div>
+            <div><div class="macro-col-title">Configuracoes</div><div class="macro-col-sub">Features, thresholds, prompts</div></div>
+          </div>
+          <div class="skill-pill planned">/config-audit</div>
+          <div class="skill-pill planned">/config-benchmark</div>
+          <div class="skill-pill planned">/config-impact-sim</div>
+          <div class="skill-pill planned">/flowprompt-eval</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;margin-top:14px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:#8f93a8"><span style="width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block"></span> Skill ativa</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:#8f93a8"><span style="width:7px;height:7px;border-radius:50%;background:#F97316;opacity:.5;display:inline-block"></span> Skill planejada</div>
+      </div>
+    </div>
+
+    <div class="funnel-connector"><div class="conn-arrow"></div></div>
+
+    <!-- ═══ LAYER 3: PLANO DE ACAO DETALHADO ═══ -->
+    <div class="funnel-layer">
+      <div class="funnel-layer-label">
+        <div class="funnel-layer-num l3">3</div>
+        <div><div class="funnel-layer-title">Plano de Acao Detalhado</div>
+        <div class="funnel-layer-sub">26 action types canonicos priorizados (P0→P2) com impacto estimado em tickets</div></div>
+      </div>
+
+      <div class="arch-impact">Cada acao recebe obrigatoriamente um <code style="background:rgba(249,115,22,.15);padding:2px 6px;border-radius:4px;color:#FDBA74">action.type</code> canonico. O type determina a classificacao no dashboard (aba Conteudo, Configs ou Eddie), a taxa de conversao padrao e permite analise cross-cliente. Fonte: <code style="color:#8f93a8">data/action_types.json</code></div>
+
+      <div class="output-row" style="margin-top:14px">
+        <div class="output-card">
+          <div class="output-card-head oc-content">📚 Base de Conteudo · 9 tipos</div>
+          <div class="output-types">
+            <span class="output-type">content_new</span><span class="output-type">content_improve</span><span class="output-type">content_dedupe</span>
+            <span class="output-type">content_split</span><span class="output-type">content_restrict</span><span class="output-type">content_remove</span>
+            <span class="output-type">content_reclassify</span><span class="output-type">content_n2_to_n1</span><span class="output-type">content_loop_fix</span>
+          </div>
+        </div>
+        <div class="output-card">
+          <div class="output-card-head oc-eddie">⚡ Eddie & Agentica · 7 tipos</div>
+          <div class="output-types">
+            <span class="output-type">eddie_error</span><span class="output-type">eddie_improve</span><span class="output-type">eddie_to_agentic</span>
+            <span class="output-type">eddie_new</span><span class="output-type">n2_to_eddie</span><span class="output-type">eddie_tool_add</span>
+            <span class="output-type">eddie_retire</span>
+          </div>
+        </div>
+        <div class="output-card">
+          <div class="output-card-head oc-configs">⚙️ Configuracoes · 10 tipos</div>
+          <div class="output-types">
+            <span class="output-type">config_enable</span><span class="output-type">config_disable</span><span class="output-type">config_tune</span>
+            <span class="output-type">config_fix</span><span class="output-type">config_flowprompt</span><span class="output-type">config_tone</span>
+            <span class="output-type">config_fup</span><span class="output-type">config_clarification</span><span class="output-type">config_frustration</span>
+            <span class="output-type">config_handover</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  `;
+  wrap.appendChild(funnel);
+
+  // ─── 26 ACTION TYPES DETAIL ───
   const intro = document.createElement('div');
   intro.className = 'how-intro';
-  intro.innerHTML = `<h2>26 Tipos de Acao Canonica</h2><p>Cada acao gerada por um plano deve referenciar um dos tipos aqui listados. Clique para expandir e ver triggers, taxa de conversao e exemplo de execucao.</p><div class="steps"><div class="step"><span class="n">1</span><div><span class="t">Content</span><span class="d">Criar, melhorar, consolidar ou remover conteudos IDS</span></div></div><div class="step"><span class="n">2</span><div><span class="t">Configs</span><span class="d">Alterar flags, thresholds, prompts</span></div></div><div class="step"><span class="n">3</span><div><span class="t">Eddies</span><span class="d">Criar, transformar, corrigir ou descontinuar Eddies</span></div></div></div>`;
+  intro.innerHTML = `<h2>26 Tipos de Acao Canonica</h2><p>Cada acao gerada por um plano deve referenciar um dos tipos abaixo. Clique para expandir e ver triggers, taxa de conversao e exemplo de execucao.</p><div class="steps"><div class="step"><span class="n">1</span><div><span class="t">Content</span><span class="d">Criar, melhorar, consolidar ou remover conteudos IDS</span></div></div><div class="step"><span class="n">2</span><div><span class="t">Configs</span><span class="d">Alterar flags, thresholds, prompts</span></div></div><div class="step"><span class="n">3</span><div><span class="t">Eddies</span><span class="d">Criar, transformar, corrigir ou descontinuar Eddies</span></div></div></div>`;
   wrap.appendChild(intro);
 
   Object.entries(ACTION_TYPES_DB.macro_divisions).forEach(([macro, macroData]) => {
