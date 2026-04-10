@@ -1,0 +1,78 @@
+{
+  "_schema": "action-plan-map/plan/v1",
+  "project_slug": "gringa",
+  "date": "10/04/2026",
+  "summary": "Retenção crítica em 24.1% com tendência de piora (0% na semana 30/03, 10.5% na semana 06/04). Principal gargalo: Eddie retornando N2 em 59% dos casos (26 tickets). Erro técnico ao escalar em 9% dos N2s. Features desativadas: Classificação, Clarificação e More User Interactions.",
+  "impact_retention": "+15 a +22pp",
+  "total_impact": 13,
+  "n1_potential": 46.5,
+  "executed_at": "2026-04-10",
+  "skill_version": "v4",
+  "actions": [
+    {
+      "priority": "P0",
+      "title": "Corrigir erros ao escalar",
+      "desc": "4 tickets (9.1% dos N2s) falharam ao escalar para N2 — bug técnico no fluxo de transferência. Investigar LLM Calls e acionar time técnico.",
+      "impact_tickets": 4,
+      "conversion_rate": 0.60,
+      "impact_est": 2,
+      "type": "config_fix"
+    },
+    {
+      "priority": "P0",
+      "title": "Investigar queda brusca de retenção (semanas 30/03 e 06/04)",
+      "desc": "Retenção caiu de 40% → 0% → 10.5% nas últimas 2 semanas. Possível mudança em Eddie flow ou conteúdo. Comparar distribuição de N2s e verificar alterações recentes.",
+      "impact_tickets": 0,
+      "conversion_rate": 0,
+      "impact_est": 0,
+      "type": "config_fix"
+    },
+    {
+      "priority": "P0",
+      "title": "Aumentar repeated section limit de 2 para 3",
+      "desc": "Limite em 2 é muito agressivo — transfere após 2 usos do mesmo conteúdo. 2 tickets N2 por esse motivo no período.",
+      "impact_tickets": 2,
+      "conversion_rate": 0.40,
+      "impact_est": 1,
+      "type": "config_tune"
+    },
+    {
+      "priority": "P1",
+      "title": "Ativar Classificação e Clarificação",
+      "desc": "Ambas features OFF. ClaudIA não consegue lidar com perguntas ambíguas — não pede esclarecimento e usa conteúdo errado ou transfere.",
+      "impact_tickets": 3,
+      "conversion_rate": 0.70,
+      "impact_est": 2,
+      "type": "config_enable"
+    },
+    {
+      "priority": "P1",
+      "title": "Ativar More User Interactions",
+      "desc": "Feature OFF. Sem ela, ClaudIA ignora contexto de interações anteriores em conversas multi-turno.",
+      "impact_tickets": 3,
+      "conversion_rate": 0.70,
+      "impact_est": 2,
+      "type": "config_enable"
+    },
+    {
+      "priority": "P1",
+      "title": "Otimizar Eddie flows que retornam N2",
+      "desc": "26 tickets (59% dos N2s) transferidos porque Eddie retornou N2. Investigar quais flows estão gerando N2 desproporcional e ajustar steps/condições.",
+      "impact_tickets": 26,
+      "conversion_rate": 0.15,
+      "impact_est": 4,
+      "type": "content_improve"
+    },
+    {
+      "priority": "P2",
+      "title": "Revisar conteúdos N2 de alto volume para automação",
+      "desc": "Login vendedor (7 tix), pagamento atrasado (8 tix), código rastreio (8 tix) têm potencial de automação via Eddie agêntico. Validar APIs disponíveis com cliente.",
+      "impact_tickets": 10,
+      "conversion_rate": 0.15,
+      "impact_est": 2,
+      "type": "content_n2_to_n1"
+    }
+  ],
+  "report_html": "reports/action-plan-gringa.html",
+  "doubts_md": null
+}

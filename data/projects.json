@@ -1,6 +1,6 @@
 {
   "_schema": "action-plan-map/projects/v1",
-  "_updated": "2026-04-06",
+  "_updated": "2026-04-10",
   "projects": [
     {
       "slug": "adaflow",
@@ -121,13 +121,13 @@
       "cs_owner": "Yasmin Almeida",
       "status": "Onboarding",
       "retention_goal": 30,
-      "retention_current": 24.5,
-      "volume_total": 53,
-      "volume_n1": 13,
-      "volume_n2": 40,
+      "retention_current": 24.14,
+      "volume_total": 58,
+      "volume_n1": 14,
+      "volume_n2": 44,
       "health": "critical",
-      "has_plan": false,
-      "plan_date": null,
+      "has_plan": true,
+      "plan_date": "2026-04-10",
       "report_password": null
     },
     {
