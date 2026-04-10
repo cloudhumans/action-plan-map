@@ -360,7 +360,7 @@ body{background:#f5f6fa}
 </div>
 
 <!-- TAB: DASHBOARD -->
-<div class="tabs-bar">
+<div class="tabs-bar" style="display:none">
   <button class="tab-btn active" onclick="navigateTab('dashboard')">Dashboard <span class="tab-count" id="tab-count-dashboard">—</span></button>
   <button class="tab-btn" onclick="navigateTab('content')">Base de conteudo <span class="tab-count" id="tab-count-content">—</span></button>
   <button class="tab-btn" onclick="navigateTab('configs')">Configs <span class="tab-count" id="tab-count-configs">—</span></button>
@@ -690,12 +690,14 @@ async function initApp(){
   }
 }
 
+function pct(n, total){ return total > 0 ? (n / total * 100).toFixed(1) + '%' : '—'; }
+
 function buildCards(){
   const grid = document.getElementById('card-grid');
   grid.innerHTML = '';
   PROJECTS.forEach(p => {
     const plan = PLANS[p.slug];
-    const hasPlan = p.has_plan && plan;
+    const hasPlan = p.has_plan && plan && plan.actions && plan.actions.length > 0;
     const card = document.createElement('div');
     card.className = 'card' + (hasPlan ? ' has-plan' : '');
     card.setAttribute('data-slug', p.slug);
@@ -703,8 +705,14 @@ function buildCards(){
     card.setAttribute('data-owner', p.cs_owner || '');
     card.setAttribute('data-tier', p.tier || '');
     card.setAttribute('data-status', hasPlan ? 'executed' : 'pending');
-    card.setAttribute('data-retention', p.retention_current);
-    card.setAttribute('data-volume', p.volume_total);
+    card.setAttribute('data-retention', p.retention_current || 0);
+    card.setAttribute('data-volume', p.volume_total || 0);
+
+    // Compute total impact from plan
+    const totalImpact = hasPlan ? plan.actions.reduce((s,a) => s + (a.impact_est || 0), 0) : 0;
+    const impactPp = hasPlan && p.volume_total > 0 ? (totalImpact / p.volume_total * 100) : 0;
+    const potentialRet = Math.min((p.retention_current || 0) + impactPp, 100);
+    card.setAttribute('data-impact', totalImpact);
 
     const statusBadge = hasPlan ? '<span class="card-status executed">Plano executado</span>' : '<span class="card-status pending">Plano pendente</span>';
 
@@ -713,37 +721,78 @@ function buildCards(){
     if(p.tier) metaChips += '<span class="meta-chip tier">' + p.tier + '</span>';
     metaChips += '<span class="meta-chip health-' + hl(p.retention_current) + '">' + hc(p.retention_current) + '</span>';
 
+    // Top 3 actions + expand button
     let actionsHtml = '';
-    if(hasPlan && plan.actions && plan.actions.length > 0){
-      const top3 = plan.actions.slice(0, 3);
+    let detailsHtml = '';
+    if(hasPlan){
+      const actions = plan.actions;
+      const top3 = actions.slice(0, 3);
       top3.forEach(a => {
         const pri = (a.priority || 'P2').toLowerCase();
-        actionsHtml += '<div class="plan-action-item"><span class="plan-action-priority ' + pri + '">' + a.priority + '</span><span class="action-text">' + a.title + '</span><span class="action-impact">' + (a.impact_est || 0) + '</span></div>';
+        const ticketPct = p.volume_total > 0 ? ' (' + pct(a.impact_est || 0, p.volume_total) + ')' : '';
+        actionsHtml += '<div class="plan-action-item"><span class="plan-action-priority ' + pri + '">' + a.priority + '</span><span class="action-text">' + a.title + '</span><span class="action-impact">' + fn(a.impact_est || 0) + ticketPct + '</span></div>';
       });
-      if(plan.actions.length > 3){
-        actionsHtml += '<button class="expand-btn" onclick="toggleDetails(this)">+ ' + (plan.actions.length - 3) + ' mais...</button>';
+      if(actions.length > 3){
+        const remaining = actions.slice(3);
+        let extraHtml = '';
+        remaining.forEach(a => {
+          const pri = (a.priority || 'P2').toLowerCase();
+          const ticketPct = p.volume_total > 0 ? ' (' + pct(a.impact_est || 0, p.volume_total) + ')' : '';
+          extraHtml += '<div class="plan-action-item"><span class="plan-action-priority ' + pri + '">' + a.priority + '</span><span class="action-text">' + a.title + '</span><span class="action-impact">' + fn(a.impact_est || 0) + ticketPct + '</span></div>';
+        });
+        actionsHtml += '<button class="expand-btn" onclick="toggleDetails(this)">+ ' + remaining.length + ' mais...</button>';
+        detailsHtml = '<div class="card-details"><div class="plan-actions">' + extraHtml + '</div></div>';
       }
     }
 
+    // Goal marker
     const goalMarkerHtml = p.retention_goal ? '<div class="goal-marker" style="left:' + Math.min(p.retention_goal, 100) + '%"><span class="goal-marker-label">Goal: ' + p.retention_goal + '%</span></div>' : '';
+
+    // Potential marker (only if plan exists with impact)
+    const potentialMarkerHtml = hasPlan && impactPp > 0.5 ? '<div class="potential-marker" style="left:' + Math.min(potentialRet, 100) + '%"><span class="potential-marker-label">+' + impactPp.toFixed(1) + 'pp</span></div>' : '';
+
+    // Right metric box: impact estimate if plan exists, otherwise N2/Total
+    let rightMetric;
+    if(hasPlan && totalImpact > 0){
+      rightMetric = '<div class="metric"><div class="metric-label">Impacto estimado</div><div class="metric-value" style="color:#4f46e5">+' + fn(totalImpact) + ' N1</div><div class="metric-sub">+' + impactPp.toFixed(1) + 'pp retenção</div></div>';
+    } else {
+      rightMetric = '<div class="metric"><div class="metric-label">N2 / Total</div><div class="metric-value">' + fn(p.volume_n2 || 0) + ' / ' + fn(p.volume_total || 0) + '</div></div>';
+    }
+
+    // Report link + password
+    let reportHtml = '';
+    if(hasPlan && plan.report_html){
+      reportHtml = '<a class="open-report-btn" href="#" onclick="openReport(\'' + p.slug + '\');return false;">Abrir relatório completo</a>';
+      if(p.report_password){
+        reportHtml += ' <button type="button" class="pwd-copy" onclick="copyPwd(this)" data-pwd="' + p.report_password + '" style="margin-left:8px;padding:4px 10px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;cursor:pointer;font-size:11px;font-weight:600;color:#475569">🔑 ' + p.report_password + '</button>';
+      }
+    } else if(p.report_password){
+      reportHtml = '<span style="font-size:11px;color:#94a3b8">RELATÓRIO</span> <button type="button" class="pwd-copy" onclick="copyPwd(this)" data-pwd="' + p.report_password + '" style="padding:4px 10px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;cursor:pointer;font-size:11px;font-weight:700;color:#1e293b">' + p.report_password + ' <span style="color:#6366f1;margin-left:4px">Copy</span></button>';
+    }
+
+    // Retention legend items
+    let legendItems = '<span><span class="ret-dot current"></span>Atual</span>';
+    if(p.retention_goal) legendItems += '<span><span class="ret-dot goal-color"></span>Meta</span>';
+    if(hasPlan && impactPp > 0.5) legendItems += '<span><span class="ret-dot pot-color"></span>Potencial</span>';
 
     card.innerHTML = `
       <div class="card-header">
-        <div><div class="card-name">${p.display_name}</div><div class="card-volume">${fn(p.volume_total)} tickets</div></div>
+        <div><div class="card-name">${p.display_name}</div><div class="card-volume">${fn(p.volume_total || 0)} tickets</div></div>
         ${statusBadge}
       </div>
       <div class="card-meta-row">${metaChips}</div>
       <div class="card-metrics">
-        <div class="metric"><div class="metric-label">Retencao N1</div><div class="metric-value ${hl(p.retention_current)}">${p.retention_current.toFixed(1)}%</div></div>
-        <div class="metric"><div class="metric-label">N2 / Total</div><div class="metric-value">${p.volume_n2} / ${p.volume_total}</div></div>
+        <div class="metric"><div class="metric-label">Retencao N1</div><div class="metric-value ${hl(p.retention_current)}">${(p.retention_current || 0).toFixed(1)}%</div></div>
+        ${rightMetric}
       </div>
       <div class="retention-bar-wrap">
-        <div class="retention-bar-fill ${hl(p.retention_current)}" style="width:${Math.min(p.retention_current, 100)}%"></div>
+        <div class="retention-bar-fill ${hl(p.retention_current)}" style="width:${Math.min(p.retention_current || 0, 100)}%"></div>
         ${goalMarkerHtml}
+        ${potentialMarkerHtml}
       </div>
-      <div class="retention-labels"><span>0%</span><div class="legend-inline"><span><span class="ret-dot current"></span>Atual</span><span><span class="ret-dot goal-color"></span>Meta</span></div><span>100%</span></div>
-      ${hasPlan ? '<div class="card-plan-summary"><div class="plan-badges"><span class="plan-badge p0">P0: ' + (plan.actions.filter(a => a.priority === 'P0').length) + '</span><span class="plan-badge p1">P1: ' + (plan.actions.filter(a => a.priority === 'P1').length) + '</span><span class="plan-badge p2">P2: ' + (plan.actions.filter(a => a.priority === 'P2').length) + '</span></div><div class="plan-actions">' + actionsHtml + '</div></div>' : ''}
-      ${p.report_password ? '<span class="card-pwd-inline"><span class="pwd-label">Relatorio</span><span class="pwd-value">' + p.report_password + '</span><button type="button" class="pwd-copy" onclick="copyPwd(this)">Copy</button></span>' : ''}
+      <div class="retention-labels"><span>0%</span><div class="legend-inline">${legendItems}</div><span>100%</span></div>
+      ${hasPlan ? '<div class="card-plan-summary"><div class="plan-badges"><span class="plan-badge p0">P0: ' + plan.actions.filter(a => a.priority === 'P0').length + '</span><span class="plan-badge p1">P1: ' + plan.actions.filter(a => a.priority === 'P1').length + '</span><span class="plan-badge p2">P2: ' + plan.actions.filter(a => a.priority === 'P2').length + '</span><span class="plan-badge impact">Impacto: +' + fn(totalImpact) + ' tickets</span></div><div class="plan-actions">' + actionsHtml + '</div>' + detailsHtml + '</div>' : ''}
+      ${reportHtml ? '<div style="padding:8px 20px 4px">' + reportHtml + '</div>' : ''}
       <div class="card-footer"><span class="card-date">${p.plan_date || 'Sem plano'}</span></div>
     `;
     grid.appendChild(card);
@@ -976,10 +1025,10 @@ function updateNavCounts(){
   document.getElementById('nav-count-configs').textContent = configActions || '—';
   document.getElementById('nav-count-eddie').textContent = eddieActions || '—';
 
-  document.getElementById('tab-count-dashboard').textContent = PROJECTS.length;
-  document.getElementById('tab-count-content').textContent = contentActions || '—';
-  document.getElementById('tab-count-configs').textContent = configActions || '—';
-  document.getElementById('tab-count-eddie').textContent = eddieActions || '—';
+  const tcd = document.getElementById('tab-count-dashboard'); if(tcd) tcd.textContent = PROJECTS.length;
+  const tcc = document.getElementById('tab-count-content'); if(tcc) tcc.textContent = contentActions || '—';
+  const tcg = document.getElementById('tab-count-configs'); if(tcg) tcg.textContent = configActions || '—';
+  const tce = document.getElementById('tab-count-eddie'); if(tce) tce.textContent = eddieActions || '—';
 }
 
 function applyFilters(){
@@ -1011,9 +1060,12 @@ function sortCards(){
     const aVol = parseInt(a.getAttribute('data-volume'));
     const bVol = parseInt(b.getAttribute('data-volume'));
 
+    const aImp = parseInt(a.getAttribute('data-impact')) || 0;
+    const bImp = parseInt(b.getAttribute('data-impact')) || 0;
     switch(sortBy){
       case 'retention-asc': return aRet - bRet;
       case 'retention-desc': return bRet - aRet;
+      case 'impact-desc': return bImp - aImp;
       case 'volume-desc': return bVol - aVol;
       case 'volume-asc': return aVol - bVol;
       case 'name-asc': return a.querySelector('.card-name').textContent.localeCompare(b.querySelector('.card-name').textContent);
@@ -1025,22 +1077,28 @@ function sortCards(){
 }
 
 function toggleDetails(btn){
-  const card = btn.closest('.card');
-  const details = card.querySelector('.card-details');
+  const summary = btn.closest('.card-plan-summary') || btn.closest('.card');
+  const details = summary.querySelector('.card-details');
   if(!details) return;
-  details.classList.toggle('open');
-  btn.textContent = details.classList.contains('open') ? 'Mostrar menos' : '+ ' + (parseInt(btn.textContent) || 0) + ' mais...';
+  const isOpen = details.classList.toggle('open');
+  const count = details.querySelectorAll('.plan-action-item').length;
+  btn.textContent = isOpen ? 'Mostrar menos' : '+ ' + count + ' mais...';
 }
 
 function copyPwd(btn){
-  const pwd = btn.previousElementSibling.textContent;
+  const pwd = btn.getAttribute('data-pwd') || btn.textContent.replace(/Copy|Copiado!|🔑/g,'').trim();
   navigator.clipboard.writeText(pwd);
-  btn.classList.add('copied');
-  btn.textContent = 'Copiado!';
-  setTimeout(() => {
-    btn.classList.remove('copied');
-    btn.textContent = 'Copy';
-  }, 2000);
+  const orig = btn.innerHTML;
+  btn.innerHTML = '✅ Copiado!';
+  setTimeout(() => { btn.innerHTML = orig; }, 1800);
+}
+
+function openReport(slug){
+  const plan = PLANS[slug];
+  if(!plan || !plan.report_html) return;
+  // Open report in new tab
+  const w = window.open('', '_blank');
+  if(w){ w.document.write(plan.report_html); w.document.close(); }
 }
 
 // Navigation
