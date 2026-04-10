@@ -1,0 +1,87 @@
+{
+  "_schema": "action-plan-map/plan/v1",
+  "project_slug": "darwin",
+  "date": "06/04/2026",
+  "summary": "Retenção em declínio: 36.2% → 31.4% na semana de 30/03. Distribuição de N2 muito fragmentada — Multiprompt (16.8%), Transfer messages (14.0%), Clarificação (14.6%) e Eddie N2 (19.2%). GenCX crítico em 8.3% com tags comercial (27.6% ruim) e assistências (15.6% ruim).",
+  "impact_retention": "+15 a +20pp",
+  "total_impact": 1850,
+  "n1_potential": 55.5,
+  "executed_at": "2026-04-06",
+  "skill_version": "v4",
+  "actions": [
+    {
+      "priority": "P0",
+      "title": "Investigar Multiprompt handover (16.8%)",
+      "desc": "1,056 N2 por multiprompt — extremamente alto. Indica que Venda do Bot está tentando reter mas falhando. Investigar LLM Calls e FlowPrompt MULTIPROMPT.",
+      "impact_tickets": 1056,
+      "conversion_rate": 0.3,
+      "impact_est": 317
+    },
+    {
+      "priority": "P0",
+      "title": "Reduzir Transfer messages (14.0%)",
+      "desc": "882 N2 por mensagem de transferência detectada. Revisar Base Prompt e FlowPrompt FORWARD_TO_HUMAN_CHECK — possíveis frases de corretores sendo interpretadas como pedido de humano.",
+      "impact_tickets": 882,
+      "conversion_rate": 0.3,
+      "impact_est": 265
+    },
+    {
+      "priority": "P0",
+      "title": "Reescrever conteúdos com GenCX crítico",
+      "desc": "GenCX 8.33% ruim (🔴). Tags críticas: motivo_comercial (27.6% ruim, CSAT 36.8%), motivo_assistências (15.6% ruim). Revisar e reescrever conteúdos dessas tags.",
+      "impact_tickets": 300,
+      "conversion_rate": 0.25,
+      "impact_est": 75
+    },
+    {
+      "priority": "P1",
+      "title": "Ativar More User Interactions",
+      "desc": "Feature OFF. Melhora entendimento em perguntas complexas de seguros.",
+      "impact_tickets": 400,
+      "conversion_rate": 0.7,
+      "impact_est": 280
+    },
+    {
+      "priority": "P1",
+      "title": "Aumentar max_no_valid_content de 1 para 3",
+      "desc": "923 N2 por clarificação (14.6%). max_no_valid_content=1 é muito baixo — transfere após 1 tentativa sem conteúdo.",
+      "impact_tickets": 923,
+      "conversion_rate": 0.35,
+      "impact_est": 323
+    },
+    {
+      "priority": "P1",
+      "title": "Criar conteúdo para no_relevant_content",
+      "desc": "405 N2 (6.4%) sem conteúdo encontrado. Rodar extração de temas e criar novos conteúdos na IDS.",
+      "impact_tickets": 405,
+      "conversion_rate": 0.6,
+      "impact_est": 243
+    },
+    {
+      "priority": "P1",
+      "title": "Avaliar automatização Eddie para top N2",
+      "desc": "Top 4 N2: cancelar seguro (442 tix, ⚠️), posição sinistro (404 tix, ✅ automatizável via API), dispensa vistoria 0km (74 tix, ⚠️), reativar seguro (66 tix, ⚠️).",
+      "impact_tickets": 986,
+      "conversion_rate": 0.15,
+      "impact_est": 148
+    },
+    {
+      "priority": "P2",
+      "title": "Reduzir FUP negativo — revisar texto",
+      "desc": "258 N2 por FUP negativo. fup_autodetect já ativo. Revisar texto do FUP.",
+      "impact_tickets": 258,
+      "conversion_rate": 0.5,
+      "impact_est": 129
+    },
+    {
+      "priority": "P2",
+      "title": "Reduzir timeout handovers",
+      "desc": "116 N2 por timeout. Verificar se modelo CHATGPT4o1120 está causando lentidão.",
+      "impact_tickets": 116,
+      "conversion_rate": 0.6,
+      "impact_est": 70
+    }
+  ],
+  "report_html": "reports/action-plan-darwin.html",
+  "doubts_md": "doubts/doubts-darwin.md"
+}

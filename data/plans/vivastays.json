@@ -1,0 +1,71 @@
+{
+  "_schema": "action-plan-map/plan/v1",
+  "project_slug": "vivastays",
+  "date": "06/04/2026",
+  "summary": "Retenção estável em 33.7% — principal gargalo: 77.2% dos N2 por seção N2 usada (8,909 tickets). IDS desequilibrada com mais conteúdos N2 que N1. Potencial de automação via Eddie para top conteúdos. 4 features confirmadas desativadas.",
+  "impact_retention": "+10 a +12pp",
+  "total_impact": 1776,
+  "n1_potential": 44.2,
+  "executed_at": "2026-04-06",
+  "skill_version": "v4",
+  "actions": [
+    {
+      "priority": "P0",
+      "title": "Avaliar automatização via Eddie para top N2",
+      "desc": "8,909 N2 por seção N2 usada (77.2%). Top 10 conteúdos = ~3,500 tickets. Análise de automatizabilidade: 2 conteúdos automatizáveis (guarda-volumes, utensílios), 5 parcialmente (estender estadia, early check-in, late checkout, recadastro facial, adicionar hóspede), 8 não automatizáveis (porta/senha, reconhecimento facial, manutenção).",
+      "impact_tickets": 3500,
+      "conversion_rate": 0.15,
+      "impact_est": 525
+    },
+    {
+      "priority": "P0",
+      "title": "Ativar More User Interactions",
+      "desc": "Feature OFF que deveria estar ON. Melhora entendimento de perguntas multi-etapa — muito relevante para hospedagem.",
+      "impact_tickets": 500,
+      "conversion_rate": 0.7,
+      "impact_est": 350
+    },
+    {
+      "priority": "P1",
+      "title": "Ativar fup_autodetect (ProblemResolvedChecker)",
+      "desc": "484 N2 por FUP negativo (4.2%) + fup_autodetect OFF. Ativar para fechar tickets que o hóspede abandona.",
+      "impact_tickets": 484,
+      "conversion_rate": 0.5,
+      "impact_est": 242
+    },
+    {
+      "priority": "P1",
+      "title": "Aumentar max_clarification de 2 para 3",
+      "desc": "425 N2 por limite de clarificação atingido (3.7%). Atualmente max=2, aumentar para 3.",
+      "impact_tickets": 425,
+      "conversion_rate": 0.35,
+      "impact_est": 149
+    },
+    {
+      "priority": "P1",
+      "title": "Implementar Venda do Bot (FORWARD_TO_HUMAN_CHECK)",
+      "desc": "852 N2 por agentic handoff + 524 por 'falar com humano' = 1,376. Tentar resolver antes de transferir.",
+      "impact_tickets": 1376,
+      "conversion_rate": 0.3,
+      "impact_est": 413
+    },
+    {
+      "priority": "P1",
+      "title": "Corrigir erros Eddie",
+      "desc": "54 erros + 68 repeated flow = 122 N2 técnicos por Eddie.",
+      "impact_tickets": 122,
+      "conversion_rate": 0.6,
+      "impact_est": 73
+    },
+    {
+      "priority": "P2",
+      "title": "Aumentar repeated_section_limit de 2 para 3",
+      "desc": "59 N2 por seção repetida. Limite atual muito baixo.",
+      "impact_tickets": 59,
+      "conversion_rate": 0.4,
+      "impact_est": 24
+    }
+  ],
+  "report_html": "reports/action-plan-vivastays.html",
+  "doubts_md": "doubts/doubts-vivastays.md"
+}

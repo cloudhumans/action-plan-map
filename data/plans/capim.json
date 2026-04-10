@@ -1,0 +1,71 @@
+{
+  "_schema": "action-plan-map/plan/v1",
+  "project_slug": "capim",
+  "date": "06/04/2026",
+  "summary": "Retencao critica em 37.4%, tendencia de queda. CSAT saudavel (79%). IDS com apenas 91 secoes N1 para ~1800 tickets/semana. Potencial de +5 a +8pp.",
+  "impact_retention": "+5 a +8pp",
+  "total_impact": null,
+  "n1_potential": null,
+  "executed_at": null,
+  "skill_version": null,
+  "actions": [
+    {
+      "priority": "P0",
+      "title": "Investigar e corrigir erros no Eddie",
+      "desc": "164 N2s por erro tecnico (3.8% do volume). Problema recorrente em todas as semanas.",
+      "impact_tickets": 164,
+      "conversion_rate": 0.6,
+      "impact_est": 98
+    },
+    {
+      "priority": "P0",
+      "title": "Entender queda brusca semana 23/03",
+      "desc": "Retencao caiu 4pp em uma semana (38.9% -> 34.8%). Forced N2 Handover saltou de 1 para 10.",
+      "impact_tickets": 40,
+      "conversion_rate": 0.5,
+      "impact_est": 20
+    },
+    {
+      "priority": "P1",
+      "title": "Revisar ProblemResolvedChecker",
+      "desc": "471 tickets (10.97% dos N2s) por FUP negativo. Potencial de +235 N1s se 50% retidos.",
+      "impact_tickets": 471,
+      "conversion_rate": 0.5,
+      "impact_est": 235
+    },
+    {
+      "priority": "P1",
+      "title": "Reduzir N2 por clarificacao",
+      "desc": "275 tickets (6.41%) por esgotamento de clarificacao. Subindo nas ultimas semanas.",
+      "impact_tickets": 275,
+      "conversion_rate": 0.35,
+      "impact_est": 96
+    },
+    {
+      "priority": "P1",
+      "title": "Converter conteudos N2 alto volume para N1",
+      "desc": "31 conteudos N2. Top: n2_endosso (341) e n2_saas_pagamento (304).",
+      "impact_tickets": 645,
+      "conversion_rate": 0.15,
+      "impact_est": 97
+    },
+    {
+      "priority": "P2",
+      "title": "Expandir IDS com novos conteudos N1",
+      "desc": "91 secoes N1 insuficiente. 81 tickets por No relevant content found.",
+      "impact_tickets": 81,
+      "conversion_rate": 0.6,
+      "impact_est": 49
+    },
+    {
+      "priority": "P2",
+      "title": "Corrigir loop de secao repetida",
+      "desc": "85 tickets (1.98%) por limite de secao repetida.",
+      "impact_tickets": 85,
+      "conversion_rate": 0.4,
+      "impact_est": 34
+    }
+  ],
+  "report_html": null,
+  "doubts_md": null
+}

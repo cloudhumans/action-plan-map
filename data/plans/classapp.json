@@ -1,0 +1,71 @@
+{
+  "_schema": "action-plan-map/plan/v1",
+  "project_slug": "classapp",
+  "date": "06/04/2026",
+  "summary": "Retencao em queda acentuada (40.9% → 20.7% em 5 semanas). N2 distribuido entre Eddie (29.7%), conteudo N2 (29.3%), clarificacao (10%) e secao repetida (10%). Multiprompt handover alto (9.9%).",
+  "impact_retention": "+10 a +14pp",
+  "total_impact": null,
+  "n1_potential": null,
+  "executed_at": null,
+  "skill_version": null,
+  "actions": [
+    {
+      "priority": "P0",
+      "title": "Investigar queda brusca de retencao",
+      "desc": "Caiu de 40.9% para 20.7% em 5 semanas. 169 tickets por Multiprompt handover (9.9%).",
+      "impact_tickets": 169,
+      "conversion_rate": 0.5,
+      "impact_est": 85
+    },
+    {
+      "priority": "P0",
+      "title": "Converter top conteudos N2 para N1",
+      "desc": "503 tickets por N2 section used (29.3%). 270 secoes N2 na IDS com oportunidade de conversao.",
+      "impact_tickets": 503,
+      "conversion_rate": 0.15,
+      "impact_est": 75
+    },
+    {
+      "priority": "P1",
+      "title": "Corrigir loop de secao repetida",
+      "desc": "171 tickets por secao repetida (10% dos N2). Muito alto.",
+      "impact_tickets": 171,
+      "conversion_rate": 0.4,
+      "impact_est": 68
+    },
+    {
+      "priority": "P1",
+      "title": "Reduzir N2 por clarificacao",
+      "desc": "172 tickets por esgotamento de clarificacao (10% dos N2).",
+      "impact_tickets": 172,
+      "conversion_rate": 0.35,
+      "impact_est": 60
+    },
+    {
+      "priority": "P1",
+      "title": "Ativar Venda do Bot para frustracao",
+      "desc": "87 tickets por frustracao + 43 por transfer message = 130 tickets.",
+      "impact_tickets": 130,
+      "conversion_rate": 0.3,
+      "impact_est": 39
+    },
+    {
+      "priority": "P2",
+      "title": "Expandir IDS com novos conteudos",
+      "desc": "21 tickets por no_relevant_content.",
+      "impact_tickets": 21,
+      "conversion_rate": 0.6,
+      "impact_est": 13
+    },
+    {
+      "priority": "P2",
+      "title": "Corrigir erros no Eddie",
+      "desc": "7 tickets por erro na chamada ao Eddie.",
+      "impact_tickets": 7,
+      "conversion_rate": 0.6,
+      "impact_est": 4
+    }
+  ],
+  "report_html": "reports/action-plan-classapp.html",
+  "doubts_md": null
+}

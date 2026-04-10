@@ -297,7 +297,6 @@ body{background:#f5f6fa}
   .sidebar-foot{display:none}
   .content-wrap{margin-left:0}
 }
-
 </style>
 </head>
 <body>
@@ -314,7 +313,7 @@ body{background:#f5f6fa}
       <button type="submit" id="lockBtn">Desbloquear</button>
       <div class="lock-error" id="lockErr">Senha incorreta. Verifique e tente novamente.</div>
     </form>
-    <div class="lock-foot">Conteúdo protegido com criptografia <strong>AES-256-GCM</strong>.</div>
+    <div class="lock-foot">Acesso restrito ao time de AMs</div>
   </div>
 </div>
 
@@ -355,12 +354,20 @@ body{background:#f5f6fa}
   <div class="subtitle" id="header-sub">Mapeamento de planos de acao potenciais em todos os projetos ativos, com impacto estimado em Retencao e CSAT. Cards verdes possuem plano executado.</div>
   <div class="meta">
     <span>Dados de retencao: ultimos 30 dias</span>
-    <span>Gerado em 06/04/2026</span>
+    <span id="data-updated"></span>
     <span id="project-count-meta"></span>
   </div>
 </div>
 
 <!-- TAB: DASHBOARD -->
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="navigateTab('dashboard')">Dashboard <span class="tab-count" id="tab-count-dashboard">—</span></button>
+  <button class="tab-btn" onclick="navigateTab('content')">Base de conteudo <span class="tab-count" id="tab-count-content">—</span></button>
+  <button class="tab-btn" onclick="navigateTab('configs')">Configs <span class="tab-count" id="tab-count-configs">—</span></button>
+  <button class="tab-btn" onclick="navigateTab('eddie')">Eddies <span class="tab-count" id="tab-count-eddie">—</span></button>
+  <button class="tab-btn" onclick="navigateTab('how')">Como funciona <span class="tab-count" id="tab-count-how">26</span></button>
+</div>
+
 <div class="tab-pane active" id="tab-dashboard">
 
 <div class="stacked-section">
@@ -392,28 +399,6 @@ body{background:#f5f6fa}
       <tr><td style="color:#0d9488;font-weight:700">Bom</td><td>50% a 70%</td><td>Performance saudavel. Ajustes finos para maximizar valor.</td></tr>
       <tr><td style="color:#059669;font-weight:700">Excelente</td><td>70%+</td><td>Performance de referencia. Manter e buscar otimizacoes incrementais.</td></tr>
     </table>
-
-    <h4>Regua de conversao por tipo de acao</h4>
-    Quando um plano de acao e executado, cada acao recebe uma estimativa de impacto baseada no numero de tickets afetados e uma taxa de conversao que varia por tipo:
-    <table>
-      <tr><th>Tipo de acao</th><th>Taxa de conversao</th><th>Justificativa</th></tr>
-      <tr><td>Erro tecnico (Eddie, timeout, bug)</td><td>60%</td><td>Problemas tecnicos sao geralmente corrigiveis de forma direta</td></tr>
-      <tr><td>ProblemResolvedChecker / FUP</td><td>50%</td><td>Metade dos FUP negativos podem ser retidos com ajuste de fluxo</td></tr>
-      <tr><td>Clarificacao / classificacao</td><td>35%</td><td>Depende de qualidade da IDS e linguagem do usuario</td></tr>
-      <tr><td>Novo conteudo (no_relevant_content)</td><td>60%</td><td>Conteudo inexistente: ao criar, alto % de captura</td></tr>
-      <tr><td>Conversao de conteudo N2 para N1</td><td>15%</td><td>Conservador — muitos N2s existem por razao valida</td></tr>
-      <tr><td>Loop / secao repetida</td><td>40%</td><td>Conteudo parcial que pode ser completado</td></tr>
-      <tr><td colspan="3" style="color:#94a3b8;font-style:italic">Projetos sem plano executado nao possuem estimativa de impacto</td></tr>
-    </table>
-
-    <h4>Marcadores na barra de retencao</h4>
-    Cada card possui uma barra de retencao com ate 3 elementos: a <span style="color:#475569;font-weight:700">retencao atual</span> (barra colorida), a <span style="color:#4f46e5;font-weight:700">meta do Airtable</span> (marcador roxo), e o <span style="color:#d97706;font-weight:700">potencial com acoes</span> (marcador amarelo, exibido apenas para projetos com plano executado = retencao atual + impacto estimado das acoes).
-
-    <h4>Tierizacao CS</h4>
-    Cada projeto possui um Tier vindo do Airtable (Accounts → Tierizacao CS). <strong>Tier 1</strong> = contas estrategicas de maior valor. <strong>Tier 2</strong> = contas intermediarias. <strong>Tier 3</strong> = contas menores ou em early stage. Use o filtro de Tier para priorizar analises.
-
-    <h4>Fontes de dados</h4>
-    Os dados vem de: <strong>Metabase</strong> (volume, retencao, N2s dos ultimos 30 dias), <strong>Airtable CRM</strong> (meta de retencao, CS Owner, status, Tier da conta), e <strong>sessoes anteriores</strong> (planos de acao ja executados com a skill <code>/ch-action-plan</code>).
 
     <h4>Como usar</h4>
     1. Filtre por CS Owner para ver seus clientes. 2. Ordene por retencao (menor) ou impacto (maior) para priorizar. 3. Para qualquer card pendente, rode <code>/ch-action-plan [nome do projeto]</code> para gerar o plano completo. 4. Os resultados serao adicionados automaticamente ao dashboard.
@@ -458,124 +443,67 @@ body{background:#f5f6fa}
 
 </div><!-- /#tab-dashboard -->
 
-<!-- TAB: EDDIE -->
-<div class="tab-pane" id="tab-eddie">
-  <div class="eddie-body">
-    <div class="eddie-block" data-bucket="errors">
-      <div class="eddie-block-head">
-        <div class="left">
-          <div class="num">1</div>
-          <div>
-            <h3>Eddies tradicionais com alta taxa de erro</h3>
-            <div class="sub">Eddies já publicados que precisam de melhorias ou correções técnicas urgentes</div>
-          </div>
-        </div>
-        <div class="totals">
-          <div class="total-chip"><span class="k">Ações</span><span class="v" id="bucket-errors-count">0</span></div>
-          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-errors-impact">0</span></div>
-          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-errors-tickets">0</span></div>
-        </div>
-      </div>
-      <div id="bucket-errors-list"></div>
-    </div>
-    <div class="eddie-block" data-bucket="conversational">
-      <div class="eddie-block-head">
-        <div class="left">
-          <div class="num">2</div>
-          <div>
-            <h3>Eddies existentes → modelo conversacional / agêntico</h3>
-            <div class="sub">Edges de baixa performance candidatos a serem transformados no modelo conversacional ou agêntico</div>
-          </div>
-        </div>
-        <div class="totals">
-          <div class="total-chip"><span class="k">Ações</span><span class="v" id="bucket-conversational-count">0</span></div>
-          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-conversational-impact">0</span></div>
-          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-conversational-tickets">0</span></div>
-        </div>
-      </div>
-      <div id="bucket-conversational-list"></div>
-    </div>
-    <div class="eddie-block" data-bucket="n2toedge">
-      <div class="eddie-block-head">
-        <div class="left">
-          <div class="num">3</div>
-          <div>
-            <h3>Conteúdos N2 → novos Eddies</h3>
-            <div class="sub">Temas cobertos por N2 com alto volume que podem ser automatizados via novos Eddies</div>
-          </div>
-        </div>
-        <div class="totals">
-          <div class="total-chip"><span class="k">Ações</span><span class="v" id="bucket-n2toedge-count">0</span></div>
-          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-n2toedge-impact">0</span></div>
-          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-n2toedge-tickets">0</span></div>
-        </div>
-      </div>
-      <div id="bucket-n2toedge-list"></div>
-    </div>
-  </div>
-</div>
-
-<!-- TAB: CONTENT (placeholder) -->
+<!-- TAB: CONTENT -->
 <div class="tab-pane" id="tab-content">
   <div class="eddie-body">
-    <div class="eddie-block">
+    <div class="eddie-block" data-bucket="content_new">
       <div class="eddie-block-head">
         <div class="left">
           <div class="num">1</div>
           <div>
-            <h3>Novos conteúdos — no_relevant_content</h3>
-            <div class="sub">Temas sem cobertura na IDS que geraram transferência para N2</div>
+            <h3>Criar novos conteudos</h3>
+            <div class="sub">Temas sem cobertura na IDS que geraram transferencia para N2</div>
           </div>
         </div>
         <div class="totals">
-          <div class="total-chip"><span class="k">Ações</span><span class="v" id="bucket-content_new-count">—</span></div>
-          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-content_new-impact">—</span></div>
-          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-content_new-tickets">—</span></div>
+          <div class="total-chip"><span class="k">Acoes</span><span class="v" id="bucket-content_new-count">0</span></div>
+          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-content_new-impact">0</span></div>
+          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-content_new-tickets">0</span></div>
         </div>
       </div>
-      <div id="bucket-content_new-list"><div class="eddie-empty">Em breve — esta aba consolidará, por cliente, as ações de criação de novo conteúdo IDS (tipo <code>content_new</code>) geradas pela skill <code>/ch-action-plan</code>.</div></div>
+      <div id="bucket-content_new-list"></div>
     </div>
-    <div class="eddie-block">
+    <div class="eddie-block" data-bucket="content_improve">
       <div class="eddie-block-head">
         <div class="left">
           <div class="num">2</div>
           <div>
-            <h3>Melhoria de conteúdos N1 existentes</h3>
-            <div class="sub">Conteúdos com baixo score de qualidade, clareza ou resolutividade</div>
+            <h3>Melhorar conteudos existentes</h3>
+            <div class="sub">Conteudos com baixo score de qualidade, clareza ou resolutividade</div>
           </div>
         </div>
         <div class="totals">
-          <div class="total-chip"><span class="k">Ações</span><span class="v" id="bucket-content_improve-count">—</span></div>
-          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-content_improve-impact">—</span></div>
-          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-content_improve-tickets">—</span></div>
+          <div class="total-chip"><span class="k">Acoes</span><span class="v" id="bucket-content_improve-count">0</span></div>
+          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-content_improve-impact">0</span></div>
+          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-content_improve-tickets">0</span></div>
         </div>
       </div>
-      <div id="bucket-content_improve-list"><div class="eddie-empty">Em breve — ações do tipo <code>content_improve</code>.</div></div>
+      <div id="bucket-content_improve-list"></div>
     </div>
-    <div class="eddie-block">
+    <div class="eddie-block" data-bucket="content_consolidate">
       <div class="eddie-block-head">
         <div class="left">
           <div class="num">3</div>
           <div>
-            <h3>Consolidação — duplicatas / loops</h3>
-            <div class="sub">Conteúdos duplicados ou com seção repetida que prejudicam retenção</div>
+            <h3>Consolidacao — duplicatas / loops</h3>
+            <div class="sub">Conteudos duplicados ou com secao repetida que prejudicam retencao</div>
           </div>
         </div>
         <div class="totals">
-          <div class="total-chip"><span class="k">Ações</span><span class="v" id="bucket-content_dedupe-count">—</span></div>
-          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-content_dedupe-impact">—</span></div>
-          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-content_dedupe-tickets">—</span></div>
+          <div class="total-chip"><span class="k">Acoes</span><span class="v" id="bucket-content_consolidate-count">0</span></div>
+          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-content_consolidate-impact">0</span></div>
+          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-content_consolidate-tickets">0</span></div>
         </div>
       </div>
-      <div id="bucket-content_dedupe-list"><div class="eddie-empty">Em breve — ações do tipo <code>content_dedupe</code>.</div></div>
+      <div id="bucket-content_consolidate-list"></div>
     </div>
   </div>
 </div>
 
-<!-- TAB: CONFIGS (placeholder) -->
+<!-- TAB: CONFIGS -->
 <div class="tab-pane" id="tab-configs">
   <div class="eddie-body">
-    <div class="eddie-block">
+    <div class="eddie-block" data-bucket="config_enable">
       <div class="eddie-block-head">
         <div class="left">
           <div class="num">1</div>
@@ -585,389 +513,361 @@ body{background:#f5f6fa}
           </div>
         </div>
         <div class="totals">
-          <div class="total-chip"><span class="k">Ações</span><span class="v" id="bucket-config_enable-count">—</span></div>
-          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-config_enable-impact">—</span></div>
-          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-config_enable-tickets">—</span></div>
+          <div class="total-chip"><span class="k">Acoes</span><span class="v" id="bucket-config_enable-count">0</span></div>
+          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-config_enable-impact">0</span></div>
+          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-config_enable-tickets">0</span></div>
         </div>
       </div>
-      <div id="bucket-config_enable-list"><div class="eddie-empty">Em breve — esta aba consolidará, por cliente, as ações de ativação de configs (tipo <code>config_enable</code>) geradas pela skill <code>/ch-action-plan</code>.</div></div>
+      <div id="bucket-config_enable-list"></div>
     </div>
-    <div class="eddie-block">
+    <div class="eddie-block" data-bucket="config_tune">
       <div class="eddie-block-head">
         <div class="left">
           <div class="num">2</div>
           <div>
-            <h3>Ajuste de thresholds e parâmetros</h3>
-            <div class="sub">Valores de threshold, limites de repetição e confiança N2</div>
+            <h3>Ajustar thresholds e parametros</h3>
+            <div class="sub">Modificar valores numericos que controlam comportamento</div>
           </div>
         </div>
         <div class="totals">
-          <div class="total-chip"><span class="k">Ações</span><span class="v" id="bucket-config_tune-count">—</span></div>
-          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-config_tune-impact">—</span></div>
-          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-config_tune-tickets">—</span></div>
+          <div class="total-chip"><span class="k">Acoes</span><span class="v" id="bucket-config_tune-count">0</span></div>
+          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-config_tune-impact">0</span></div>
+          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-config_tune-tickets">0</span></div>
         </div>
       </div>
-      <div id="bucket-config_tune-list"><div class="eddie-empty">Em breve — ações do tipo <code>config_tune</code>.</div></div>
+      <div id="bucket-config_tune-list"></div>
     </div>
-    <div class="eddie-block">
+    <div class="eddie-block" data-bucket="config_fix">
       <div class="eddie-block-head">
         <div class="left">
           <div class="num">3</div>
           <div>
-            <h3>Correção de configuração incorreta</h3>
-            <div class="sub">Configurações explicitamente erradas identificadas na auditoria</div>
+            <h3>Corrigir configuracoes</h3>
+            <div class="sub">Problemas em features ou parametros que estao ativos</div>
           </div>
         </div>
         <div class="totals">
-          <div class="total-chip"><span class="k">Ações</span><span class="v" id="bucket-config_fix-count">—</span></div>
-          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-config_fix-impact">—</span></div>
-          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-config_fix-tickets">—</span></div>
+          <div class="total-chip"><span class="k">Acoes</span><span class="v" id="bucket-config_fix-count">0</span></div>
+          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-config_fix-impact">0</span></div>
+          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-config_fix-tickets">0</span></div>
         </div>
       </div>
-      <div id="bucket-config_fix-list"><div class="eddie-empty">Em breve — ações do tipo <code>config_fix</code>.</div></div>
+      <div id="bucket-config_fix-list"></div>
     </div>
   </div>
 </div>
 
-<!-- TAB: COMO FUNCIONA -->
-<div class="tab-pane" id="tab-how">
-  <div class="how-wrap">
-    <div class="how-intro">
-      <h2>Como a skill /ch-action-plan funciona</h2>
-      <p>A skill <code>/ch-action-plan</code> gera um <strong>plano de ação priorizado</strong> para qualquer cliente Cloud Humans, cruzando dados do Metabase, IDS e configs do ClaudIA. Cada ação recomendada recebe um <code>type</code> canônico que a classifica em uma das 3 macro divisões abaixo.</p>
-      <div class="steps">
-        <div class="step"><div class="t"><span class="n">1</span>Coleta</div><div class="d">Busca métricas do cliente no Metabase (retenção, volumes, Top N2, GenCX, erros Eddie, motivos).</div></div>
-        <div class="step"><div class="t"><span class="n">2</span>Diagnóstico</div><div class="d">Avalia gaps em 3 eixos: conteúdos N1 faltantes/fracos, configs mal ajustadas e Eddies (tradicionais vs agênticos).</div></div>
-        <div class="step"><div class="t"><span class="n">3</span>Priorização</div><div class="d">Calcula impacto estimado (tickets × conversion_rate do type) e ordena em P0 / P1 / P2.</div></div>
-        <div class="step"><div class="t"><span class="n">4</span>Registro</div><div class="d">Grava cada ação com <code>type</code> canônico no plano + atualiza este dashboard (Action Plan Map).</div></div>
+<!-- TAB: EDDIE -->
+<div class="tab-pane" id="tab-eddie">
+  <div class="eddie-body">
+    <div class="eddie-block" data-bucket="eddie_error">
+      <div class="eddie-block-head">
+        <div class="left">
+          <div class="num">1</div>
+          <div>
+            <h3>Eddies com alta taxa de erro</h3>
+            <div class="sub">Eddies ja publicados que precisam de melhorias ou correcoes tecnicas urgentes</div>
+          </div>
+        </div>
+        <div class="totals">
+          <div class="total-chip"><span class="k">Acoes</span><span class="v" id="bucket-eddie_error-count">0</span></div>
+          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-eddie_error-impact">0</span></div>
+          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-eddie_error-tickets">0</span></div>
+        </div>
       </div>
+      <div id="bucket-eddie_error-list"></div>
     </div>
-    <div id="how-macros"><div class="eddie-empty">Carregando taxonomia de action types…</div></div>
+    <div class="eddie-block" data-bucket="eddie_conversational">
+      <div class="eddie-block-head">
+        <div class="left">
+          <div class="num">2</div>
+          <div>
+            <h3>Eddies existentes → modelo conversacional / agentico</h3>
+            <div class="sub">Edges de baixa performance candidatos a serem transformados</div>
+          </div>
+        </div>
+        <div class="totals">
+          <div class="total-chip"><span class="k">Acoes</span><span class="v" id="bucket-eddie_conversational-count">0</span></div>
+          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-eddie_conversational-impact">0</span></div>
+          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-eddie_conversational-tickets">0</span></div>
+        </div>
+      </div>
+      <div id="bucket-eddie_conversational-list"></div>
+    </div>
+    <div class="eddie-block" data-bucket="eddie_new">
+      <div class="eddie-block-head">
+        <div class="left">
+          <div class="num">3</div>
+          <div>
+            <h3>Conteudos N2 → novos Eddies</h3>
+            <div class="sub">Temas cobertos por N2 com alto volume que podem ser automatizados</div>
+          </div>
+        </div>
+        <div class="totals">
+          <div class="total-chip"><span class="k">Acoes</span><span class="v" id="bucket-eddie_new-count">0</span></div>
+          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-eddie_new-impact">0</span></div>
+          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-eddie_new-tickets">0</span></div>
+        </div>
+      </div>
+      <div id="bucket-eddie_new-list"></div>
+    </div>
   </div>
 </div>
 
-<div class="footer">Gerado por ClaudIA · Cloud Humans · Action Plan Map · Dados Metabase ultimos 30 dias</div>
+<!-- TAB: HOW IT WORKS -->
+<div class="tab-pane" id="tab-how">
+  <div style="padding:32px 48px;max-width:1100px;margin:0 auto">
+    <div class="how-wrap" id="how-content-main"></div>
+  </div>
+</div>
 
 </div><!-- /.content-wrap -->
-</div><!-- /.app -->
+
+</div><!-- /#app -->
 
 <script>
-// ====== Encrypted manifest (AES-256-GCM, PBKDF2-SHA256, 100k iters) ======
-const MANIFEST_ENC = "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";
+const MASTER_PASSWORD = "claudia-am-2026";
+let PROJECTS = [];
+let PLANS = {};
+let ACTION_TYPES_DB = null;
 
-async function decryptToString(b64, password){
-  const data = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
-  const salt = data.slice(0, 16);
-  const iv = data.slice(16, 28);
-  const ct = data.slice(28);
-  const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']);
-  const key = await crypto.subtle.deriveKey(
-    {name:'PBKDF2', salt, iterations:100000, hash:'SHA-256'},
-    km, {name:'AES-GCM', length:256}, false, ['decrypt']
-  );
-  const pt = await crypto.subtle.decrypt({name:'AES-GCM', iv}, key, ct);
-  return new TextDecoder().decode(pt);
+// Lock Screen Handler
+document.getElementById('lockForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const pwd = document.getElementById('pwd').value;
+  if(pwd === MASTER_PASSWORD || sessionStorage.getItem('unlocked')){
+    sessionStorage.setItem('unlocked','1');
+    document.querySelector('.lock').style.display='none';
+    document.getElementById('app').classList.add('unlocked');
+    await initApp();
+  } else {
+    document.getElementById('lockErr').classList.add('show');
+  }
+});
+
+if(sessionStorage.getItem('unlocked')){
+  document.querySelector('.lock').style.display='none';
+  document.getElementById('app').classList.add('unlocked');
+  initApp();
 }
 
-let tiers = {};
-let meta = {};
-let projects = [];
-let reportPasswords = {};
+// Helpers
+function hl(r){ return r<30?'critical':r<40?'attention':r<50?'reasonable':r<70?'good':'excellent'; }
+function hc(r){ return ({critical:'Critico',attention:'Atencao',reasonable:'Razoavel',good:'Bom',excellent:'Excelente'})[hl(r)]; }
+function fn(n){ return n>=1000?(n/1000).toFixed(1)+'k':String(n); }
 
-async function loadDataFromPassword(pwd) {
-  const text = await decryptToString(MANIFEST_ENC, pwd);
-  const data = JSON.parse(text);
-  hydrate(data);
-}
-
-function hydrate(data) {
+async function initApp(){
   try {
-    tiers = data.tiers || {};
-    meta = data.meta || {};
-    reportPasswords = data.report_passwords || {};
-    const allProjects = data.projects || [];
-    
-    // Update generated date
-    if (data.generated_date) {
-      const metaEls = document.querySelectorAll('.meta span');
-      metaEls.forEach(el => {
-        if (el.textContent.includes('Gerado em')) el.textContent = 'Gerado em ' + data.generated_date;
-      });
-    }
-    
-    // Filter to Active + Onboarding only
-    projects = allProjects.filter(p => {
-      const s = (meta[p.name]||{}).status||'';
-      return s === 'Active' || s === 'Onboarding' || s === '';
-    });
-    
-    init();
+    const [projRes, typesRes] = await Promise.all([
+      fetch('data/projects.json'),
+      fetch('data/action_types.json')
+    ]);
+    const projData = await projRes.json();
+    ACTION_TYPES_DB = await typesRes.json();
+    PROJECTS = projData.projects || [];
+
+    // Load plans for projects that have them
+    const planProjects = PROJECTS.filter(p => p.has_plan);
+    const planPromises = planProjects.map(p =>
+      fetch(`data/plans/${p.slug}.json`).then(r => r.ok ? r.json() : null).catch(() => null)
+    );
+    const planResults = await Promise.all(planPromises);
+    planProjects.forEach((p, i) => { if(planResults[i]) PLANS[p.slug] = planResults[i]; });
+
+    // Build UI
+    document.getElementById('data-updated').textContent = 'Atualizado em ' + (projData._updated || 'data desconhecida');
+    buildCards();
+    buildStackedBar();
+    buildOwnerFilter();
+    buildContentTab();
+    buildConfigsTab();
+    buildEddieTab();
+    loadActionTypes();
+    updateNavCounts();
+    navigate(routeFromHash());
   } catch(e) {
-    document.getElementById('card-grid').innerHTML = '<div style="text-align:center;padding:40px;color:#ef4444;font-size:16px">Erro ao carregar dados: ' + e.message + '</div>';
+    document.querySelector('.content-wrap').innerHTML = '<div style="padding:48px;text-align:center;color:#dc2626"><h2>Erro ao carregar dados</h2><p>'+e.message+'</p></div>';
   }
 }
 
-function hc(r){if(r<30)return'critical';if(r<40)return'attention';if(r<50)return'reasonable';if(r<70)return'good';return'excellent'}
-function hl(c){return{critical:'Critico',attention:'Atencao',reasonable:'Razoavel',good:'Bom',excellent:'Excelente'}[c]}
-function fn(n){if(n>=1000)return(n/1000).toFixed(1).replace(/\.0$/,'')+'k';return n.toString()}
-function pct(n,total){return total>0?((n/total)*100).toFixed(1)+'%':'0%'}
-function fni(n,total){return '+'+fn(n)+' ('+pct(n,total)+')'}
+function buildCards(){
+  const grid = document.getElementById('card-grid');
+  grid.innerHTML = '';
+  PROJECTS.forEach(p => {
+    const plan = PLANS[p.slug];
+    const hasPlan = p.has_plan && plan;
+    const card = document.createElement('div');
+    card.className = 'card' + (hasPlan ? ' has-plan' : '');
+    card.setAttribute('data-slug', p.slug);
+    card.setAttribute('data-health', hl(p.retention_current));
+    card.setAttribute('data-owner', p.cs_owner || '');
+    card.setAttribute('data-tier', p.tier || '');
+    card.setAttribute('data-status', hasPlan ? 'executed' : 'pending');
+    card.setAttribute('data-retention', p.retention_current);
+    card.setAttribute('data-volume', p.volume_total);
 
-function totalImpact(plan){return plan?plan.actions.reduce((s,a)=>s+(a.impact_est||0),0):0}
-function estGenericImpact(p){return Math.round(p.n2*0.2)}
-function impactLevel(p){if(p.retention<30&&p.total>1000)return 5;if(p.retention<30)return 4;if(p.retention<40&&p.total>3000)return 5;if(p.retention<40)return 3;if(p.retention<50&&p.total>5000)return 4;if(p.retention<50)return 3;return p.retention<70?2:1}
+    const statusBadge = hasPlan ? '<span class="card-status executed">Plano executado</span>' : '<span class="card-status pending">Plano pendente</span>';
 
-function potentialRetention(p){
-  if(!p.plan)return p.retention;
-  const imp = totalImpact(p.plan);
-  return Math.min(100, p.retention + (imp / p.total * 100));
-}
+    let metaChips = '';
+    if(p.cs_owner) metaChips += '<span class="meta-chip owner">' + p.cs_owner + '</span>';
+    if(p.tier) metaChips += '<span class="meta-chip tier">' + p.tier + '</span>';
+    metaChips += '<span class="meta-chip health-' + hl(p.retention_current) + '">' + hc(p.retention_current) + '</span>';
 
-function renderCard(p){
-  const cat=hc(p.retention);const m=meta[p.name]||{};const goal=m.goal||null;const owner=m.owner||'';const status=m.status||'';
-  const hasPlan=p.plan!==null;
-  const planImp=hasPlan?totalImpact(p.plan):0;
-  const potRet=potentialRetention(p);
+    let actionsHtml = '';
+    if(hasPlan && plan.actions && plan.actions.length > 0){
+      const top3 = plan.actions.slice(0, 3);
+      top3.forEach(a => {
+        const pri = (a.priority || 'P2').toLowerCase();
+        actionsHtml += '<div class="plan-action-item"><span class="plan-action-priority ' + pri + '">' + a.priority + '</span><span class="action-text">' + a.title + '</span><span class="action-impact">' + (a.impact_est || 0) + '</span></div>';
+      });
+      if(plan.actions.length > 3){
+        actionsHtml += '<button class="expand-btn" onclick="toggleDetails(this)">+ ' + (plan.actions.length - 3) + ' mais...</button>';
+      }
+    }
 
-  const tier=tiers[p.name]||'';
-  let chips='<span class="meta-chip health-'+cat+'">'+hl(cat)+'</span>';
-  if(tier)chips+='<span class="meta-chip tier">'+tier+'</span>';
-  if(goal&&goal>0)chips+='<span class="meta-chip goal">Meta: '+goal+'%</span>';
-  if(owner)chips+='<span class="meta-chip owner">'+owner.split(' ').slice(0,2).join(' ')+'</span>';
-  if(status==='Onboarding')chips+='<span class="meta-chip onboarding-status">Onboarding</span>';
+    const goalMarkerHtml = p.retention_goal ? '<div class="goal-marker" style="left:' + Math.min(p.retention_goal, 100) + '%"><span class="goal-marker-label">Goal: ' + p.retention_goal + '%</span></div>' : '';
 
-  let m2val,m2label,m2sub;
-  if(hasPlan){m2val=fni(planImp,p.total);m2label='N1 Potencial (acoes)';m2sub=planImp+' tickets adicionais/mes';}
-  else{m2val='\u2014';m2label='N1 Potencial';m2sub='executar /ch-action-plan';}
-
-  let goalMarker='',potMarker='';
-  if(goal&&goal>0&&goal<=100)goalMarker='<div class="goal-marker" style="left:'+goal+'%"><span class="goal-marker-label">'+goal+'%</span></div>';
-  if(hasPlan&&potRet>p.retention&&potRet<=100)potMarker='<div class="potential-marker" style="left:'+potRet.toFixed(1)+'%"><span class="potential-marker-label">'+potRet.toFixed(0)+'%</span></div>';
-
-  let legendItems='<span><span class="ret-dot current"></span>Atual</span>';
-  if(goal&&goal>0)legendItems+='<span><span class="ret-dot goal-color"></span>Meta</span>';
-  if(hasPlan)legendItems+='<span><span class="ret-dot pot-color"></span>Potencial</span>';
-
-  let planHtml='';
-  if(hasPlan){
-    const plan=p.plan;
-    let actHtml=plan.actions.map(a=>{
-      const impTag=a.impact_est?'<span class="action-impact">'+fni(a.impact_est,p.total)+'</span>':'';
-      return '<div class="plan-action-item"><span class="plan-action-priority '+a.priority.toLowerCase()+'">'+a.priority+'</span><span class="action-text">'+a.title+'</span>'+impTag+'</div>';
-    }).join('');
-    let detHtml=plan.actions.map(a=>{
-      const convPct=a.conversion_rate?Math.round(a.conversion_rate*100)+'%':'?';
-      const impDet=a.impact_tickets?'<div class="detail-impact">'+a.impact_tickets+' tickets impactados ('+pct(a.impact_tickets,p.n2)+' dos N2) x '+convPct+' conversao = +'+a.impact_est+' N1 ('+pct(a.impact_est,p.total)+' do total)</div>':'';
-      return '<h4><span class="plan-action-priority '+a.priority.toLowerCase()+'">'+a.priority+'</span>'+a.title+'</h4><p>'+a.desc+'</p>'+impDet;
-    }).join('');
-    const clientPwd=reportPasswords[p.name]||null;
-    const pwdBadge=clientPwd?'<span class="card-pwd-inline"><span class="pwd-label">Senha do relatório</span><span class="pwd-value">'+clientPwd+'</span><button type="button" class="pwd-copy" onclick="copyReportPwd(this,\''+clientPwd+'\')">Copiar</button></span>':'';
-    const reportBtn=plan.report_html?('<a href="'+plan.report_html+'" target="_blank" class="open-report-btn">Abrir relatorio completo</a>'+pwdBadge):'<span style="font-size:12px;color:#94a3b8;margin-top:12px;display:inline-block">Relatorio HTML ainda nao gerado</span>';
-    planHtml='<div class="card-plan-summary"><div style="font-size:12px;color:#475569;line-height:1.5;margin-bottom:8px">'+plan.summary+'</div><div class="plan-badges"><span class="plan-badge p0">P0: '+plan.actions.filter(a=>a.priority==='P0').length+'</span><span class="plan-badge p1">P1: '+plan.actions.filter(a=>a.priority==='P1').length+'</span><span class="plan-badge p2">P2: '+plan.actions.filter(a=>a.priority==='P2').length+'</span><span class="plan-badge impact">Impacto: '+plan.impact_retention+'</span></div><div class="plan-actions">'+actHtml+'</div><button class="expand-btn" onclick="toggleDetails(\''+p.name+'\')">Ver detalhes completos</button></div><div class="card-details" id="details-'+p.name+'">'+detHtml+'<div style="margin-top:12px">'+reportBtn+'</div></div>';
-  }else{
-    const imp=impactLevel(p);
-    const dots=Array.from({length:5},(_,i)=>'<span class="impact-dot'+(i<imp?' filled':'')+'"></span>').join('');
-    planHtml='<div class="impact-potential"><div class="impact-bar">'+dots+'<span class="impact-label">Potencial de impacto</span></div></div><div class="placeholder-msg">Plano de acao ainda nao executado</div>';
-  }
-
-  return '<div class="card'+(hasPlan?' has-plan':'')+'" data-name="'+p.name+'" data-retention="'+p.retention+'" data-volume="'+p.total+'" data-status="'+(hasPlan?'executed':'pending')+'" data-health="'+cat+'" data-impact="'+impactLevel(p)+'" data-owner="'+owner.toLowerCase()+'" data-tier="'+tier+'"><div class="card-header"><div><div class="card-name">'+p.name.replace(/_/g,' ')+'</div><div class="card-volume">'+fn(p.total)+' tickets/30d</div></div><span class="card-status '+(hasPlan?'executed':'pending')+'">'+(hasPlan?'&#10003; Executado':'Pendente')+'</span></div><div class="card-meta-row">'+chips+'</div><div class="card-metrics"><div class="metric"><div class="metric-label">Retencao N1</div><div class="metric-value '+cat+'">'+p.retention+'%</div><div class="metric-sub">'+fn(p.n1)+' de '+fn(p.total)+' tickets</div></div><div class="metric"><div class="metric-label">'+m2label+'</div><div class="metric-value" style="color:#4f46e5">'+m2val+'</div><div class="metric-sub">'+m2sub+'</div></div></div><div class="retention-bar-wrap"><div class="retention-bar-fill '+cat+'" style="width:'+Math.min(p.retention,100)+'%"></div>'+goalMarker+potMarker+'</div><div class="retention-labels"><span>'+p.retention+'% atual</span><div class="legend-inline">'+legendItems+'</div></div>'+planHtml+'<div class="card-footer"><span class="card-date">'+(hasPlan?'Executado: '+p.plan.date:'')+'</span></div></div>';
-}
-
-function toggleDetails(name){const el=document.getElementById('details-'+name);if(el)el.classList.toggle('open')}
-
-function applyFilters(){
-  const search=document.getElementById('search').value.toLowerCase();
-  const health=document.getElementById('filter-health').value;
-  const owner=document.getElementById('filter-owner').value;
-  const tierF=document.getElementById('filter-tier').value;
-  const status=document.getElementById('filter-status').value;
-  let visible=0;
-  document.querySelectorAll('.card').forEach(c=>{
-    let show=c.dataset.name.includes(search);
-    if(health!=='all')show=show&&c.dataset.health===health;
-    if(owner!=='all')show=show&&c.dataset.owner===owner.toLowerCase();
-    if(tierF!=='all')show=show&&c.dataset.tier===tierF;
-    if(status!=='all')show=show&&c.dataset.status===status;
-    c.style.display=show?'':'none';
-    if(show)visible++;
+    card.innerHTML = `
+      <div class="card-header">
+        <div><div class="card-name">${p.display_name}</div><div class="card-volume">${fn(p.volume_total)} tickets</div></div>
+        ${statusBadge}
+      </div>
+      <div class="card-meta-row">${metaChips}</div>
+      <div class="card-metrics">
+        <div class="metric"><div class="metric-label">Retencao N1</div><div class="metric-value ${hl(p.retention_current)}">${p.retention_current.toFixed(1)}%</div></div>
+        <div class="metric"><div class="metric-label">N2 / Total</div><div class="metric-value">${p.volume_n2} / ${p.volume_total}</div></div>
+      </div>
+      <div class="retention-bar-wrap">
+        <div class="retention-bar-fill ${hl(p.retention_current)}" style="width:${Math.min(p.retention_current, 100)}%"></div>
+        ${goalMarkerHtml}
+      </div>
+      <div class="retention-labels"><span>0%</span><div class="legend-inline"><span><span class="ret-dot current"></span>Atual</span><span><span class="ret-dot goal-color"></span>Meta</span></div><span>100%</span></div>
+      ${hasPlan ? '<div class="card-plan-summary"><div class="plan-badges"><span class="plan-badge p0">P0: ' + (plan.actions.filter(a => a.priority === 'P0').length) + '</span><span class="plan-badge p1">P1: ' + (plan.actions.filter(a => a.priority === 'P1').length) + '</span><span class="plan-badge p2">P2: ' + (plan.actions.filter(a => a.priority === 'P2').length) + '</span></div><div class="plan-actions">' + actionsHtml + '</div></div>' : ''}
+      ${p.report_password ? '<span class="card-pwd-inline"><span class="pwd-label">Relatorio</span><span class="pwd-value">' + p.report_password + '</span><button type="button" class="pwd-copy" onclick="copyPwd(this)">Copy</button></span>' : ''}
+      <div class="card-footer"><span class="card-date">${p.plan_date || 'Sem plano'}</span></div>
+    `;
+    grid.appendChild(card);
   });
-}
-function sortCards(){
-  const sort=document.getElementById('sort').value;
-  const grid=document.getElementById('card-grid');
-  const cards=Array.from(grid.children);
-  cards.sort((a,b)=>{
-    if(sort==='volume-desc')return parseFloat(b.dataset.volume)-parseFloat(a.dataset.volume);
-    if(sort==='volume-asc')return parseFloat(a.dataset.volume)-parseFloat(b.dataset.volume);
-    if(sort==='retention-asc')return parseFloat(a.dataset.retention)-parseFloat(b.dataset.retention);
-    if(sort==='retention-desc')return parseFloat(b.dataset.retention)-parseFloat(a.dataset.retention);
-    if(sort==='name-asc')return a.dataset.name.localeCompare(b.dataset.name);
-    if(sort==='impact-desc')return parseFloat(b.dataset.impact)-parseFloat(a.dataset.impact);
-    return 0;
-  });
-  cards.forEach(c=>grid.appendChild(c));
 }
 
 function buildStackedBar(){
-  const counts={critical:0,attention:0,reasonable:0,good:0,excellent:0};
-  projects.forEach(p=>counts[hc(p.retention)]++);
-  const total=projects.length;
-  const bar=document.getElementById('stacked-bar');
-  const segs=[{key:'critical',cls:'seg-critical',label:'Critico'},{key:'attention',cls:'seg-attention',label:'Atencao'},{key:'reasonable',cls:'seg-reasonable',label:'Razoavel'},{key:'good',cls:'seg-good',label:'Bom'},{key:'excellent',cls:'seg-excellent',label:'Excelente'}];
-  bar.innerHTML=segs.map(s=>{
-    const p2=(counts[s.key]/total*100);
-    if(!counts[s.key])return'';
-    return'<div class="stacked-segment '+s.cls+'" style="width:'+p2+'%" title="'+s.label+': '+counts[s.key]+' projetos ('+p2.toFixed(1)+'%)" onclick="document.getElementById(\'filter-health\').value=\''+s.key+'\';applyFilters()"><span class="seg-label">'+counts[s.key]+'</span></div>';
-  }).join('');
-  Object.keys(counts).forEach(k=>{document.getElementById('leg-'+k).textContent=counts[k]});
+  const counts = {critical: 0, attention: 0, reasonable: 0, good: 0, excellent: 0};
+  PROJECTS.forEach(p => counts[hl(p.retention_current)]++);
+
+  const total = PROJECTS.length;
+  const container = document.getElementById('stacked-bar');
+  container.innerHTML = '';
+
+  Object.entries(counts).forEach(([key, count]) => {
+    if(count > 0){
+      const pct = (count / total) * 100;
+      const seg = document.createElement('div');
+      seg.className = 'stacked-segment seg-' + key;
+      seg.style.width = pct + '%';
+      seg.innerHTML = '<span class="seg-label">' + count + '</span>';
+      container.appendChild(seg);
+    }
+  });
+
+  document.getElementById('leg-critical').textContent = counts.critical;
+  document.getElementById('leg-attention').textContent = counts.attention;
+  document.getElementById('leg-reasonable').textContent = counts.reasonable;
+  document.getElementById('leg-good').textContent = counts.good;
+  document.getElementById('leg-excellent').textContent = counts.excellent;
+
+  document.getElementById('project-count-meta').textContent = 'Total: ' + total + ' projetos';
 }
 
 function buildOwnerFilter(){
-  const owners=new Set();
-  projects.forEach(p=>{const o=(meta[p.name]||{}).owner;if(o)owners.add(o)});
-  const sel=document.getElementById('filter-owner');
-  Array.from(owners).sort().forEach(o=>{
-    const opt=document.createElement('option');opt.value=o;opt.textContent=o;sel.appendChild(opt);
+  const owners = new Set();
+  PROJECTS.forEach(p => { if(p.cs_owner) owners.add(p.cs_owner); });
+  const sel = document.getElementById('filter-owner');
+  const opts = Array.from(owners).sort();
+  opts.forEach(o => {
+    const opt = document.createElement('option');
+    opt.value = o;
+    opt.textContent = o;
+    sel.appendChild(opt);
   });
 }
 
-function init(){
-  document.getElementById('card-grid').innerHTML=projects.map(renderCard).join('');
-  document.getElementById('project-count-meta').textContent=projects.length+' projetos (Active + Onboarding)';
-  const ncd=document.getElementById('nav-count-dashboard');if(ncd)ncd.textContent=projects.length;
-  buildStackedBar();
-  buildOwnerFilter();
-  sortCards();
-  buildEddieTab();
-  loadActionTypes();
-  navigate(routeFromHash());
-}
-
-/* ====== Action Types registry (loads data/action_types.json) ====== */
-let ACTION_TYPES_DB = null;
-async function loadActionTypes(){
-  try{
-    const res = await fetch('data/action_types.json');
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    ACTION_TYPES_DB = await res.json();
-    renderHowTab();
-  }catch(e){
-    const host = document.getElementById('how-macros');
-    if(host) host.innerHTML = '<div class="eddie-empty">Não foi possível carregar <code>data/action_types.json</code>: '+e.message+'</div>';
-  }
-}
-function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function renderHowTab(){
-  if(!ACTION_TYPES_DB) return;
-  const host = document.getElementById('how-macros');
-  if(!host) return;
-  const macros = ACTION_TYPES_DB.macro_divisions || {};
-  const types = ACTION_TYPES_DB.action_types || [];
-  const order = ['content','configs','eddie'];
-  let html = '';
-  order.forEach(m=>{
-    const meta = macros[m]; if(!meta) return;
-    const list = types.filter(t=>t.macro===m);
-    html += '<div class="macro-block"><div class="macro-head">'+
-      '<div class="icn">'+(meta.icon||'•')+'</div>'+
-      '<div><h3>'+esc(meta.label)+'</h3><div class="desc">'+esc(meta.description)+'</div></div>'+
-      '<div class="count-badge">'+list.length+' types</div></div>'+
-      '<div class="type-list">';
-    list.forEach((t,i)=>{
-      const conv = Math.round((t.conversion_rate||0)*100);
-      const trig = (t.triggers||[]).map(x=>'<span>'+esc(x)+'</span>').join('');
-      const ref = t.reference?'<a class="ref-link" href="'+esc(t.reference)+'" target="_blank">Ver referência ↗</a>':'';
-      html += '<div class="type-item" data-idx="'+m+'-'+i+'">'+
-        '<div class="type-head" onclick="toggleType(this)">'+
-          '<span class="type-code">'+esc(t.type)+'</span>'+
-          '<span class="type-label">'+esc(t.label)+'</span>'+
-          '<span class="type-conv">conv. <strong>'+conv+'%</strong></span>'+
-          '<span class="arrow">▶</span>'+
-        '</div>'+
-        '<div class="type-body">'+
-          '<div class="row"><div class="k">Descrição</div><div class="v">'+esc(t.description)+'</div></div>'+
-          (trig?'<div class="row"><div class="k">Triggers — quando usar</div><div class="v triggers">'+trig+'</div></div>':'')+
-          (t.execution?'<div class="row"><div class="k">Onde executar</div><div class="v"><div class="exec">'+esc(t.execution)+'</div></div></div>':'')+
-          (t.example?'<div class="row"><div class="k">Exemplo</div><div class="v"><div class="example">'+esc(t.example)+'</div></div></div>':'')+
-          '<div class="row"><div class="k">Taxa de conversão padrão</div><div class="v">'+conv+'% — aplicada ao volume de tickets impactados para estimar a redução.</div></div>'+
-          ref+
-        '</div>'+
-      '</div>';
+function buildContentTab(){
+  const buckets = {content_new: [], content_improve: [], content_consolidate: []};
+  Object.keys(PLANS).forEach(slug => {
+    const plan = PLANS[slug];
+    const proj = PROJECTS.find(p => p.slug === slug);
+    if(!plan.actions) return;
+    plan.actions.forEach(action => {
+      const type = (action.type || '').toLowerCase();
+      if(type.startsWith('content_')) classifyContentAction(type, action, buckets, proj);
+      else if(!type) {
+        const txt = ((action.title || '') + ' ' + (action.desc || '')).toLowerCase();
+        if(/novo|criar/.test(txt)) classifyContentAction('content_new', action, buckets, proj);
+        else if(/melhor|reescrever|enriquecer/.test(txt)) classifyContentAction('content_improve', action, buckets, proj);
+        else classifyContentAction('content_consolidate', action, buckets, proj);
+      }
     });
-    html += '</div></div>';
   });
-  host.innerHTML = html;
-  const navCount = document.getElementById('nav-count-how');
-  if(navCount) navCount.textContent = types.length;
-}
-function toggleType(head){
-  const item = head.closest('.type-item');
-  if(item) item.classList.toggle('open');
-}
 
-function copyReportPwd(btn, pwd){
-  navigator.clipboard.writeText(pwd).then(()=>{
-    const orig=btn.textContent;
-    btn.textContent='Copiado';
-    btn.classList.add('copied');
-    setTimeout(()=>{btn.textContent=orig;btn.classList.remove('copied');},1400);
+  Object.entries(buckets).forEach(([bucket, actions]) => {
+    updateBucketDisplay(bucket, actions, 'content');
   });
 }
 
-const ROUTE_TITLES = {
-  'dashboard': ['Action Plan Map — Cloud Humans', 'Mapeamento de planos de acao potenciais em todos os projetos ativos, com impacto estimado em Retencao e CSAT. Cards verdes possuem plano executado.'],
-  'content': ['Base de conteúdo', 'Macro divisão — ações de criação, melhoria e consolidação de conteúdos da IDS geradas pelos planos de ação de cada cliente.'],
-  'configs': ['Configurações', 'Macro divisão — ações de ativação de features, ajuste de thresholds e correção de configurações do ClaudIA identificadas nos planos de ação.'],
-  'eddie': ['Eddies & Agêntico', 'Macro divisão — onde construir, transformar ou adaptar Eddies. Inclui Eddies tradicionais com erros, transformações para o modelo agêntico (Claudia Agêntica) e novos Eddies a partir de temas N2.'],
-  'how': ['Como funciona', 'Explicação da skill /ch-action-plan e catálogo completo dos action types canônicos (Base de Conteúdo, Configurações e Eddies & Agêntico).']
-};
-function navigate(name){
-  if(!ROUTE_TITLES[name]) name = 'dashboard';
-  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.sidebar-nav .nav-item').forEach(b=>b.classList.remove('active'));
-  const pane = document.getElementById('tab-'+name);
-  if(pane) pane.classList.add('active');
-  const nav = document.getElementById('nav-'+name);
-  if(nav) nav.classList.add('active');
-  const [t, s] = ROUTE_TITLES[name];
-  const ht = document.getElementById('header-title'); if(ht) ht.textContent = t;
-  const hs = document.getElementById('header-sub'); if(hs) hs.textContent = s;
-  const hash = '#/'+name;
-  if(location.hash !== hash){ history.replaceState(null, '', hash); }
-  window.scrollTo(0,0);
+function classifyContentAction(type, action, buckets, proj){
+  if(type === 'content_new' || type === 'content_n2_to_n1') buckets.content_new.push({...action, project: proj});
+  else if(type.includes('improve') || type.includes('clarif')) buckets.content_improve.push({...action, project: proj});
+  else buckets.content_consolidate.push({...action, project: proj});
 }
-function routeFromHash(){
-  const h = (location.hash||'').replace(/^#\/?/, '').split('?')[0];
-  return ROUTE_TITLES[h] ? h : 'dashboard';
-}
-window.addEventListener('hashchange', ()=>navigate(routeFromHash()));
-// Back-compat
-function switchTab(name){ navigate(name); }
 
-/* ====== Eddie tab builder ======
- * Classifier prefers an explicit action.type field set by the /ch-action-plan skill:
- *   - 'eddie_error'         → bucket 1 (fix existing Eddie with high error rate)
- *   - 'eddie_to_agentic'    → bucket 2 (transform traditional Eddie into agentic/tool-using model)
- *   - 'n2_to_eddie'         → bucket 3 (create new Eddie from high-volume N2 theme)
- * Falls back to keyword heuristics for legacy plans.
- * Agentic detection (bucket 2) requires evidence of real-time data / API / tool execution —
- * NOT mere config tweaks. Based on Claudia Agêntica doc: the distinction is the ability
- * to execute tools / API calls to fetch real-time or personalized data vs. answering
- * only from static KB content.
- */
-function classifyEddieAction(action){
-  // 1) Prefer explicit type from skill
-  const explicit = (action.type||'').toLowerCase();
+function buildConfigsTab(){
+  const buckets = {config_enable: [], config_tune: [], config_fix: []};
+  Object.keys(PLANS).forEach(slug => {
+    const plan = PLANS[slug];
+    const proj = PROJECTS.find(p => p.slug === slug);
+    if(!plan.actions) return;
+    plan.actions.forEach(action => {
+      const type = (action.type || '').toLowerCase();
+      if(type.startsWith('config_')) classifyConfigAction(type, action, buckets, proj);
+    });
+  });
+
+  Object.entries(buckets).forEach(([bucket, actions]) => {
+    updateBucketDisplay(bucket, actions, 'config');
+  });
+}
+
+function classifyConfigAction(type, action, buckets, proj){
+  if(type.includes('enable')) buckets.config_enable.push({...action, project: proj});
+  else if(type.includes('tune') || type.includes('clarif') || type.includes('frust') || type.includes('fup') || type.includes('handover')) buckets.config_tune.push({...action, project: proj});
+  else buckets.config_fix.push({...action, project: proj});
+}
+
+function buildEddieTab(){
+  const buckets = {eddie_error: [], eddie_conversational: [], eddie_new: []};
+  Object.keys(PLANS).forEach(slug => {
+    const plan = PLANS[slug];
+    const proj = PROJECTS.find(p => p.slug === slug);
+    if(!plan.actions) return;
+    plan.actions.forEach(action => {
+      const type = (action.type || '').toLowerCase();
+      const classified = classifyEddieAction(type, action);
+      if(classified === 'errors') buckets.eddie_error.push({...action, project: proj});
+      else if(classified === 'conversational') buckets.eddie_conversational.push({...action, project: proj});
+      else if(classified === 'n2toedge') buckets.eddie_new.push({...action, project: proj});
+    });
+  });
+
+  Object.entries(buckets).forEach(([bucket, actions]) => {
+    updateBucketDisplay(bucket, actions, 'eddie');
+  });
+}
+
+function classifyEddieAction(type, action){
+  const explicit = type.toLowerCase();
   if(explicit === 'eddie_error') return 'errors';
   if(explicit === 'eddie_to_agentic' || explicit === 'agentic_transformation') return 'conversational';
   if(explicit === 'n2_to_eddie' || explicit === 'new_eddie') return 'n2toedge';
-  // 2) Keyword fallback for legacy plans (without explicit action.type).
-  // IMPORTANT: Bucket 2 (agentic transformation) is intentionally NOT populated via heuristics.
-  // Identifying an Eddie as a candidate for the agentic model requires the primary evaluation
-  // of the /ch-action-plan skill (which knows the Claudia Agêntica definition: tool/API execution
-  // vs. static-KB answers). Keyword matching here produces false positives like config tweaks
-  // being mislabeled as transformations. Legacy plans therefore show bucket 2 empty until they
-  // are regenerated with the updated skill.
   const t = (((action.title||'')+' '+(action.desc||'')).toLowerCase());
   const isEddie = /\beddie\b|\bedges?\b|automatiz/.test(t);
   if(!isEddie) return null;
@@ -976,123 +876,207 @@ function classifyEddieAction(action){
   return 'errors';
 }
 
-function buildEddieTab(){
-  const buckets = {errors:[], conversational:[], n2toedge:[]};
-  let totalClients = new Set();
-  let totalActions = 0, totalImpact = 0, totalTickets = 0;
+function updateBucketDisplay(bucket, actions, tab){
+  const listId = 'bucket-' + bucket + '-list';
+  const countId = 'bucket-' + bucket + '-count';
+  const impactId = 'bucket-' + bucket + '-impact';
+  const ticketsId = 'bucket-' + bucket + '-tickets';
 
-  projects.forEach(p => {
-    if(!p.plan || !p.plan.actions) return;
-    p.plan.actions.forEach(a => {
-      const bucket = classifyEddieAction(a);
-      if(!bucket) return;
-      buckets[bucket].push({
-        client: p.name,
-        clientTotal: p.total,
-        clientRet: p.retention,
-        tier: tiers[p.name] || '',
-        priority: a.priority,
-        title: a.title,
-        desc: a.desc,
-        impact_est: a.impact_est || 0,
-        impact_tickets: a.impact_tickets || 0,
-        conversion_rate: a.conversion_rate || 0,
-        type: a.type || ''
-      });
-      totalClients.add(p.name);
-      totalActions++;
-      totalImpact += (a.impact_est || 0);
-      totalTickets += (a.impact_tickets || 0);
-    });
+  const listEl = document.getElementById(listId);
+  const countEl = document.getElementById(countId);
+  const impactEl = document.getElementById(impactId);
+  const ticketsEl = document.getElementById(ticketsId);
+
+  if(!listEl) return;
+
+  if(actions.length === 0){
+    listEl.innerHTML = '<div class="eddie-empty">Nenhuma acao de ' + tab + ' encontrada</div>';
+    if(countEl) countEl.textContent = '0';
+    if(impactEl) impactEl.textContent = '0';
+    if(ticketsEl) ticketsEl.textContent = '0';
+    return;
+  }
+
+  let totalImpact = 0, totalTickets = 0;
+  let html = '<table class="eddie-table"><thead><tr><th>Cliente</th><th>Acao</th><th>Prioridade</th><th>Tickets</th><th>Impacto</th><th>Saude</th></tr></thead><tbody>';
+
+  actions.forEach(a => {
+    const priority = (a.priority || 'P2').toLowerCase();
+    const impact = a.impact_est || 0;
+    const tickets = a.impact_tickets || 0;
+    const health = a.project ? hl(a.project.retention_current) : 'reasonable';
+    totalImpact += impact;
+    totalTickets += tickets;
+
+    html += `<tr>
+      <td class="eddie-client">${a.project ? a.project.display_name : 'N/A'}</td>
+      <td><div class="eddie-action-title">${a.title}</div><div class="eddie-action-desc">${a.desc || ''}</div></td>
+      <td><span class="eddie-priority ${priority}">${a.priority}</span></td>
+      <td class="eddie-tickets">${tickets}</td>
+      <td class="eddie-impact">${impact}</td>
+      <td><span class="meta-chip health-${health}">${hc(a.project ? a.project.retention_current : 50)}</span></td>
+    </tr>`;
   });
 
-  // Sort each bucket by impact_est desc
-  Object.keys(buckets).forEach(k => buckets[k].sort((a,b)=>b.impact_est - a.impact_est));
-
-  // Render
-  Object.keys(buckets).forEach(k => {
-    const rows = buckets[k];
-    const sumImpact = rows.reduce((s,r)=>s+r.impact_est, 0);
-    const sumTickets = rows.reduce((s,r)=>s+r.impact_tickets, 0);
-    document.getElementById('bucket-'+k+'-count').textContent = rows.length;
-    document.getElementById('bucket-'+k+'-impact').textContent = '+'+fn(sumImpact);
-    document.getElementById('bucket-'+k+'-tickets').textContent = fn(sumTickets);
-    const listEl = document.getElementById('bucket-'+k+'-list');
-    if(rows.length === 0){
-      listEl.innerHTML = '<div class="eddie-empty">Nenhuma ação mapeada neste bloco ainda. Rode /ch-action-plan para novos clientes.</div>';
-      return;
-    }
-    let html = '<table class="eddie-table"><thead><tr>'
-      + '<th style="width:18%">Cliente</th>'
-      + '<th style="width:11%">Saúde</th>'
-      + '<th>Ação</th>'
-      + '<th style="width:7%">Prio</th>'
-      + '<th style="width:13%">Impacto estimado</th>'
-      + '<th style="width:11%">Tickets impact.</th>'
-      + '</tr></thead><tbody>';
-    rows.forEach(r => {
-      const clientName = r.client.replace(/_/g,' ');
-      const tierChip = r.tier ? '<span class="chip">'+r.tier+'</span>' : '';
-      const convPct = r.conversion_rate ? Math.round(r.conversion_rate*100)+'%' : '—';
-      const healthCat = hc(r.clientRet);
-      const healthLabel = hl(healthCat);
-      html += '<tr>'
-        + '<td><div class="eddie-client">'+clientName+tierChip+'</div>'
-        +   '<div style="font-size:11px;color:#94a3b8;margin-top:2px">'+fn(r.clientTotal)+' tickets · '+r.clientRet+'% ret</div></td>'
-        + '<td><span class="meta-chip health-'+healthCat+'" style="white-space:nowrap">'+healthLabel+'</span></td>'
-        + '<td><div class="eddie-action-title">'+r.title+'</div><div class="eddie-action-desc">'+r.desc+'</div></td>'
-        + '<td><span class="eddie-priority '+r.priority.toLowerCase()+'">'+r.priority+'</span></td>'
-        + '<td><div class="eddie-impact">+'+fn(r.impact_est)+' N1</div><div class="eddie-tickets">'+pct(r.impact_est, r.clientTotal)+' do total</div></td>'
-        + '<td><div>'+fn(r.impact_tickets)+'</div><div class="eddie-tickets">conv. '+convPct+'</div></td>'
-        + '</tr>';
-    });
-    html += '</tbody></table>';
-    listEl.innerHTML = html;
-  });
-
-  // (eddie-total-* elements were removed with the old eddie-hero — guarded for safety)
-  ['eddie-total-actions','eddie-total-impact','eddie-total-tickets','eddie-total-clients'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el){
-      if(id==='eddie-total-actions')el.textContent=totalActions;
-      else if(id==='eddie-total-impact')el.textContent='+'+fn(totalImpact);
-      else if(id==='eddie-total-tickets')el.textContent=fn(totalTickets);
-      else if(id==='eddie-total-clients')el.textContent=totalClients.size;
-    }
-  });
-  const nce=document.getElementById('nav-count-eddie');if(nce)nce.textContent=totalActions;
+  html += '</tbody></table>';
+  listEl.innerHTML = html;
+  if(countEl) countEl.textContent = actions.length;
+  if(impactEl) impactEl.textContent = totalImpact;
+  if(ticketsEl) ticketsEl.textContent = totalTickets;
 }
 
-// ====== Lock screen handlers ======
-document.getElementById('lockForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const btn = document.getElementById('lockBtn');
-  const err = document.getElementById('lockErr');
-  const pwd = document.getElementById('pwd').value;
-  err.classList.remove('show');
-  btn.disabled = true; btn.textContent = 'Desbloqueando...';
-  try {
-    await loadDataFromPassword(pwd);
-    sessionStorage.setItem('ap_master', pwd);
-    document.getElementById('lock').style.display = 'none';
-    document.getElementById('app').classList.add('unlocked');
-  } catch(_) {
-    err.classList.add('show');
-    btn.disabled = false; btn.textContent = 'Desbloquear';
-  }
-});
+function loadActionTypes(){
+  if(!ACTION_TYPES_DB) return;
+  const wrap = document.getElementById('how-content-main');
+  wrap.innerHTML = '';
 
-// Auto-unlock if cached
-(async () => {
-  const cached = sessionStorage.getItem('ap_master') || sessionStorage.getItem('qe_master');
-  if (!cached) return;
-  try {
-    await loadDataFromPassword(cached);
-    sessionStorage.setItem('ap_master', cached);
-    document.getElementById('lock').style.display = 'none';
-    document.getElementById('app').classList.add('unlocked');
-  } catch(_){}
-})();
+  const intro = document.createElement('div');
+  intro.className = 'how-intro';
+  intro.innerHTML = `<h2>26 Tipos de Acao Canonica</h2><p>Cada acao gerada por um plano deve referenciar um dos tipos aqui listados. Clique para expandir e ver triggers, taxa de conversao e exemplo de execucao.</p><div class="steps"><div class="step"><span class="n">1</span><div><span class="t">Content</span><span class="d">Criar, melhorar, consolidar ou remover conteudos IDS</span></div></div><div class="step"><span class="n">2</span><div><span class="t">Configs</span><span class="d">Alterar flags, thresholds, prompts</span></div></div><div class="step"><span class="n">3</span><div><span class="t">Eddies</span><span class="d">Criar, transformar, corrigir ou descontinuar Eddies</span></div></div></div>`;
+  wrap.appendChild(intro);
+
+  Object.entries(ACTION_TYPES_DB.macro_divisions).forEach(([macro, macroData]) => {
+    const block = document.createElement('div');
+    block.className = 'macro-block';
+
+    const types = ACTION_TYPES_DB.action_types.filter(t => t.macro === macro);
+
+    block.innerHTML = `<div class="macro-head">
+      <div class="icn">${macroData.icon}</div>
+      <div><h3>${macroData.label}</h3><div class="desc">${macroData.description}</div></div>
+      <div class="count-badge">${types.length}</div>
+    </div><div class="type-list">` + types.map(t => `
+      <div class="type-item" onclick="this.classList.toggle('open')">
+        <div class="type-head">
+          <span class="type-code">${t.type}</span>
+          <span class="type-label">${t.label}</span>
+          <span class="type-conv"><strong>${(t.conversion_rate * 100).toFixed(0)}%</strong></span>
+          <span class="arrow">▶</span>
+        </div>
+        <div class="type-body">
+          <div class="row"><div class="k">Descricao</div><div class="v">${t.description}</div></div>
+          <div class="row"><div class="k">Triggers</div><div class="triggers">${(t.triggers || []).map(tr => '<span>' + tr + '</span>').join('')}</div></div>
+          <div class="row"><div class="k">Execucao</div><div class="exec">${t.execution}</div></div>
+          <div class="row"><div class="k">Exemplo</div><div class="example">${t.example}</div></div>
+        </div>
+      </div>
+    `).join('') + `</div>`;
+
+    wrap.appendChild(block);
+  });
+}
+
+function updateNavCounts(){
+  const contentActions = Object.values(PLANS).reduce((sum, p) => sum + (p.actions || []).filter(a => (a.type || '').startsWith('content_')).length, 0);
+  const configActions = Object.values(PLANS).reduce((sum, p) => sum + (p.actions || []).filter(a => (a.type || '').startsWith('config_')).length, 0);
+  const eddieActions = Object.values(PLANS).reduce((sum, p) => sum + (p.actions || []).filter(a => (a.type || '').startsWith('eddie_') || (a.type || '').startsWith('agentic_')).length, 0);
+
+  document.getElementById('nav-count-dashboard').textContent = PROJECTS.length;
+  document.getElementById('nav-count-content').textContent = contentActions || '—';
+  document.getElementById('nav-count-configs').textContent = configActions || '—';
+  document.getElementById('nav-count-eddie').textContent = eddieActions || '—';
+
+  document.getElementById('tab-count-dashboard').textContent = PROJECTS.length;
+  document.getElementById('tab-count-content').textContent = contentActions || '—';
+  document.getElementById('tab-count-configs').textContent = configActions || '—';
+  document.getElementById('tab-count-eddie').textContent = eddieActions || '—';
+}
+
+function applyFilters(){
+  const search = document.getElementById('search').value.toLowerCase();
+  const health = document.getElementById('filter-health').value;
+  const owner = document.getElementById('filter-owner').value;
+  const tier = document.getElementById('filter-tier').value;
+  const status = document.getElementById('filter-status').value;
+
+  document.querySelectorAll('.card').forEach(card => {
+    const slugMatch = !search || card.getAttribute('data-slug').includes(search);
+    const healthMatch = health === 'all' || card.getAttribute('data-health') === health;
+    const ownerMatch = owner === 'all' || card.getAttribute('data-owner') === owner;
+    const tierMatch = tier === 'all' || card.getAttribute('data-tier') === tier;
+    const statusMatch = status === 'all' || card.getAttribute('data-status') === status;
+
+    card.style.display = (slugMatch && healthMatch && ownerMatch && tierMatch && statusMatch) ? '' : 'none';
+  });
+}
+
+function sortCards(){
+  const sortBy = document.getElementById('sort').value;
+  const grid = document.getElementById('card-grid');
+  const cards = Array.from(grid.querySelectorAll('.card'));
+
+  cards.sort((a, b) => {
+    const aRet = parseFloat(a.getAttribute('data-retention'));
+    const bRet = parseFloat(b.getAttribute('data-retention'));
+    const aVol = parseInt(a.getAttribute('data-volume'));
+    const bVol = parseInt(b.getAttribute('data-volume'));
+
+    switch(sortBy){
+      case 'retention-asc': return aRet - bRet;
+      case 'retention-desc': return bRet - aRet;
+      case 'volume-desc': return bVol - aVol;
+      case 'volume-asc': return aVol - bVol;
+      case 'name-asc': return a.querySelector('.card-name').textContent.localeCompare(b.querySelector('.card-name').textContent);
+      default: return 0;
+    }
+  });
+
+  cards.forEach(card => grid.appendChild(card));
+}
+
+function toggleDetails(btn){
+  const card = btn.closest('.card');
+  const details = card.querySelector('.card-details');
+  if(!details) return;
+  details.classList.toggle('open');
+  btn.textContent = details.classList.contains('open') ? 'Mostrar menos' : '+ ' + (parseInt(btn.textContent) || 0) + ' mais...';
+}
+
+function copyPwd(btn){
+  const pwd = btn.previousElementSibling.textContent;
+  navigator.clipboard.writeText(pwd);
+  btn.classList.add('copied');
+  btn.textContent = 'Copiado!';
+  setTimeout(() => {
+    btn.classList.remove('copied');
+    btn.textContent = 'Copy';
+  }, 2000);
+}
+
+// Navigation
+const ROUTE_TITLES = {dashboard: 'Dashboard geral', content: 'Base de conteudo', configs: 'Configs', eddie: 'Eddies & Agentico', how: 'Como funciona'};
+
+function navigate(route){
+  const valid = Object.keys(ROUTE_TITLES);
+  if(!valid.includes(route)) route = 'dashboard';
+
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('nav-' + route).classList.add('active');
+
+  navigateTab(route);
+  window.location.hash = route;
+}
+
+function navigateTab(route){
+  const valid = Object.keys(ROUTE_TITLES);
+  if(!valid.includes(route)) route = 'dashboard';
+
+  document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + route).classList.add('active');
+
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => {
+    if(el.textContent.toLowerCase().includes(route) || (route === 'how' && el.textContent.includes('Como'))) el.classList.add('active');
+  });
+}
+
+function routeFromHash(){
+  const hash = window.location.hash.slice(1);
+  return Object.keys(ROUTE_TITLES).includes(hash) ? hash : 'dashboard';
+}
+
+window.addEventListener('hashchange', () => navigate(routeFromHash()));
 </script>
+
 </body>
 </html>

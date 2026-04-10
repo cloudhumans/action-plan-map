@@ -1,0 +1,71 @@
+{
+  "_schema": "action-plan-map/plan/v1",
+  "project_slug": "activesoft",
+  "date": "06/04/2026",
+  "summary": "Retencao critica em 22.8% com tendencia de queda (19.4% ultima semana). 87.4% dos N2 sao Eddie N2 response — principal alavanca. IDS robusta (2210 secoes) mas conversao muito baixa.",
+  "impact_retention": "+10 a +14pp",
+  "total_impact": null,
+  "n1_potential": null,
+  "executed_at": null,
+  "skill_version": null,
+  "actions": [
+    {
+      "priority": "P0",
+      "title": "Investigar altissimo volume de N2 por Eddie",
+      "desc": "4804 tickets (87.4% dos N2) por Eddie N2 response. Verificar top conteudos N2 usados — possiveis conversoes para N1.",
+      "impact_tickets": 4804,
+      "conversion_rate": 0.15,
+      "impact_est": 720
+    },
+    {
+      "priority": "P0",
+      "title": "Reduzir N2 por clarificacao",
+      "desc": "471 tickets (8.6% dos N2) por esgotamento de clarificacao.",
+      "impact_tickets": 471,
+      "conversion_rate": 0.35,
+      "impact_est": 165
+    },
+    {
+      "priority": "P1",
+      "title": "Expandir IDS com novos conteudos",
+      "desc": "44 tickets por no_relevant_content. 126 secoes INTERACTIVE que podem gerar confusao.",
+      "impact_tickets": 44,
+      "conversion_rate": 0.6,
+      "impact_est": 26
+    },
+    {
+      "priority": "P1",
+      "title": "Corrigir loop de secao repetida",
+      "desc": "58 tickets por limite de secao repetida.",
+      "impact_tickets": 58,
+      "conversion_rate": 0.4,
+      "impact_est": 23
+    },
+    {
+      "priority": "P1",
+      "title": "Corrigir erros no Eddie",
+      "desc": "33 tickets por erro na chamada ao Eddie.",
+      "impact_tickets": 33,
+      "conversion_rate": 0.6,
+      "impact_est": 20
+    },
+    {
+      "priority": "P2",
+      "title": "Revisar ProblemResolvedChecker",
+      "desc": "26 tickets por FUP negativo.",
+      "impact_tickets": 26,
+      "conversion_rate": 0.5,
+      "impact_est": 13
+    },
+    {
+      "priority": "P2",
+      "title": "Ativar Venda do Bot para transfer messages",
+      "desc": "22 tickets por transfer message enviada.",
+      "impact_tickets": 22,
+      "conversion_rate": 0.3,
+      "impact_est": 7
+    }
+  ],
+  "report_html": "reports/action-plan-activesoft.html",
+  "doubts_md": null
+}

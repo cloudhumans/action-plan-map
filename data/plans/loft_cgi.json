@@ -1,0 +1,55 @@
+{
+  "_schema": "action-plan-map/plan/v1",
+  "project_slug": "loft_cgi",
+  "date": "06/04/2026",
+  "summary": "IDS extremamente pequena (67 secoes para 1525 tickets/mes). 69.2% dos N2 sao Eddie N2 + 20.9% clarificacao — ambos reflexo de falta de conteudo. Meta oficial de 10% ja superada (retencao 34.8%).",
+  "impact_retention": "+10 a +14pp",
+  "total_impact": null,
+  "n1_potential": null,
+  "executed_at": null,
+  "skill_version": null,
+  "actions": [
+    {
+      "priority": "P0",
+      "title": "Criar conteudos para temas cobertos por Eddie N2",
+      "desc": "689 tickets (69.2%) Eddie N2. Com apenas 1 secao N2, quase tudo e decidido pelo Eddie sem conteudo real.",
+      "impact_tickets": 689,
+      "conversion_rate": 0.15,
+      "impact_est": 103
+    },
+    {
+      "priority": "P0",
+      "title": "Expandir IDS urgentemente",
+      "desc": "Apenas 67 secoes! 208 tickets por clarificacao (20.9%) e reflexo direto da falta de conteudo.",
+      "impact_tickets": 208,
+      "conversion_rate": 0.35,
+      "impact_est": 73
+    },
+    {
+      "priority": "P1",
+      "title": "Corrigir loop de secao repetida",
+      "desc": "69 tickets por secao repetida. Com apenas 65 N1 secoes, loops sao inevitaveis.",
+      "impact_tickets": 69,
+      "conversion_rate": 0.4,
+      "impact_est": 28
+    },
+    {
+      "priority": "P1",
+      "title": "Adicionar conteudos inexistentes",
+      "desc": "6 tickets por no_relevant_content.",
+      "impact_tickets": 6,
+      "conversion_rate": 0.6,
+      "impact_est": 4
+    },
+    {
+      "priority": "P2",
+      "title": "Revisar ProblemResolvedChecker",
+      "desc": "4 tickets por FUP negativo.",
+      "impact_tickets": 4,
+      "conversion_rate": 0.5,
+      "impact_est": 2
+    }
+  ],
+  "report_html": "reports/action-plan-loft_cgi.html",
+  "doubts_md": null
+}
