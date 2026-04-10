@@ -1149,10 +1149,10 @@ function updateNavCounts(){
   const configActions = Object.values(PLANS).reduce((sum, p) => sum + (p.actions || []).filter(a => (a.type || '').startsWith('config_')).length, 0);
   const eddieActions = Object.values(PLANS).reduce((sum, p) => sum + (p.actions || []).filter(a => (a.type || '').startsWith('eddie_') || (a.type || '').startsWith('agentic_')).length, 0);
 
-  document.getElementById('nav-count-dashboard').textContent = PROJECTS.length;
-  document.getElementById('nav-count-content').textContent = contentActions || '—';
-  document.getElementById('nav-count-configs').textContent = configActions || '—';
-  document.getElementById('nav-count-eddie').textContent = eddieActions || '—';
+  const ncd = document.getElementById('nav-count-dashboard'); if(ncd) ncd.textContent = PROJECTS.length;
+  const ncc = document.getElementById('nav-count-content'); if(ncc) ncc.textContent = contentActions || '—';
+  const ncg = document.getElementById('nav-count-configs'); if(ncg) ncg.textContent = configActions || '—';
+  const nce = document.getElementById('nav-count-eddie'); if(nce) nce.textContent = eddieActions || '—';
 
   const tcd = document.getElementById('tab-count-dashboard'); if(tcd) tcd.textContent = PROJECTS.length;
   const tcc = document.getElementById('tab-count-content'); if(tcc) tcc.textContent = contentActions || '—';
@@ -1245,7 +1245,7 @@ function navigate(route){
   if(!valid.includes(route)) route = 'dashboard';
 
   document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-  document.getElementById('nav-' + route).classList.add('active');
+  const navEl = document.getElementById('nav-' + route); if(navEl) navEl.classList.add('active');
 
   navigateTab(route);
   window.location.hash = route;
