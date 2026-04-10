@@ -561,56 +561,56 @@ body{background:#f5f6fa}
 <!-- TAB: CONFIGS -->
 <div class="tab-pane" id="tab-configs">
   <div class="eddie-body">
-    <div class="eddie-block" data-bucket="config_enable">
+    <div class="eddie-block" data-bucket="config_threshold_search">
       <div class="eddie-block-head">
         <div class="left">
           <div class="num">1</div>
           <div>
-            <h3>Ativar features esperadas</h3>
-            <div class="sub">Features que deveriam estar ligadas (clarification, FUP, more_interactions, etc.)</div>
+            <h3>Thresholds N1/N2 &amp; Busca de Conteudo</h3>
+            <div class="sub">Limiares de confianca, topK, multi-topic, transcricao de midia — impacto direto em retencao</div>
           </div>
         </div>
         <div class="totals">
-          <div class="total-chip"><span class="k">Acoes</span><span class="v" id="bucket-config_enable-count">0</span></div>
-          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-config_enable-impact">0</span></div>
-          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-config_enable-tickets">0</span></div>
+          <div class="total-chip"><span class="k">Acoes</span><span class="v" id="bucket-config_threshold_search-count">0</span></div>
+          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-config_threshold_search-impact">0</span></div>
+          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-config_threshold_search-tickets">0</span></div>
         </div>
       </div>
-      <div id="bucket-config_enable-list"></div>
+      <div id="bucket-config_threshold_search-list"></div>
     </div>
-    <div class="eddie-block" data-bucket="config_tune">
+    <div class="eddie-block" data-bucket="config_behavior">
       <div class="eddie-block-head">
         <div class="left">
           <div class="num">2</div>
           <div>
-            <h3>Ajustar thresholds e parametros</h3>
-            <div class="sub">Modificar valores numericos que controlam comportamento</div>
+            <h3>Classificacao, Prompt &amp; Tom</h3>
+            <div class="sub">Roteamento de intencao, modulos de prompt, tom de voz, CSAT</div>
           </div>
         </div>
         <div class="totals">
-          <div class="total-chip"><span class="k">Acoes</span><span class="v" id="bucket-config_tune-count">0</span></div>
-          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-config_tune-impact">0</span></div>
-          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-config_tune-tickets">0</span></div>
+          <div class="total-chip"><span class="k">Acoes</span><span class="v" id="bucket-config_behavior-count">0</span></div>
+          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-config_behavior-impact">0</span></div>
+          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-config_behavior-tickets">0</span></div>
         </div>
       </div>
-      <div id="bucket-config_tune-list"></div>
+      <div id="bucket-config_behavior-list"></div>
     </div>
-    <div class="eddie-block" data-bucket="config_fix">
+    <div class="eddie-block" data-bucket="config_ops">
       <div class="eddie-block-head">
         <div class="left">
           <div class="num">3</div>
           <div>
-            <h3>Corrigir configuracoes</h3>
-            <div class="sub">Problemas em features ou parametros que estao ativos</div>
+            <h3>Resolucao, Handover &amp; Modelo</h3>
+            <div class="sub">FUP, regras de transferencia, frustracao, modelo LLM, correcoes</div>
           </div>
         </div>
         <div class="totals">
-          <div class="total-chip"><span class="k">Acoes</span><span class="v" id="bucket-config_fix-count">0</span></div>
-          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-config_fix-impact">0</span></div>
-          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-config_fix-tickets">0</span></div>
+          <div class="total-chip"><span class="k">Acoes</span><span class="v" id="bucket-config_ops-count">0</span></div>
+          <div class="total-chip"><span class="k">Impacto</span><span class="v impact" id="bucket-config_ops-impact">0</span></div>
+          <div class="total-chip"><span class="k">Tickets</span><span class="v" id="bucket-config_ops-tickets">0</span></div>
         </div>
       </div>
-      <div id="bucket-config_fix-list"></div>
+      <div id="bucket-config_ops-list"></div>
     </div>
   </div>
 </div>
@@ -928,7 +928,7 @@ function classifyContentAction(type, action, buckets, proj){
 }
 
 function buildConfigsTab(){
-  const buckets = {config_enable: [], config_tune: [], config_fix: []};
+  const buckets = {config_threshold_search: [], config_behavior: [], config_ops: []};
   Object.keys(PLANS).forEach(slug => {
     const plan = PLANS[slug];
     const proj = PROJECTS.find(p => p.slug === slug);
@@ -945,9 +945,26 @@ function buildConfigsTab(){
 }
 
 function classifyConfigAction(type, action, buckets, proj){
-  if(type.includes('enable')) buckets.config_enable.push({...action, project: proj});
-  else if(type.includes('tune') || type.includes('clarif') || type.includes('frust') || type.includes('fup') || type.includes('handover')) buckets.config_tune.push({...action, project: proj});
-  else buckets.config_fix.push({...action, project: proj});
+  // Domain-based classification (v3 taxonomy)
+  if(type === 'config_threshold' || type === 'config_search') {
+    buckets.config_threshold_search.push({...action, project: proj});
+  } else if(type === 'config_classification' || type === 'config_prompt' || type === 'config_tone') {
+    buckets.config_behavior.push({...action, project: proj});
+  } else if(type === 'config_resolution' || type === 'config_handover' || type === 'config_model' || type === 'config_fix') {
+    buckets.config_ops.push({...action, project: proj});
+  }
+  // Backwards compatibility: old types map to new buckets
+  else if(type === 'config_enable' || type === 'config_disable') {
+    buckets.config_threshold_search.push({...action, project: proj});
+  } else if(type === 'config_tune') {
+    buckets.config_threshold_search.push({...action, project: proj});
+  } else if(type === 'config_flowprompt' || type === 'config_clarification') {
+    buckets.config_behavior.push({...action, project: proj});
+  } else if(type === 'config_fup' || type === 'config_frustration') {
+    buckets.config_ops.push({...action, project: proj});
+  } else {
+    buckets.config_ops.push({...action, project: proj});
+  }
 }
 
 function buildEddieTab(){
@@ -1157,7 +1174,7 @@ function loadActionTypes(){
       <div class="funnel-layer-label">
         <div class="funnel-layer-num l3">3</div>
         <div><div class="funnel-layer-title">Plano de Acao Detalhado</div>
-        <div class="funnel-layer-sub">26 action types canonicos priorizados (P0→P2) com impacto estimado em tickets</div></div>
+        <div class="funnel-layer-sub">25 action types canonicos priorizados (P0→P2) com impacto estimado em tickets</div></div>
       </div>
 
       <div class="arch-impact">Cada acao recebe obrigatoriamente um <code style="background:rgba(249,115,22,.15);padding:2px 6px;border-radius:4px;color:#FDBA74">action.type</code> canonico. O type determina a classificacao no dashboard (aba Conteudo, Configs ou Eddie), a taxa de conversao padrao e permite analise cross-cliente. Fonte: <code style="color:#8f93a8">data/action_types.json</code></div>
@@ -1180,12 +1197,11 @@ function loadActionTypes(){
           </div>
         </div>
         <div class="output-card">
-          <div class="output-card-head oc-configs">⚙️ Configuracoes · 10 tipos</div>
+          <div class="output-card-head oc-configs">⚙️ Configuracoes · 9 tipos</div>
           <div class="output-types">
-            <span class="output-type">config_enable</span><span class="output-type">config_disable</span><span class="output-type">config_tune</span>
-            <span class="output-type">config_fix</span><span class="output-type">config_flowprompt</span><span class="output-type">config_tone</span>
-            <span class="output-type">config_fup</span><span class="output-type">config_clarification</span><span class="output-type">config_frustration</span>
-            <span class="output-type">config_handover</span>
+            <span class="output-type">config_threshold</span><span class="output-type">config_search</span><span class="output-type">config_classification</span>
+            <span class="output-type">config_prompt</span><span class="output-type">config_tone</span><span class="output-type">config_resolution</span>
+            <span class="output-type">config_handover</span><span class="output-type">config_model</span><span class="output-type">config_fix</span>
           </div>
         </div>
       </div>
@@ -1197,7 +1213,7 @@ function loadActionTypes(){
   // ─── 26 ACTION TYPES DETAIL ───
   const intro = document.createElement('div');
   intro.className = 'how-intro';
-  intro.innerHTML = `<h2>26 Tipos de Acao Canonica</h2><p>Cada acao gerada por um plano deve referenciar um dos tipos abaixo. Clique para expandir e ver triggers, taxa de conversao e exemplo de execucao.</p><div class="steps"><div class="step"><span class="n">1</span><div><span class="t">Content</span><span class="d">Criar, melhorar, consolidar ou remover conteudos IDS</span></div></div><div class="step"><span class="n">2</span><div><span class="t">Configs</span><span class="d">Alterar flags, thresholds, prompts</span></div></div><div class="step"><span class="n">3</span><div><span class="t">Eddies</span><span class="d">Criar, transformar, corrigir ou descontinuar Eddies</span></div></div></div>`;
+  intro.innerHTML = `<h2>25 Tipos de Acao Canonica</h2><p>Cada acao gerada por um plano deve referenciar um dos tipos abaixo. Clique para expandir e ver triggers, taxa de conversao e exemplo de execucao.</p><div class="steps"><div class="step"><span class="n">1</span><div><span class="t">Content</span><span class="d">Criar, melhorar, consolidar ou remover conteudos IDS</span></div></div><div class="step"><span class="n">2</span><div><span class="t">Configs</span><span class="d">Alterar flags, thresholds, prompts</span></div></div><div class="step"><span class="n">3</span><div><span class="t">Eddies</span><span class="d">Criar, transformar, corrigir ou descontinuar Eddies</span></div></div></div>`;
   wrap.appendChild(intro);
 
   Object.entries(ACTION_TYPES_DB.macro_divisions).forEach(([macro, macroData]) => {
