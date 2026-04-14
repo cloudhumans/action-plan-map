@@ -1,0 +1,96 @@
+{
+  "_schema": "action-plan-map/plan/v1",
+  "project_slug": "reservaink_cc",
+  "date": "14/04/2026",
+  "summary": "Retenção crítica de 33% e em queda (41%→28% nas últimas 5 semanas). Principal problema: 46.7% dos N2 são por transfer message + multiprompt handover (1.195 tickets/mês), indicando oportunidade massiva com Venda do Bot. Conteúdo 'Problema com entrega' (682 tickets, 0% retenção) é o maior dreno da IDS. GenCX excelente (1.1%) mostra que a qualidade das respostas é boa — o problema é estrutural.",
+  "impact_retention": "+10 a +16pp",
+  "total_impact": 620,
+  "n1_potential": 1895,
+  "executed_at": "2026-04-14",
+  "skill_version": "v5",
+  "actions": [
+    {
+      "priority": "P0",
+      "title": "Ativar Venda do Bot (FORWARD_TO_HUMAN_CHECK) para transfer messages",
+      "desc": "34.73% dos N2 (888 tickets/mês) são por detecção de mensagem de transferência — o cliente pede humano e a ClaudIA transfere imediatamente. Configurar FORWARD_TO_HUMAN_CHECK + MULTIPROMPT para tentar reter antes de escalar. A ClaudIA deve oferecer ajuda específica antes de transferir.",
+      "impact_tickets": 888,
+      "conversion_rate": 0.30,
+      "impact_est": 266,
+      "type": "config_handover"
+    },
+    {
+      "priority": "P0",
+      "title": "Quebrar conteúdo 'Problema com entrega' em sub-conteúdos específicos",
+      "desc": "Conteúdo ID 69b9d2b741420d1717d7a7ea tem 682 usos e 0% de retenção — é um conteúdo genérico que funciona como pura transferência. Remover e criar 5-8 conteúdos N1 específicos: atraso de entrega, pedido não recebido, rastreamento parado, entrega danificada, entrega errada, acareação, devolução ao remetente.",
+      "impact_tickets": 682,
+      "conversion_rate": 0.35,
+      "impact_est": 239,
+      "type": "content_split"
+    },
+    {
+      "priority": "P0",
+      "title": "Reclassificar 'Abrir um ticket de suporte' para N2",
+      "desc": "Conteúdo ID 69b9d2c641420d1717d7a7f7 tem 314 usos e apenas 26% de retenção. É um meta-conteúdo de criação de ticket, não de resolução. Marcado como N1, compete com conteúdos que realmente resolvem. Mover para N2 para que tickets encontrem conteúdos mais resolutivos.",
+      "impact_tickets": 232,
+      "conversion_rate": 0.25,
+      "impact_est": 58,
+      "type": "content_reclassify"
+    },
+    {
+      "priority": "P1",
+      "title": "Ativar More User Interactions (OFF → ON)",
+      "desc": "moreUserInteractionsEnabled está OFF. Ativar melhora o entendimento em conversas com múltiplas perguntas e contexto, especialmente relevante para o perfil de atendimento do reservaink_cc (trocas, entregas, pedidos que envolvem múltiplas etapas). CloudBlocks → contentSearchConfiguration → moreUserInteractionsEnabled: true.",
+      "impact_tickets": 200,
+      "conversion_rate": 0.50,
+      "impact_est": 100,
+      "type": "config_search"
+    },
+    {
+      "priority": "P1",
+      "title": "Aumentar maxNoValidContentAttempts de 1 para 3",
+      "desc": "Atualmente a ClaudIA desiste após 1 tentativa sem conteúdo válido — transfere imediatamente. Aumentar para 3 dá mais chances de encontrar conteúdo relevante. Impacta diretamente os 220 N2 por 'No relevant content found' (8.6% dos N2). CloudBlocks → classificationsettings → maxnovalidcontentattempts: 3.",
+      "impact_tickets": 220,
+      "conversion_rate": 0.45,
+      "impact_est": 99,
+      "type": "config_classification"
+    },
+    {
+      "priority": "P1",
+      "title": "Melhorar multiprompt de Venda do Bot existente",
+      "desc": "307 tickets/mês (12%) passam pelo multiprompt handover mas ainda são transferidos. Revisar e otimizar o prompt do MULTIPROMPT FlowPrompt para ser mais persuasivo e oferecer alternativas concretas antes de escalar. Analisar os temas mais frequentes de multiprompt handover para personalizar as respostas de retenção.",
+      "impact_tickets": 307,
+      "conversion_rate": 0.25,
+      "impact_est": 77,
+      "type": "config_handover"
+    },
+    {
+      "priority": "P2",
+      "title": "Criar 5 conteúdos para gaps de 'No relevant content'",
+      "desc": "Sub-agente Content Gap identificou 15 clusters. Top 5 para criar: (1) Guia de Troubleshooting Técnico, (2) Segurança e Golpes WhatsApp, (3) Processo de Produção e Prazos, (4) Configurações Básicas de Loja, (5) O que é Acareação. Juntos cobrem ~55 conversas/mês.",
+      "impact_tickets": 55,
+      "conversion_rate": 0.60,
+      "impact_est": 33,
+      "type": "content_new"
+    },
+    {
+      "priority": "P2",
+      "title": "Reescrever conteúdo 'Alterar endereço de entrega'",
+      "desc": "ID 69b9d2bd63f45038d786ca4a — 76 tickets, 29% retenção. Muito genérico, falta passo-a-passo por transportadora (Loggi vs outras) e distinção entre pedido em produção vs expedido. Reescrever com instruções específicas por cenário.",
+      "impact_tickets": 54,
+      "conversion_rate": 0.25,
+      "impact_est": 14,
+      "type": "content_improve"
+    },
+    {
+      "priority": "P2",
+      "title": "Ativar Clarificação para perguntas ambíguas",
+      "desc": "clarificationsettings__enabled está NULL (desativado). Ativar permite que a ClaudIA peça esclarecimento ao invés de transferir quando a pergunta é ambígua. Especialmente útil com o max_no_valid_content aumentado para 3.",
+      "impact_tickets": 50,
+      "conversion_rate": 0.35,
+      "impact_est": 18,
+      "type": "config_classification"
+    }
+  ],
+  "report_html": "reports/action-plan-reservaink_cc.html",
+  "doubts_md": "doubts/doubts-reservaink_cc.md"
+}

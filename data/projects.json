@@ -435,6 +435,22 @@
       "report_password": null
     },
     {
+      "slug": "reservaink_cc",
+      "display_name": "Reservaink CC",
+      "tier": "Tier 2",
+      "cs_owner": "Bruna Chaves",
+      "status": "Active",
+      "retention_goal": 50,
+      "retention_current": 33.3,
+      "volume_total": 3832,
+      "volume_n1": 1275,
+      "volume_n2": 2557,
+      "health": "critical",
+      "has_plan": true,
+      "plan_date": "2026-04-14",
+      "report_password": null
+    },
+    {
       "slug": "rocketseat",
       "display_name": "Rocketseat",
       "tier": "Tier 3",
