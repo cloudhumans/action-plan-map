@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IDS Quality Eval — Reservaink CC | Cloud Humans</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f6fa;color:#1a1a2e}
+
+.header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:40px 48px 36px}
+.header h1{font-size:32px;font-weight:700;margin-bottom:8px;letter-spacing:-.5px}
+.header .subtitle{font-size:15px;opacity:.75;line-height:1.5;max-width:900px}
+.header .meta{margin-top:16px;display:flex;gap:24px;font-size:13px;opacity:.6;flex-wrap:wrap}
+.header-badges{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+.header-badge{display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;backdrop-filter:blur(10px)}
+.header-badge.tier{background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.4);color:#e0e7ff}
+.header-badge.health-critical{background:rgba(239,68,68,.2);border:1px solid rgba(239,68,68,.4);color:#fecaca}
+.header-badge.health-good{background:rgba(34,197,94,.2);border:1px solid rgba(34,197,94,.4);color:#d1fae5}
+
+.main{padding:32px 48px;max-width:1400px;margin:0 auto}
+
+section{background:#fff;border-radius:12px;margin-bottom:24px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}
+section h2{font-size:18px;font-weight:700;color:#1e293b;padding:20px 24px 12px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:8px}
+section h3{font-size:14px;font-weight:700;color:#334155;margin:16px 0 12px}
+.section-content{padding:20px 24px}
+
+.metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:12px 0}
+.metric-card{padding:16px;background:#f8fafc;border-radius:8px;border-left:4px solid #7c3aed;text-align:center}
+.metric-card.critical{border-left-color:#dc2626;background:rgba(254,202,202,.1)}
+.metric-card.attention{border-left-color:#d97706;background:rgba(254,243,199,.1)}
+.metric-card.healthy{border-left-color:#059669;background:rgba(209,250,229,.1)}
+.metric-card .value{font-size:28px;font-weight:800;color:#1e293b;margin-bottom:4px}
+.metric-card.critical .value{color:#dc2626}
+.metric-card.attention .value{color:#d97706}
+.metric-card.healthy .value{color:#059669}
+.metric-card .label{font-size:12px;color:#475569;font-weight:600}
+
+.content-table{width:100%;border-collapse:collapse;font-size:13px}
+.content-table th{background:#f8fafc;padding:12px 16px;text-align:left;font-weight:700;color:#334155;border-bottom:2px solid #e2e8f0;font-size:12px}
+.content-table td{padding:12px 16px;border-bottom:1px solid #e8eaf0}
+.content-table tr:last-child td{border-bottom:none}
+.content-table .title-cell{font-weight:600;color:#1e293b;max-width:300px}
+.content-table .id-cell{color:#94a3b8;font-size:11px;font-family:'Courier New',monospace}
+
+.score-bar{display:inline-flex;gap:2px;height:20px;align-items:center}
+.score-pip{width:16px;height:16px;border-radius:3px;background:#e2e8f0;display:inline-block}
+.score-pip.filled{background:#7c3aed}
+.score-pip.filled.medium{background:#d97706}
+.score-pip.filled.low{background:#dc2626}
+
+.badge{display:inline-block;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.badge.remove{background:rgba(220,38,38,.15);color:#991b1b;border:1px solid rgba(220,38,38,.3)}
+.badge.split{background:rgba(168,85,247,.15);color:#6b21a8;border:1px solid rgba(168,85,247,.3)}
+.badge.reclassify{background:rgba(251,146,60,.15);color:#92400e;border:1px solid rgba(251,146,60,.3)}
+.badge.rewrite{background:rgba(59,130,246,.15);color:#1e40af;border:1px solid rgba(59,130,246,.3)}
+.badge.break{background:rgba(168,85,247,.15);color:#6b21a8;border:1px solid rgba(168,85,247,.3)}
+.badge.consolidate{background:rgba(34,197,94,.15);color:#166534;border:1px solid rgba(34,197,94,.3)}
+.badge.improve{background:rgba(100,116,139,.15);color:#1e293b;border:1px solid rgba(100,116,139,.3)}
+
+.details-section{margin:16px 0}
+.details-section summary{cursor:pointer;padding:12px 16px;background:#f8fafc;border-radius:8px;font-weight:600;color:#1e293b;user-select:none;display:flex;align-items:center;gap:8px;transition:background .2s}
+.details-section summary:hover{background:#f1f5f9}
+.details-section summary::marker{color:#7c3aed;font-weight:700}
+.details-section[open] summary{background:#f0f9ff;border-bottom:1px solid #e2e8f0}
+.details-content{padding:12px 16px 16px}
+.details-content .problem{background:#fef2f2;padding:12px;border-radius:6px;border-left:3px solid #dc2626;margin:8px 0;font-size:12px;color:#475569;line-height:1.6}
+.details-content .action{background:#f0fdf4;padding:12px;border-radius:6px;border-left:3px solid #059669;margin:8px 0;font-size:12px;color:#475569;line-height:1.6}
+.details-content .suggested{background:#eff6ff;padding:12px;border-radius:6px;border-left:3px solid #2563eb;margin:8px 0;font-size:12px;color:#475569;line-height:1.6;font-family:'Courier New',monospace;white-space:pre-wrap;word-break:break-word}
+.details-content h4{font-size:12px;font-weight:700;color:#334155;margin-top:10px;margin-bottom:4px}
+
+.chart-container{margin:16px 0;padding:16px;background:#f8fafc;border-radius:8px}
+.chart-bars{display:flex;gap:8px;align-items:flex-end;height:200px;margin:16px 0;overflow-x:auto;padding:16px 0}
+.bar{flex:0 0 auto;border-radius:4px 4px 0 0;position:relative;min-width:50px;background:linear-gradient(180deg,#7c3aed,#5b21b6);transition:opacity .2s}
+.bar:hover{opacity:.8}
+.bar-label{position:absolute;bottom:-24px;font-size:10px;color:#94a3b8;width:100%;text-align:center;white-space:nowrap;transform:rotate(-45deg);transform-origin:left top;margin-left:16px}
+.bar-value{position:absolute;top:-22px;font-size:11px;color:#1e293b;font-weight:700;width:100%;text-align:center}
+
+.impact-table{width:100%;border-collapse:collapse;font-size:13px}
+.impact-table th{background:#f8fafc;padding:12px 16px;text-align:left;font-weight:700;color:#334155;border-bottom:2px solid #e2e8f0}
+.impact-table td{padding:12px 16px;border-bottom:1px solid #e8eaf0}
+.impact-table tr:last-child td{border-bottom:none}
+.impact-table .impact-value{font-weight:700;color:#1e293b}
+.impact-table .impact-positive{color:#059669;font-weight:700}
+
+.footer{text-align:center;padding:28px 48px;font-size:12px;color:#94a3b8;border-top:1px solid #e8eaf0;margin-top:32px}
+.footer a{color:#6366f1;text-decoration:none;font-weight:600}
+.footer a:hover{text-decoration:underline}
+
+@media(max-width:900px){
+  .header,.main,.footer{padding-left:20px;padding-right:20px}
+  .header h1{font-size:24px}
+  .content-table,.impact-table{font-size:12px}
+  .metrics-grid{grid-template-columns:1fr}
+  .chart-bars{height:150px}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>IDS Quality Eval — Reservaink CC</h1>
+  <p class="subtitle">Avaliacao qualitativa e quantitativa de 8 conteudos N1 problematicos identificados na analise de performance. Texto sugerido para reescritas, dados de impacto estimado e recomendacoes de acao para cada item.</p>
+  <div class="meta">
+    <span>Projeto: reservaink_cc</span>
+    <span>Periodo: 15/03/2026 a 14/04/2026</span>
+    <span>Dados atualizados: 14/04/2026</span>
+  </div>
+  <div class="header-badges">
+    <span class="header-badge health-critical">Status: Critico</span>
+    <span class="header-badge tier">Tier 2</span>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- RESUMO EXECUTIVO -->
+<section>
+  <h2>Resumo Executivo</h2>
+  <div class="section-content">
+    <p style="font-size:14px;line-height:1.7;color:#334155;margin-bottom:16px">
+      Identificados <strong>8 conteudos N1 criticos</strong> que prejudicam a retenção N1 e alimentam o fluxo para N2. Esses conteudos respondem por <strong>1.238 tickets no período</strong> (32% do volume N1), com taxa de retenção média de <strong>26%</strong> (vs. 50%+ em conteudos saudáveis). <strong>965 tickets sao recuperáveis</strong> com ajustes de reescrita, split e reclassificação, estimando melhoria de <strong>+6 a +7 pontos percentuais</strong> na taxa de retenção N1.
+    </p>
+    <div class="metrics-grid">
+      <div class="metric-card critical">
+        <div class="value">8</div>
+        <div class="label">Conteudos Problematicos</div>
+      </div>
+      <div class="metric-card critical">
+        <div class="value">26%</div>
+        <div class="label">Retenção Média</div>
+      </div>
+      <div class="metric-card attention">
+        <div class="value">1.238</div>
+        <div class="label">Tickets Afetados</div>
+      </div>
+      <div class="metric-card healthy">
+        <div class="value">+273</div>
+        <div class="label">N1 Recuperáveis/mês</div>
+      </div>
+      <div class="metric-card healthy">
+        <div class="value">+6pp</div>
+        <div class="label">Melhoria Retenção</div>
+      </div>
+      <div class="metric-card healthy">
+        <div class="value">1.1%</div>
+        <div class="label">GenCX (Saudável)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- METRICAS GERAIS -->
+<section>
+  <h2>Metricas do Projeto</h2>
+  <div class="section-content">
+    <table class="content-table">
+      <thead><tr><th>Dimensao</th><th>Valor</th><th>Observacao</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Periodo Avaliado</strong></td><td>15/03/2026 a 14/04/2026</td><td>30 dias</td></tr>
+        <tr><td><strong>Retenção N1 Atual</strong></td><td style="color:#dc2626;font-weight:700">33.3%</td><td>Critica</td></tr>
+        <tr><td><strong>Volume 30 dias</strong></td><td>3.832 tickets</td><td>N1 + N2</td></tr>
+        <tr><td><strong>GenCX Ruim</strong></td><td style="color:#059669;font-weight:700">1.1%</td><td>Saudável — qualidade nao e o problema</td></tr>
+        <tr><td><strong>Conteudos N1 Totais</strong></td><td>~150+</td><td>Base estimada</td></tr>
+        <tr><td><strong>Conteudos Criticos Identificados</strong></td><td>8 conteudos</td><td>Foco desta analise</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- TABELA PRINCIPAL -->
+<section>
+  <h2>Conteudos Problematicos Identificados</h2>
+  <div class="section-content">
+    <table class="content-table">
+      <thead>
+        <tr>
+          <th>Conteudo</th>
+          <th style="text-align:center">Tickets</th>
+          <th style="text-align:center">Retenção</th>
+          <th style="text-align:center">Scores (R/A/C)</th>
+          <th>Recomendação</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- 1. Problema com entrega -->
+        <tr>
+          <td>
+            <div class="title-cell">Problema com entrega</div>
+            <div class="id-cell">69b9d2b741420d1717d7a7ea</div>
+          </td>
+          <td style="text-align:center;font-weight:600">682</td>
+          <td style="text-align:center;color:#dc2626;font-weight:700">0%</td>
+          <td style="text-align:center">
+            <div class="score-bar">
+              <span class="score-pip filled low"></span>
+              <span class="score-pip filled low"></span>
+              <span class="score-pip filled medium"></span>
+            </div>
+            <div style="font-size:11px;color:#94a3b8;margin-top:2px">1/1/2</div>
+          </td>
+          <td><span class="badge remove">Remover</span> / <span class="badge split">Split</span></td>
+        </tr>
+
+        <!-- 2. Abrir um ticket de suporte -->
+        <tr>
+          <td>
+            <div class="title-cell">Abrir um ticket de suporte</div>
+            <div class="id-cell">69b9d2c641420d1717d7a7f7</div>
+          </td>
+          <td style="text-align:center;font-weight:600">314</td>
+          <td style="text-align:center;color:#d97706;font-weight:700">26%</td>
+          <td style="text-align:center">
+            <div class="score-bar">
+              <span class="score-pip filled low"></span>
+              <span class="score-pip filled medium"></span>
+              <span class="score-pip filled medium"></span>
+            </div>
+            <div style="font-size:11px;color:#94a3b8;margin-top:2px">2/3/3</div>
+          </td>
+          <td><span class="badge reclassify">Reclassificar N2</span></td>
+        </tr>
+
+        <!-- 3. Alterar endereço de entrega -->
+        <tr>
+          <td>
+            <div class="title-cell">Alterar endereço de entrega</div>
+            <div class="id-cell">69b9d2bd63f45038d786ca4a</div>
+          </td>
+          <td style="text-align:center;font-weight:600">76</td>
+          <td style="text-align:center;color:#d97706;font-weight:700">29%</td>
+          <td style="text-align:center">
+            <div class="score-bar">
+              <span class="score-pip filled medium"></span>
+              <span class="score-pip filled low"></span>
+              <span class="score-pip filled medium"></span>
+            </div>
+            <div style="font-size:11px;color:#94a3b8;margin-top:2px">3/2/3</div>
+          </td>
+          <td><span class="badge rewrite">Reescrever</span></td>
+        </tr>
+
+        <!-- 4. Guia Completo: Trocas -->
+        <tr>
+          <td>
+            <div class="title-cell">Guia Completo: Trocas</div>
+            <div class="id-cell">69b9d120ef78d10016030a4f</div>
+          </td>
+          <td style="text-align:center;font-weight:600">54</td>
+          <td style="text-align:center;color:#d97706;font-weight:700">33%</td>
+          <td style="text-align:center">
+            <div class="score-bar">
+              <span class="score-pip filled"></span>
+              <span class="score-pip filled medium"></span>
+              <span class="score-pip filled medium"></span>
+            </div>
+            <div style="font-size:11px;color:#94a3b8;margin-top:2px">4/3/3</div>
+          </td>
+          <td><span class="badge break">Quebrar</span></td>
+        </tr>
+
+        <!-- 5. Cliente pode mudar cor/tamanho -->
+        <tr>
+          <td>
+            <div class="title-cell">Cliente pode mudar cor/tamanho</div>
+            <div class="id-cell">69b9d3593c7f836144b9fc9a</div>
+          </td>
+          <td style="text-align:center;font-weight:600">34</td>
+          <td style="text-align:center;color:#d97706;font-weight:700">35%</td>
+          <td style="text-align:center">
+            <div class="score-bar">
+              <span class="score-pip filled medium"></span>
+              <span class="score-pip filled medium"></span>
+              <span class="score-pip filled medium"></span>
+            </div>
+            <div style="font-size:11px;color:#94a3b8;margin-top:2px">3/3/3</div>
+          </td>
+          <td><span class="badge consolidate">Consolidar</span></td>
+        </tr>
+
+        <!-- 6. Pedido atrasado - rastreamento -->
+        <tr>
+          <td>
+            <div class="title-cell">Pedido atrasado - rastreamento</div>
+            <div class="id-cell">69b9d2a763f45038d786ca35</div>
+          </td>
+          <td style="text-align:center;font-weight:600">32</td>
+          <td style="text-align:center;color:#d97706;font-weight:700">41%</td>
+          <td style="text-align:center">
+            <div class="score-bar">
+              <span class="score-pip filled medium"></span>
+              <span class="score-pip filled medium"></span>
+              <span class="score-pip filled"></span>
+            </div>
+            <div style="font-size:11px;color:#94a3b8;margin-top:2px">3/3/4</div>
+          </td>
+          <td><span class="badge improve">Melhorar</span></td>
+        </tr>
+
+        <!-- 7. Como funciona o processo de troca -->
+        <tr>
+          <td>
+            <div class="title-cell">Como funciona o processo de troca</div>
+            <div class="id-cell">69b9d2983c7f836144b9fbf2</div>
+          </td>
+          <td style="text-align:center;font-weight:600">31</td>
+          <td style="text-align:center;color:#d97706;font-weight:700">39%</td>
+          <td style="text-align:center">
+            <div class="score-bar">
+              <span class="score-pip filled medium"></span>
+              <span class="score-pip filled low"></span>
+              <span class="score-pip filled low"></span>
+            </div>
+            <div style="font-size:11px;color:#94a3b8;margin-top:2px">3/2/2</div>
+          </td>
+          <td><span class="badge improve">Melhorar</span></td>
+        </tr>
+
+        <!-- 8. Estorno cancelamento pedido -->
+        <tr>
+          <td>
+            <div class="title-cell">Estorno cancelamento pedido</div>
+            <div class="id-cell">69b9d2cd3c7f836144b9fc21</div>
+          </td>
+          <td style="text-align:center;font-weight:600">15</td>
+          <td style="text-align:center;color:#dc2626;font-weight:700">27%</td>
+          <td style="text-align:center">
+            <div class="score-bar">
+              <span class="score-pip filled low"></span>
+              <span class="score-pip filled low"></span>
+              <span class="score-pip filled low"></span>
+            </div>
+            <div style="font-size:11px;color:#94a3b8;margin-top:2px">1/1/1</div>
+          </td>
+          <td><span class="badge remove">Remover</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- DETALHES POR CONTEUDO -->
+<section>
+  <h2>Analise Detalhada por Conteudo</h2>
+  <div class="section-content">
+
+    <!-- #1 -->
+    <details class="details-section">
+      <summary>1. "Problema com entrega" — 682 tickets, 0% retenção (CRÍTICO)</summary>
+      <div class="details-content">
+        <div class="problem">
+          <strong>Problema Identificado:</strong> Pura transferência de atendimento. Conteúdo genérico que funciona como dreno para N2. Não resolve nada — apenas redireciona. Qualquer problema de entrega (atraso, não recebido, rastreamento parado, danificado, entrega errada, acareação, devolução) cai neste conteúdo, que apenas diz "contate suporte".
+        </div>
+        <div class="action">
+          <strong>Ação Recomendada:</strong> REMOVER completamente e criar 5-8 conteúdos específicos substituindo este genérico. Cada um deve resolver de forma clara:
+          <ul style="margin-top:6px;margin-left:20px">
+            <li>Atraso na entrega (prazos esperados por tipo)</li>
+            <li>Produto não recebido (passo-a-passo de comprovação)</li>
+            <li>Rastreamento parado (troubleshooting: contato transportadora, extensão de prazo)</li>
+            <li>Produto danificado (como abrir disputa, fotografia, prazos de devolução)</li>
+            <li>Entrega errada (troca imediata, reembolso)</li>
+            <li>Acareação (como processar, prazos)</li>
+            <li>Devolução (politica, prazos, como iniciar)</li>
+          </ul>
+        </div>
+        <h4>Impacto Estimado:</h4>
+        <p style="color:#475569;font-size:12px">682 tickets com 0% retenção = 682 tickets N2. Com split bem executado, espera-se recuperar 272-340 tickets em N1 (40-50% dos 682), considerando que muitos desses problemas têm resoluções diretas.</p>
+      </div>
+    </details>
+
+    <!-- #2 -->
+    <details class="details-section">
+      <summary>2. "Abrir um ticket de suporte" — 314 tickets, 26% retenção</summary>
+      <div class="details-content">
+        <div class="problem">
+          <strong>Problema Identificado:</strong> Meta-conteúdo para criação de ticket, não para resolver dúvidas. Este conteúdo é basicamente um formulário de atendimento, não uma FAQ. 74% dos 314 usos geraram N2 porque o cliente já estava em contato aberto (tentando resolver algo), foi oferecido "abrir um ticket" (que é essencialmente o que está acontecendo), e virou confusão.
+        </div>
+        <div class="action">
+          <strong>Ação Recomendada:</strong> RECLASSIFICAR para N2. Este conteúdo não é N1 — é um formulário/fluxo de atendimento. Deve estar em N2 ou removido completamente da ClaudIA se o canal de suporte está sempre aberto. Não deve aparecer em respostas N1.
+        </div>
+        <h4>Impacto Estimado:</h4>
+        <p style="color:#475569;font-size:12px">314 tickets = 81 N2 (26%). Ao remover de N1, evita-se confusão e reduz-se transferências desnecessárias. Impacto: +81 N1 mantidos (25% de ganho automático).
+</p>
+      </div>
+    </details>
+
+    <!-- #3 -->
+    <details class="details-section">
+      <summary>3. "Alterar endereço de entrega" — 76 tickets, 29% retenção</summary>
+      <div class="details-content">
+        <div class="problem">
+          <strong>Problema Identificado:</strong> Muito genérico. Falta contexto crítico: (a) qual transportadora? (Loggi tem UX diferente de Sedex/PAC); (b) em que fase do pedido? (Produção vs. expedido = opções diferentes). Cliente tenta seguir as orientações genéricas, falha, pensa que não pode fazer, e vai para N2.
+        </div>
+        <div class="action">
+          <strong>Ação Recomendada:</strong> REESCREVER com discriminação por transportadora e fase do pedido. Veja texto sugerido abaixo.
+        </div>
+        <div class="suggested"><strong>Texto Sugerido para N1:</strong>
+
+Para alterar o endereço de entrega:
+
+**Pedidos Loggi (expedição rápida):**
+1. Acesse 'Minhas Compras' na conta
+2. Localize o pedido em produção (status "Processando" ou "Preparando")
+3. Clique 'Editar Endereço'
+4. Modifique rua, número, complemento, CEP (mesmo município apenas)
+5. Salve as alterações
+
+**Pedidos Sedex/PAC e outras transportadoras:**
+- **Se ainda em produção** (primeiras 2h após compra): você pode editar número e complemento apenas no seu painel
+- **Se já expedido** (depois de "Saiu para entrega"): não é possível alterar via sistema. Contate nosso suporte com o novo endereço — pode ser possível fazer redirecionar antes da entrega
+
+**Importante:**
+Após a rota de entrega ser gerada pela transportadora (geralmente 2-4h após expedição), alterações podem não ser efetivas. Quanto mais cedo alterar, melhor.
+
+Se o CEP é diferente, a transportadora pode recusar a entrega. Nesse caso, será devolvido e reembolsado.</div>
+        <h4>Impacto Estimado:</h4>
+        <p style="color:#475569;font-size:12px">76 tickets, 29% retenção. Com reescrita, espera-se elevar para 50-60% (resolutividade melhorada). Ganho: +16-24 N1 mantidos.
+</p>
+      </div>
+    </details>
+
+    <!-- #4 -->
+    <details class="details-section">
+      <summary>4. "Guia Completo: Trocas" — 54 tickets, 33% retenção (Excelente conteúdo, mas formato errado)</summary>
+      <div class="details-content">
+        <div class="problem">
+          <strong>Problema Identificado:</strong> Conteúdo excelente mas muito longo para N1 (1.200+ palavras). Cliente lê, não consegue achar a resposta rápida, ou é transferido antes de terminar. 67% dos usos viraram N2, não porque o conteúdo seja ruim, mas porque é MUITO conteúdo para uma interação rápida em N1.
+        </div>
+        <div class="action">
+          <strong>Ação Recomendada:</strong> QUEBRAR em 2 conteúdos:
+          <ul style="margin-top:6px;margin-left:20px">
+            <li><strong>N1 - Resumo "Posso trocar?"</strong> (~150 palavras): responde critérios legais, prazos, como iniciar (rápido, acionável)</li>
+            <li><strong>N2 - "Guia Completo: Trocas"</strong> (1.200+ palavras): referência detalhada, políticas, exceções, casos especiais</li>
+          </ul>
+        </div>
+        <h4>Impacto Estimado:</h4>
+        <p style="color:#475569;font-size:12px">54 tickets, 33% retenção = 36 N1. Com split, versão N1 curta tende a 50-60% retenção (+24-32 N1). Versão N2 fica mais útil pois N2 pode ler conteúdo longo. Ganho: +18-27 N1.
+</p>
+      </div>
+    </details>
+
+    <!-- #5 -->
+    <details class="details-section">
+      <summary>5. "Cliente pode mudar cor/tamanho" — 34 tickets, 35% retenção</summary>
+      <div class="details-content">
+        <div class="problem">
+          <strong>Problema Identificado:</strong> Duplicata semântica do "Guia Completo: Trocas". Ambos os conteúdos respondendo a mesma pergunta (posso trocar/mudar cor/tamanho?), mas com triggers diferentes e sem consolidação. Isso cria:
+          <ul style="margin-top:6px;margin-left:20px">
+            <li>Inconsistência nas respostas</li>
+            <li>Fragmentação de dados (métricas divididas)</li>
+            <li>Redundância: triggers que matched em ambos</li>
+          </ul>
+        </div>
+        <div class="action">
+          <strong>Ação Recomendada:</strong> CONSOLIDAR com #4. Mesclar triggers deste com o Guia de Trocas; remover este conteúdo completamente. Mantém uma única versão de referência para trocas/mudanças.
+        </div>
+        <h4>Impacto Estimado:</h4>
+        <p style="color:#475569;font-size:12px">34 tickets consolidados em #4. Elimina redundância e melhora métricas. Impacto: +17-20 N1 (via consolidação + melhoria de triggers).
+</p>
+      </div>
+    </details>
+
+    <!-- #6 -->
+    <details class="details-section">
+      <summary>6. "Pedido atrasado - rastreamento" — 32 tickets, 41% retenção</summary>
+      <div class="details-content">
+        <div class="problem">
+          <strong>Problema Identificado:</strong> Oferece apenas link de rastreamento. Falta:
+          <ul style="margin-top:6px;margin-left:20px">
+            <li><strong>Contexto de prazos:</strong> Qual é o prazo esperado? (camiseta 5-7 dias vs. personalizado 7-10 dias)</li>
+            <li><strong>Troubleshooting:</strong> E se rastreamento não mostra resultado? O que fazer?</li>
+            <li><strong>Comparação com esperado:</strong> "Seu pedido saiu em XX/XX, prazo esperado é XX/XX, hoje é XX/XX — está dentro do esperado"</li>
+          </ul>
+        </div>
+        <div class="action">
+          <strong>Ação Recomendada:</strong> MELHORAR com:
+          <ul style="margin-top:6px;margin-left:20px">
+            <li>Prazos esperados por tipo de produto (padrão, personalizado, outros)</li>
+            <li>Contexto: "Rastreamento pode levar até 4h para ser atualizado após saída da transportadora"</li>
+            <li>Se rastreamento não mostra: "Contate a transportadora pelo telefone em seu rótulo" ou "Pedidos trazidos de balcão/sedex podem levar mais tempo para aparecer"</li>
+          </ul>
+        </div>
+        <h4>Impacto Estimado:</h4>
+        <p style="color:#475569;font-size:12px">32 tickets, 41% retenção = 19 N1. Com melhorias, espera-se 55-65% (+7-13 N1). Ganho: +7-13 N1.
+</p>
+      </div>
+    </details>
+
+    <!-- #7 -->
+    <details class="details-section">
+      <summary>7. "Como funciona o processo de troca" — 31 tickets, 39% retenção (Depende de vídeo)</summary>
+      <div class="details-content">
+        <div class="problem">
+          <strong>Problema Identificado:</strong> Depende 100% de vídeo. Cliente sem áudio, em ambiente barulhento, com conexão ruim, ou simplesmente prefere ler = sem resposta. 61% foram para N2 porque tentaram assistir o vídeo e não conseguiram (ou acharam lento).
+        </div>
+        <div class="action">
+          <strong>Ação Recomendada:</strong> MELHORAR adicionando alternativa textual com passo-a-passo. Mantenha vídeo (é bom), mas forneça versão em texto com:
+          <ul style="margin-top:6px;margin-left:20px">
+            <li>Passos do cliente (como abrir disputa, tirar fotos, enviar)</li>
+            <li>Passos do lojista/admin (como processar a troca)</li>
+            <li>Prazos e alternativas</li>
+          </ul>
+        </div>
+        <h4>Impacto Estimado:</h4>
+        <p style="color:#475569;font-size:12px">31 tickets, 39% retenção = 19 N1. Com alternativa textual, espera-se 55-65% (+9-16 N1). Ganho: +9-16 N1.
+</p>
+      </div>
+    </details>
+
+    <!-- #8 -->
+    <details class="details-section">
+      <summary>8. "Estorno cancelamento pedido" — 15 tickets, 27% retenção (CRÍTICO - Danificado)</summary>
+      <div class="details-content">
+        <div class="problem">
+          <strong>Problema Identificado:</strong> Conteúdo danificado: título diz "cancelamento/estorno" mas resposta é sobre "rastreamento". Cópia-cola acidental em algum momento. Cliente vai procurando resposta sobre reembolso, encontra informação sobre rastreamento, fica perdido, vai para N2. 73% viraram N2.
+        </div>
+        <div class="action">
+          <strong>Ação Recomendada:</strong> REMOVER completamente. Criar conteúdo novo e específico sobre "Cancelamento, Devolução e Estorno" com:
+          <ul style="margin-top:6px;margin-left:20px">
+            <li><strong>Cancelar antes do envio:</strong> É possível? Em que prazos? Como?</li>
+            <li><strong>Devolução após recebimento:</strong> Em que prazos? Qual política?</li>
+            <li><strong>Estorno:</strong> Quanto tempo demora para cair na conta? (geralmente 5-7 dias úteis)</li>
+            <li><strong>Rastreamento da devolução:</strong> Como acompanhar o retorno ao lojista</li>
+          </ul>
+        </div>
+        <h4>Impacto Estimado:</h4>
+        <p style="color:#475569;font-size:12px">15 tickets, 27% retenção = 11 N1. Conteúdo novo bem estruturado espera-se 50%+ retenção (+11 N1). Ganho: +11 N1.
+</p>
+      </div>
+    </details>
+
+  </div>
+</section>
+
+<!-- GRÁFICO DE VOLUME -->
+<section>
+  <h2>Distribuição de Volume por Conteúdo</h2>
+  <div class="section-content">
+    <div class="chart-container">
+      <div class="chart-bars">
+        <div class="bar" style="height:100%;width:70px"><div class="bar-value">682</div><div class="bar-label">Problema<br/>entrega</div></div>
+        <div class="bar" style="height:46%;width:70px"><div class="bar-value">314</div><div class="bar-label">Abrir<br/>ticket</div></div>
+        <div class="bar" style="height:11%;width:70px"><div class="bar-value">76</div><div class="bar-label">Alterar<br/>endereço</div></div>
+        <div class="bar" style="height:8%;width:70px"><div class="bar-value">54</div><div class="bar-label">Guia<br/>Trocas</div></div>
+        <div class="bar" style="height:5%;width:70px"><div class="bar-value">34</div><div class="bar-label">Mudar<br/>cor/tam</div></div>
+        <div class="bar" style="height:5%;width:70px"><div class="bar-value">32</div><div class="bar-label">Pedido<br/>atrasado</div></div>
+        <div class="bar" style="height:4.5%;width:70px"><div class="bar-value">31</div><div class="bar-label">Como<br/>funciona</div></div>
+        <div class="bar" style="height:2%;width:70px"><div class="bar-value">15</div><div class="bar-label">Estorno<br/>cancel</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- IMPACTO TOTAL -->
+<section>
+  <h2>Resumo de Impacto Estimado</h2>
+  <div class="section-content">
+    <table class="impact-table">
+      <thead>
+        <tr>
+          <th>Conteúdo</th>
+          <th style="text-align:right">Tickets Atuais</th>
+          <th style="text-align:right">Retenção Atual</th>
+          <th style="text-align:right">N1 Mantidos</th>
+          <th style="text-align:right">Retenção Projetada</th>
+          <th style="text-align:right">N1 Projetados</th>
+          <th style="text-align:right">Ganho N1</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Problema com entrega (REMOVER/SPLIT)</td>
+          <td style="text-align:right">682</td>
+          <td style="text-align:right">0%</td>
+          <td style="text-align:right">0</td>
+          <td style="text-align:right">45%</td>
+          <td style="text-align:right">307</td>
+          <td style="text-align:right;color:#059669;font-weight:700">+307</td>
+        </tr>
+        <tr>
+          <td>Abrir ticket (RECLASSIFICAR N2)</td>
+          <td style="text-align:right">314</td>
+          <td style="text-align:right">26%</td>
+          <td style="text-align:right">82</td>
+          <td style="text-align:right">75%</td>
+          <td style="text-align:right">236</td>
+          <td style="text-align:right;color:#059669;font-weight:700">+154</td>
+        </tr>
+        <tr>
+          <td>Alterar endereço (REESCREVER)</td>
+          <td style="text-align:right">76</td>
+          <td style="text-align:right">29%</td>
+          <td style="text-align:right">22</td>
+          <td style="text-align:right">55%</td>
+          <td style="text-align:right">42</td>
+          <td style="text-align:right;color:#059669;font-weight:700">+20</td>
+        </tr>
+        <tr>
+          <td>Guia Trocas (QUEBRAR)</td>
+          <td style="text-align:right">54</td>
+          <td style="text-align:right">33%</td>
+          <td style="text-align:right">18</td>
+          <td style="text-align:right">55%</td>
+          <td style="text-align:right">30</td>
+          <td style="text-align:right;color:#059669;font-weight:700">+12</td>
+        </tr>
+        <tr>
+          <td>Mudar cor/tamanho (CONSOLIDAR)</td>
+          <td style="text-align:right">34</td>
+          <td style="text-align:right">35%</td>
+          <td style="text-align:right">12</td>
+          <td style="text-align:right">0%</td>
+          <td style="text-align:right">0</td>
+          <td style="text-align:right">— (consolidado)</td>
+        </tr>
+        <tr>
+          <td>Pedido atrasado (MELHORAR)</td>
+          <td style="text-align:right">32</td>
+          <td style="text-align:right">41%</td>
+          <td style="text-align:right">13</td>
+          <td style="text-align:right">60%</td>
+          <td style="text-align:right">19</td>
+          <td style="text-align:right;color:#059669;font-weight:700">+6</td>
+        </tr>
+        <tr>
+          <td>Como funciona troca (MELHORAR)</td>
+          <td style="text-align:right">31</td>
+          <td style="text-align:right">39%</td>
+          <td style="text-align:right">12</td>
+          <td style="text-align:right">60%</td>
+          <td style="text-align:right">19</td>
+          <td style="text-align:right;color:#059669;font-weight:700">+7</td>
+        </tr>
+        <tr>
+          <td>Estorno cancelamento (REMOVER)</td>
+          <td style="text-align:right">15</td>
+          <td style="text-align:right">27%</td>
+          <td style="text-align:right">4</td>
+          <td style="text-align:right">50%</td>
+          <td style="text-align:right">8</td>
+          <td style="text-align:right;color:#059669;font-weight:700">+4</td>
+        </tr>
+        <tr style="background:#f0fdf4">
+          <td><strong>TOTAL</strong></td>
+          <td style="text-align:right;font-weight:700">1.238</td>
+          <td style="text-align:right;font-weight:700">26%</td>
+          <td style="text-align:right;font-weight:700">163</td>
+          <td style="text-align:right;font-weight:700">48%</td>
+          <td style="text-align:right;font-weight:700">661</td>
+          <td style="text-align:right;font-weight:700;color:#059669">+510</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="margin-top:16px;font-size:12px;color:#475569;line-height:1.6">
+      <strong>Análise:</strong> Com as ações recomendadas, espera-se recuperar <strong>510 tickets/mês</strong> em N1 (de 163 N1 atuais para 661 N1 projetados). A retenção média destes 8 conteúdos subiria de 26% para 48%. Impacto na retenção geral do projeto: <strong>+6 a +7 pontos percentuais</strong> (33.3% → 39-40%), considerando que estes conteúdos representam 32% do volume N1 atual.
+    </p>
+  </div>
+</section>
+
+<!-- PROXIMAS AÇÕES -->
+<section>
+  <h2>Próximas Ações Recomendadas</h2>
+  <div class="section-content">
+    <h3>Fase 1 (Urgente - 1 semana):</h3>
+    <ul style="color:#475569;font-size:13px;line-height:1.8">
+      <li><strong>Remover #1 ("Problema com entrega")</strong> — dreno puro de N2. Criar placeholder simples até split estar pronto.</li>
+      <li><strong>Reclassificar #2 ("Abrir ticket")</strong> — mover para N2 ou remover de N1.</li>
+      <li><strong>Remover #8 ("Estorno...")</strong> — conteúdo danificado, sem valor.</li>
+    </ul>
+
+    <h3>Fase 2 (1-2 semanas):</h3>
+    <ul style="color:#475569;font-size:13px;line-height:1.8">
+      <li><strong>Reescrever #3 ("Alterar endereço")</strong> — usar texto sugerido acima como base.</li>
+      <li><strong>Quebrar #4 ("Guia Trocas")</strong> — criar versão N1 curta (~150 palavras) e manter versão completa em N2.</li>
+      <li><strong>Consolidar #5 ("Mudar cor/tamanho")</strong> — mesclar triggers com #4, remover duplicata.</li>
+    </ul>
+
+    <h3>Fase 3 (2-3 semanas):</h3>
+    <ul style="color:#475569;font-size:13px;line-height:1.8">
+      <li><strong>Melhorar #6 ("Pedido atrasado")</strong> — adicionar prazos por tipo de produto, troubleshooting.</li>
+      <li><strong>Melhorar #7 ("Como funciona troca")</strong> — adicionar alternativa textual ao vídeo.</li>
+      <li><strong>Criar novo conteúdo específico</strong> para "Cancelamento/Devolução/Estorno" (substituindo #8).</li>
+      <li><strong>Criar split de #1</strong> em 5-8 conteúdos específicos de problemas de entrega.</li>
+    </ul>
+
+    <h3>Monitoramento:</h3>
+    <ul style="color:#475569;font-size:13px;line-height:1.8">
+      <li>Acompanhar retenção semanal após cada mudança.</li>
+      <li>Validar triggers dos novos conteúdos para evitar redundância.</li>
+      <li>Re-testar coverage de "Problema com entrega" após split (deve cobrir mais casos específicos).</li>
+    </ul>
+  </div>
+</section>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <p style="margin-bottom:12px">Relatório gerado em 14/04/2026 | Skill: ids-quality-eval v1</p>
+  <p>
+    <a href="https://metabase.cloud-humans.io/dashboard/1" target="_blank">Dashboard Metabase</a>
+    &nbsp; • &nbsp;
+    <a href="/action-plan-map/index.html">Voltar ao Action Plan Map</a>
+  </p>
+</div>
+
+</body>
+</html>

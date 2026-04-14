@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content Gap Analysis — Reservaink CC | Cloud Humans</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f6fa;color:#1a1a2e;line-height:1.6}
+
+.header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:40px 48px 36px}
+.header h1{font-size:32px;font-weight:700;margin-bottom:8px;letter-spacing:-.5px}
+.header .subtitle{font-size:15px;opacity:.75;line-height:1.5;max-width:900px;margin-top:12px}
+.header .meta{margin-top:16px;display:flex;gap:24px;font-size:13px;opacity:.6;flex-wrap:wrap}
+.header-badges{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+.header-badge{display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;backdrop-filter:blur(10px)}
+.header-badge.tier{background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.4);color:#e0e7ff}
+.header-badge.content-create{background:rgba(220,38,38,.2);border:1px solid rgba(220,38,38,.4);color:#fecaca}
+.header-badge.content-adapt{background:rgba(217,119,6,.2);border:1px solid rgba(217,119,6,.4);color:#fed7aa}
+.header-badge.content-covered{background:rgba(5,150,105,.2);border:1px solid rgba(5,150,105,.4);color:#d1fae5}
+
+.main{padding:32px 48px;max-width:1200px;margin:0 auto}
+
+section{background:#fff;border-radius:12px;margin-bottom:24px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}
+section h2{font-size:18px;font-weight:700;color:#1e293b;padding:20px 24px 12px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:8px}
+section h3{font-size:14px;font-weight:700;color:#334155;margin:16px 0 12px}
+.section-content{padding:20px 24px}
+
+.metrics-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin:16px 0}
+.metric-card{text-align:center;padding:20px;border-radius:12px;border:1px solid #e2e8f0}
+.metric-card.primary{background:#fef2f2;border-color:#fecaca}
+.metric-card.secondary{background:#f0fdf4;border-color:#d1fae5}
+.metric-card.tertiary{background:#eff6ff;border-color:#bfdbfe}
+.metric-card.quaternary{background:#fefce8;border-color:#fed7aa}
+.metric-value{font-size:32px;font-weight:800;margin-bottom:4px}
+.metric-label{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.metric-card.primary .metric-value{color:#dc2626}
+.metric-card.primary .metric-label{color:#991b1b}
+.metric-card.secondary .metric-value{color:#059669}
+.metric-card.secondary .metric-label{color:#166534}
+.metric-card.tertiary .metric-value{color:#2563eb}
+.metric-card.tertiary .metric-label{color:#1e40af}
+.metric-card.quaternary .metric-value{color:#d97706}
+.metric-card.quaternary .metric-label{color:#92400e}
+
+.breakdown-chart{display:flex;gap:12px;margin:20px 0}
+.breakdown-item{flex:1;text-align:center}
+.breakdown-bar{height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700;margin-bottom:8px}
+.breakdown-bar.create{background:#dc2626}
+.breakdown-bar.adapt{background:#d97706}
+.breakdown-bar.covered{background:#059669}
+.breakdown-label{font-size:12px;color:#475569;font-weight:600}
+.breakdown-count{font-size:11px;color:#94a3b8}
+
+.table-wrapper{overflow-x:auto;margin:16px 0}
+.gap-table{width:100%;border-collapse:collapse;font-size:13px}
+.gap-table th{background:#f8fafc;padding:12px 16px;text-align:left;font-weight:700;color:#334155;border-bottom:2px solid #e2e8f0}
+.gap-table td{padding:12px 16px;border-bottom:1px solid #e8eaf0}
+.gap-table tr:last-child td{border-bottom:none}
+.gap-table tr:hover{background:#f8fafc}
+
+.gap-badge{display:inline-block;padding:4px 12px;border-radius:6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.gap-badge.create{background:#fecaca;color:#991b1b}
+.gap-badge.adapt{background:#fed7aa;color:#92400e}
+.gap-badge.covered{background:#d1fae5;color:#166534}
+
+.theme-number{font-weight:700;color:#7c3aed;font-size:14px}
+.theme-title{font-weight:700;color:#1e293b}
+.volume-badge{font-size:11px;color:#64748b;background:#f1f5f9;padding:2px 8px;border-radius:4px;margin-left:8px}
+
+.expandable{cursor:pointer;user-select:none;padding:16px;border-left:4px solid;border-radius:4px;margin:12px 0;background:rgba(255,255,255,.5);transition:background .2s}
+.expandable:hover{background:rgba(255,255,255,.8)}
+.expandable.create{border-left-color:#dc2626}
+.expandable.adapt{border-left-color:#d97706}
+
+.expand-header{display:flex;align-items:center;gap:12px;justify-content:space-between}
+.expand-icon{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:4px;background:#e2e8f0;transition:transform .2s;font-size:12px;color:#475569}
+.expandable.active .expand-icon{transform:rotate(180deg)}
+
+.expand-content{display:none;max-height:0;overflow:hidden;transition:max-height .3s ease;padding-top:0}
+.expandable.active .expand-content{display:block;max-height:2000px;padding-top:16px;border-top:1px solid rgba(0,0,0,.08)}
+
+.content-section{margin:12px 0;padding:12px;background:#f8fafc;border-radius:6px}
+.content-label{font-size:11px;font-weight:700;text-transform:uppercase;color:#64748b;margin-bottom:6px;display:block}
+.content-text{font-size:13px;color:#334155;line-height:1.6}
+
+.priority-matrix{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:16px 0}
+.priority-box{padding:16px;border-radius:8px;border:1px solid #e2e8f0}
+.priority-box h4{font-size:13px;font-weight:700;margin-bottom:8px}
+.priority-box.p1{border-left:4px solid #dc2626;background:#fff5f5}
+.priority-box.p1 h4{color:#991b1b}
+.priority-box.p2{border-left:4px solid #d97706;background:#fffbf0}
+.priority-box.p2 h4{color:#92400e}
+.priority-box.p3{border-left:4px solid #059669;background:#f0fdf4}
+.priority-box.p3 h4{color:#166534}
+.priority-list{font-size:12px;color:#475569}
+.priority-list li{margin:6px 0;margin-left:20px}
+
+.impact-calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:16px 0;padding:16px;background:#f8fafc;border-radius:8px;border-left:4px solid #7c3aed}
+.impact-item{font-size:12px}
+.impact-label{color:#64748b;font-weight:500;margin-bottom:4px}
+.impact-value{font-size:18px;font-weight:700;color:#1e293b}
+.impact-unit{font-size:11px;color:#94a3b8;margin-top:2px}
+
+.footer{text-align:center;padding:28px 48px;font-size:12px;color:#94a3b8;border-top:1px solid #e8eaf0;margin-top:32px}
+.footer a{color:#6366f1;text-decoration:none;font-weight:600}
+.footer a:hover{text-decoration:underline}
+
+@media(max-width:900px){
+  .header,.main,.footer{padding-left:20px;padding-right:20px}
+  .header h1{font-size:24px}
+  .metrics-cards{grid-template-columns:1fr 1fr}
+  .breakdown-chart{flex-direction:column}
+  .priority-matrix{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Content Gap Analysis — Reservaink CC</h1>
+  <p class="subtitle">Análise de lacunas de conteúdo (No Relevant Content) identificando 15 clusters de dúvidas sem cobertura adequada. Oportunidade de criar 12 conteúdos novos e adaptar 3 existentes para reduzir N2 em ~12% (de 220 → 193 tickets/mês).</p>
+  <div class="meta">
+    <span>Período: 15/03/2026 a 14/04/2026</span>
+    <span>Elaborado: 14/04/2026</span>
+    <span>Skill: ids-no-relevant-content v2</span>
+  </div>
+  <div class="header-badges">
+    <span class="header-badge tier">Tier 2</span>
+    <span class="header-badge content-create">12 Conteúdos para Criar</span>
+    <span class="header-badge content-adapt">3 Conteúdos para Adaptar</span>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- RESUMO EXECUTIVO -->
+<section>
+  <h2>Resumo Executivo</h2>
+  <div class="section-content">
+    <p style="font-size:14px;line-height:1.7;color:#334155;margin-bottom:20px">
+      O projeto <strong>reservaink_cc</strong> apresenta <strong style="color:#dc2626">220 tickets mensais transferidos para N2 por "No relevant content"</strong> (8.6% do total de N2), resultado de 15 clusters de dúvidas que não possuem cobertura adequada na IDS. A taxa de retenção crítica de 33.3% (com tendência de queda) aponta para a necessidade urgente de expandir o conhecimento disponível.
+    </p>
+    <p style="font-size:13px;color:#475569;margin-bottom:20px">
+      <strong>Oportunidade:</strong> Criando 12 conteúdos novos e adaptando 3 existentes, estima-se reduzir em aproximadamente <strong>12% o volume de N2 por "No relevant content"</strong> (de 220 → 193 tickets/mês), gerando <strong>~33 N1 adicionais/mês</strong> com taxa de conversão 0.60.
+    </p>
+    <div class="metrics-cards">
+      <div class="metric-card primary">
+        <div class="metric-value">220</div>
+        <div class="metric-label">N2 por No Content/mês</div>
+      </div>
+      <div class="metric-card secondary">
+        <div class="metric-value">33</div>
+        <div class="metric-label">N1 Ganho Estimado/mês</div>
+      </div>
+      <div class="metric-card tertiary">
+        <div class="metric-value">12%</div>
+        <div class="metric-label">Redução em N2</div>
+      </div>
+      <div class="metric-card quaternary">
+        <div class="metric-value">15</div>
+        <div class="metric-label">Clusters Identificados</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BREAKDOWN -->
+<section>
+  <h2>Distribuição dos Gaps por Classificação</h2>
+  <div class="section-content">
+    <div class="breakdown-chart">
+      <div class="breakdown-item">
+        <div class="breakdown-bar create">12</div>
+        <div class="breakdown-label">Conteúdos para <strong>CRIAR</strong></div>
+        <div class="breakdown-count">80% dos gaps</div>
+      </div>
+      <div class="breakdown-item">
+        <div class="breakdown-bar adapt">3</div>
+        <div class="breakdown-label">Conteúdos para <strong>ADAPTAR</strong></div>
+        <div class="breakdown-count">20% dos gaps</div>
+      </div>
+      <div class="breakdown-item">
+        <div class="breakdown-bar covered">3</div>
+        <div class="breakdown-label">Já <strong>COBERTOS</strong></div>
+        <div class="breakdown-count">Problema de ativação</div>
+      </div>
+    </div>
+    <p style="font-size:12px;color:#94a3b8;margin-top:20px;text-align:center">
+      Nota: 3 temas já possuem conteúdo na IDS mas não estão sendo ativados corretamente. Recomenda-se revisar palavras-chave e contextos de acionamento.
+    </p>
+  </div>
+</section>
+
+<!-- TABELA PRINCIPAL DE GAPS -->
+<section>
+  <h2>Análise Detalhada de Gaps (15 Clusters)</h2>
+  <div class="section-content">
+    <div class="table-wrapper">
+      <table class="gap-table">
+        <thead>
+          <tr>
+            <th style="width:5%">#</th>
+            <th style="width:35%">Tema do Gap</th>
+            <th style="width:15%">Volume</th>
+            <th style="width:15%">Classificação</th>
+            <th style="width:30%">Pergunta-Tipo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="theme-number">1</span></td>
+            <td><span class="theme-title">Dúvidas sem categoria / problemas genéricos</span></td>
+            <td><span class="volume-badge">33 conv/mês</span></td>
+            <td><span class="gap-badge create">CRIAR</span></td>
+            <td>"Preciso de ajuda", "Não consegui"</td>
+          </tr>
+          <tr>
+            <td><span class="theme-number">2</span></td>
+            <td><span class="theme-title">Configuração de loja e informações gerais</span></td>
+            <td><span class="volume-badge">8 conv/mês</span></td>
+            <td><span class="gap-badge adapt">ADAPTAR</span></td>
+            <td>Configs BÁSICAS iniciais</td>
+          </tr>
+          <tr>
+            <td><span class="theme-number">3</span></td>
+            <td><span class="theme-title">Operações de produção e pedidos</span></td>
+            <td><span class="volume-badge">7 conv/mês</span></td>
+            <td><span class="gap-badge create">CRIAR</span></td>
+            <td>"Qual é o status?", "Quanto tempo demora?"</td>
+          </tr>
+          <tr>
+            <td><span class="theme-number">4</span></td>
+            <td><span class="theme-title">Cancelamento de assinatura</span></td>
+            <td><span class="volume-badge">5 conv/mês</span></td>
+            <td><span class="gap-badge covered">JÁ COBERTO</span></td>
+            <td>"Quero sair", "Desistir da assinatura"</td>
+          </tr>
+          <tr>
+            <td><span class="theme-number">5</span></td>
+            <td><span class="theme-title">Criação de produtos e upload de estampas</span></td>
+            <td><span class="volume-badge">4 conv/mês</span></td>
+            <td><span class="gap-badge adapt">ADAPTAR</span></td>
+            <td>Requisitos técnicos de estampas</td>
+          </tr>
+          <tr>
+            <td><span class="theme-number">6</span></td>
+            <td><span class="theme-title">Fraude e golpes (WhatsApp)</span></td>
+            <td><span class="volume-badge">4 conv/mês</span></td>
+            <td><span class="gap-badge create">CRIAR</span></td>
+            <td>"É seguro?", "Recebi mensagem oferecendo plano"</td>
+          </tr>
+          <tr>
+            <td><span class="theme-number">7</span></td>
+            <td><span class="theme-title">Contato direto / suporte geral</span></td>
+            <td><span class="volume-badge">4 conv/mês</span></td>
+            <td><span class="gap-badge create">CRIAR</span></td>
+            <td>"Como entrar em contato?", "Preciso falar"</td>
+          </tr>
+          <tr>
+            <td><span class="theme-number">8</span></td>
+            <td><span class="theme-title">Erros técnicos / bugs</span></td>
+            <td><span class="volume-badge">3 conv/mês</span></td>
+            <td><span class="gap-badge create">CRIAR</span></td>
+            <td>"Aparece erro", "Não consigo fazer login"</td>
+          </tr>
+          <tr>
+            <td><span class="theme-number">9</span></td>
+            <td><span class="theme-title">FAQ Aula 3 / Treinamento</span></td>
+            <td><span class="volume-badge">1 conv/mês</span></td>
+            <td><span class="gap-badge create">CRIAR</span></td>
+            <td>Dúvidas sobre conteúdo de treinamento</td>
+          </tr>
+          <tr>
+            <td><span class="theme-number">10</span></td>
+            <td><span class="theme-title">Dúvidas fiscais</span></td>
+            <td><span class="volume-badge">1 conv/mês</span></td>
+            <td><span class="gap-badge create">CRIAR</span></td>
+            <td>"Como funciona a emissão de NF?"</td>
+          </tr>
+          <tr>
+            <td><span class="theme-number">11</span></td>
+            <td><span class="theme-title">Entrega - Dúvidas sobre frete</span></td>
+            <td><span class="volume-badge">1 conv/mês</span></td>
+            <td><span class="gap-badge adapt">ADAPTAR</span></td>
+            <td>"Quanto custa o frete?", "Qual a cobertura?"</td>
+          </tr>
+          <tr>
+            <td><span class="theme-number">12</span></td>
+            <td><span class="theme-title">Entrega - Acareação</span></td>
+            <td><span class="volume-badge">1 conv/mês</span></td>
+            <td><span class="gap-badge create">CRIAR</span></td>
+            <td>"O que é acareação?", "Quanto tempo leva?"</td>
+          </tr>
+          <tr>
+            <td><span class="theme-number">13</span></td>
+            <td><span class="theme-title">Contato com lojista / Especialistas</span></td>
+            <td><span class="volume-badge">1 conv/mês</span></td>
+            <td><span class="gap-badge create">CRIAR</span></td>
+            <td>"Quero falar com o especialista"</td>
+          </tr>
+          <tr>
+            <td><span class="theme-number">14</span></td>
+            <td><span class="theme-title">Estampa reprovada</span></td>
+            <td><span class="volume-badge">1 conv/mês</span></td>
+            <td><span class="gap-badge create">CRIAR</span></td>
+            <td>"Por que foi reprovada?", "Como corrigir?"</td>
+          </tr>
+          <tr>
+            <td><span class="theme-number">15</span></td>
+            <td><span class="theme-title">Cadastro e alteração de dados</span></td>
+            <td><span class="volume-badge">2 conv/mês</span></td>
+            <td><span class="gap-badge covered">JÁ COBERTO</span></td>
+            <td>Alteração de dados cadastrais</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- CONTEÚDOS PARA CRIAR -->
+<section>
+  <h2>Conteúdos para CRIAR (12 Gaps)</h2>
+  <div class="section-content">
+
+    <!-- Gap 1 -->
+    <div class="expandable create" onclick="toggleExpand(this)">
+      <div class="expand-header">
+        <div style="flex:1">
+          <div style="font-weight:700;color:#1e293b">#1 · Dúvidas sem categoria / problemas genéricos</div>
+          <div style="font-size:12px;color:#64748b;margin-top:4px">33 conv/mês — Maior volume</div>
+        </div>
+        <div class="expand-icon">▼</div>
+      </div>
+      <div class="expand-content">
+        <div class="content-section">
+          <span class="content-label">Pergunta-Tipo</span>
+          <div class="content-text">"Preciso de ajuda", "Não consegui resolver meu problema", "Tenho uma dúvida"</div>
+        </div>
+        <div class="content-section">
+          <span class="content-label">Título Sugerido</span>
+          <div class="content-text"><strong>Guia de Triage: Como Identificar e Resolver Seu Problema na Reserva INK</strong></div>
+        </div>
+        <div class="content-section">
+          <span class="content-label">Resposta Sugerida</span>
+          <div class="content-text">
+            Guia interativo que direciona o cliente para a área correta:<br><br>
+            1) <strong>Configuração de Loja</strong> — Problema ao criar/editar loja, banners, destaques<br>
+            2) <strong>Problemas com Pedidos/Entrega</strong> — Rastrear status, frete, acareação<br>
+            3) <strong>Assinatura/Pagamento</strong> — Plano, cobrança, cancelamento<br>
+            4) <strong>Produtos/Estampas</strong> — Criar produto, upload de arte, reprovações<br>
+            5) <strong>Outro</strong> — Dúvidas específicas
+          </div>
+        </div>
+        <div class="impact-calc">
+          <div class="impact-item">
+            <div class="impact-label">Volume Impactado</div>
+            <div class="impact-value">33</div>
+            <div class="impact-unit">conv/mês</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-label">N1 Potencial (0.60)</div>
+            <div class="impact-value">20</div>
+            <div class="impact-unit">conv/mês</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-label">Prioridade</div>
+            <div class="impact-value" style="color:#dc2626">P1</div>
+            <div class="impact-unit">Crítica</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gap 3 -->
+    <div class="expandable create" onclick="toggleExpand(this)">
+      <div class="expand-header">
+        <div style="flex:1">
+          <div style="font-weight:700;color:#1e293b">#3 · Operações de produção e pedidos</div>
+          <div style="font-size:12px;color:#64748b;margin-top:4px">7 conv/mês — Fluxo crítico</div>
+        </div>
+        <div class="expand-icon">▼</div>
+      </div>
+      <div class="expand-content">
+        <div class="content-section">
+          <span class="content-label">Pergunta-Tipo</span>
+          <div class="content-text">"Qual é o status de produção?", "Quanto tempo demora o processo?", "Onde está meu pedido?"</div>
+        </div>
+        <div class="content-section">
+          <span class="content-label">Título Sugerido</span>
+          <div class="content-text"><strong>Entenda o Processo de Produção: Prazos e Status na Reserva INK</strong></div>
+        </div>
+        <div class="content-section">
+          <span class="content-label">Resposta Sugerida</span>
+          <div class="content-text">
+            Fluxo completo com prazos e SLA:<br><br>
+            1) <strong>Pedido Confirmado</strong><br>
+            2) <strong>Qualidade de Arte</strong> — 24-48h (validação de estampa)<br>
+            3) <strong>Produção</strong> — 3-5 dias (impressão e confecção)<br>
+            4) <strong>Qualidade Final</strong> — Controle de qualidade<br>
+            5) <strong>Acareação</strong> — Embalagem e preparação para envio<br>
+            6) <strong>Entrega</strong> — Segundo frete contratado
+          </div>
+        </div>
+        <div class="impact-calc">
+          <div class="impact-item">
+            <div class="impact-label">Volume Impactado</div>
+            <div class="impact-value">7</div>
+            <div class="impact-unit">conv/mês</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-label">N1 Potencial (0.60)</div>
+            <div class="impact-value">4</div>
+            <div class="impact-unit">conv/mês</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-label">Prioridade</div>
+            <div class="impact-value" style="color:#dc2626">P1</div>
+            <div class="impact-unit">Alta</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gap 6 -->
+    <div class="expandable create" onclick="toggleExpand(this)">
+      <div class="expand-header">
+        <div style="flex:1">
+          <div style="font-weight:700;color:#1e293b">#6 · Fraude e golpes (WhatsApp)</div>
+          <div style="font-size:12px;color:#64748b;margin-top:4px">4 conv/mês — Risco segurança</div>
+        </div>
+        <div class="expand-icon">▼</div>
+      </div>
+      <div class="expand-content">
+        <div class="content-section">
+          <span class="content-label">Pergunta-Tipo</span>
+          <div class="content-text">"Recebi mensagem no WhatsApp oferecendo plano. É seguro?", "Alguém está me oferecendo", "É legítimo?"</div>
+        </div>
+        <div class="content-section">
+          <span class="content-label">Título Sugerido</span>
+          <div class="content-text"><strong>Segurança: Como Identificar Golpes e Mensagens Falsas no WhatsApp</strong></div>
+        </div>
+        <div class="content-section">
+          <span class="content-label">Resposta Sugerida</span>
+          <div class="content-text">
+            <strong>Reserva INK NUNCA oferece planos ou promoções via WhatsApp não solicitado.</strong><br><br>
+            <strong>Sinais de alerta:</strong><br>
+            - Ofertas "exclusivas" ou "por tempo limitado"<br>
+            - Pedido para cliques em links<br>
+            - Solicitação de dados pessoais ou cartão<br>
+            - Número desconhecido ou perfil suspeito<br><br>
+            <strong>O que fazer:</strong><br>
+            1) Não clique em links<br>
+            2) Não compartilhe dados<br>
+            3) Bloqueie o contato<br>
+            4) Reporte para Reserva INK através de [contato oficial]
+          </div>
+        </div>
+        <div class="impact-calc">
+          <div class="impact-item">
+            <div class="impact-label">Volume Impactado</div>
+            <div class="impact-value">4</div>
+            <div class="impact-unit">conv/mês</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-label">N1 Potencial (0.60)</div>
+            <div class="impact-value">2</div>
+            <div class="impact-unit">conv/mês</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-label">Prioridade</div>
+            <div class="impact-value" style="color:#dc2626">P1</div>
+            <div class="impact-unit">Segurança</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gap 7 -->
+    <div class="expandable create" onclick="toggleExpand(this)">
+      <div class="expand-header">
+        <div style="flex:1">
+          <div style="font-weight:700;color:#1e293b">#7 · Contato direto / suporte geral</div>
+          <div style="font-size:12px;color:#64748b;margin-top:4px">4 conv/mês — Direcionamento</div>
+        </div>
+        <div class="expand-icon">▼</div>
+      </div>
+      <div class="expand-content">
+        <div class="content-section">
+          <span class="content-label">Pergunta-Tipo</span>
+          <div class="content-text">"Como entrar em contato?", "Preciso falar com o suporte", "Qual o e-mail/telefone?"</div>
+        </div>
+        <div class="content-section">
+          <span class="content-label">Título Sugerido</span>
+          <div class="content-text"><strong>Onde e Como Entrar em Contato com o Suporte da Reserva INK</strong></div>
+        </div>
+        <div class="content-section">
+          <span class="content-label">Resposta Sugerida</span>
+          <div class="content-text">
+            <strong>Canais de contato:</strong><br><br>
+            🔵 <strong>Chat</strong> — Integrado na plataforma (resposta em segundos)<br>
+            📧 <strong>E-mail</strong> — suporte@reservaink.com.br<br>
+            📱 <strong>WhatsApp</strong> — +55 (XX) XXXXX-XXXX (horário comercial)<br>
+            ☎️ <strong>Telefone</strong> — +55 (XX) XXXX-XXXX<br><br>
+            Tempo de resposta: Chat 24/7 | E-mail até 24h | Outros 9h-18h
+          </div>
+        </div>
+        <div class="impact-calc">
+          <div class="impact-item">
+            <div class="impact-label">Volume Impactado</div>
+            <div class="impact-value">4</div>
+            <div class="impact-unit">conv/mês</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-label">N1 Potencial (0.60)</div>
+            <div class="impact-value">2</div>
+            <div class="impact-unit">conv/mês</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-label">Prioridade</div>
+            <div class="impact-value" style="color:#d97706">P2</div>
+            <div class="impact-unit">Média</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gap 8 -->
+    <div class="expandable create" onclick="toggleExpand(this)">
+      <div class="expand-header">
+        <div style="flex:1">
+          <div style="font-weight:700;color:#1e293b">#8 · Erros técnicos / bugs</div>
+          <div style="font-size:12px;color:#64748b;margin-top:4px">3 conv/mês — Troubleshooting</div>
+        </div>
+        <div class="expand-icon">▼</div>
+      </div>
+      <div class="expand-content">
+        <div class="content-section">
+          <span class="content-label">Pergunta-Tipo</span>
+          <div class="content-text">"Aparece erro na tela", "Não consigo fazer login", "A página não carrega"</div>
+        </div>
+        <div class="content-section">
+          <span class="content-label">Título Sugerido</span>
+          <div class="content-text"><strong>Resolvendo Erros Técnicos: Guia de Troubleshooting</strong></div>
+        </div>
+        <div class="content-section">
+          <span class="content-label">Resposta Sugerida</span>
+          <div class="content-text">
+            <strong>Passos para resolver:</strong><br><br>
+            1) <strong>Limpar cache</strong> — Atalho: Ctrl+Shift+Del (Windows) / Cmd+Shift+Delete (Mac)<br>
+            2) <strong>Tentar outro navegador</strong> — Chrome, Firefox, Safari, Edge<br>
+            3) <strong>Modo privado/incógnito</strong> — Desativa extensões<br>
+            4) <strong>Desativar extensões</strong> — Ad blockers, VPNs podem causar problemas<br>
+            5) <strong>Reiniciar roteador</strong> — Desconecte por 30 segundos<br><br>
+            Se persiste: Entre em contato com suporte e envie o código de erro ou print da tela.
+          </div>
+        </div>
+        <div class="impact-calc">
+          <div class="impact-item">
+            <div class="impact-label">Volume Impactado</div>
+            <div class="impact-value">3</div>
+            <div class="impact-unit">conv/mês</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-label">N1 Potencial (0.60)</div>
+            <div class="impact-value">2</div>
+            <div class="impact-unit">conv/mês</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-label">Prioridade</div>
+            <div class="impact-value" style="color:#d97706">P2</div>
+            <div class="impact-unit">Média</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gaps 9-14 (condensados) -->
+    <div class="expandable create" onclick="toggleExpand(this)">
+      <div class="expand-header">
+        <div style="flex:1">
+          <div style="font-weight:700;color:#1e293b">#9-14 · Outros Conteúdos para Criar (Volume menor)</div>
+          <div style="font-size:12px;color:#64748b;margin-top:4px">7 conv/mês total — Temas específicos</div>
+        </div>
+        <div class="expand-icon">▼</div>
+      </div>
+      <div class="expand-content">
+        <div class="priority-matrix">
+          <div class="priority-box p2">
+            <h4>#9 · FAQ Aula 3 / Treinamento</h4>
+            <p style="font-size:12px;color:#475569;margin-bottom:8px"><strong>1 conv/mês</strong></p>
+            <div class="content-text">Compilar dúvidas frequentes dos módulos de treinamento em uma página FAQ com respostas de especialistas.</div>
+          </div>
+          <div class="priority-box p2">
+            <h4>#10 · Dúvidas Fiscais</h4>
+            <p style="font-size:12px;color:#475569;margin-bottom:8px"><strong>1 conv/mês</strong></p>
+            <div class="content-text">Guia sobre emissão de NF-e, CNPJ, série fiscal, retenção de impostos, e documentação necessária.</div>
+          </div>
+          <div class="priority-box p3">
+            <h4>#12 · Acareação</h4>
+            <p style="font-size:12px;color:#475569;margin-bottom:8px"><strong>1 conv/mês</strong></p>
+            <div class="content-text">Explicar etapa de acareação (embalagem, consolidação), tempo estimado e etapa no fluxo.</div>
+          </div>
+          <div class="priority-box p3">
+            <h4>#13 · Contato com Especialistas</h4>
+            <p style="font-size:12px;color:#475569;margin-bottom:8px"><strong>1 conv/mês</strong></p>
+            <div class="content-text">Como solicitar atendimento especializado, agenda, disponibilidade e canais de contato.</div>
+          </div>
+          <div class="priority-box p3">
+            <h4>#14 · Estampa Reprovada</h4>
+            <p style="font-size:12px;color:#475569;margin-bottom:8px"><strong>1 conv/mês</strong></p>
+            <div class="content-text">Motivos comuns de reprovação, como corrigir (resolução, cores, tamanho) e reenviar.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTEÚDOS PARA ADAPTAR -->
+<section>
+  <h2>Conteúdos para ADAPTAR (3 Gaps)</h2>
+  <div class="section-content">
+
+    <!-- Gap 2 -->
+    <div class="expandable adapt" onclick="toggleExpand(this)">
+      <div class="expand-header">
+        <div style="flex:1">
+          <div style="font-weight:700;color:#1e293b">#2 · Configuração de loja e informações gerais</div>
+          <div style="font-size:12px;color:#64748b;margin-top:4px">8 conv/mês — Faltam config BÁSICAS</div>
+        </div>
+        <div class="expand-icon">▼</div>
+      </div>
+      <div class="expand-content">
+        <div class="content-section">
+          <span class="content-label">Conteúdo Existente</span>
+          <div class="content-text">
+            • Banners e Destaques (ID: 69b9d118)<br>
+            • Promoção Unidade Grátis (ID: 69b9d106)
+          </div>
+        </div>
+        <div class="content-section">
+          <span class="content-label">Gap Identificado</span>
+          <div class="content-text">Faltam respostas sobre configurações BÁSICAS iniciais para clientes novos: como criar loja, adicionar dados, conectar pagamento, etc.</div>
+        </div>
+        <div class="content-section">
+          <span class="content-label">Sugestão de Adaptação</span>
+          <div class="content-text"><strong>Criar "Guia Completo: Configurações Básicas da Loja"</strong><br><br>
+            Expandir conteúdo existente com:<br>
+            1) Criação inicial de loja<br>
+            2) Preenchimento de dados obrigatórios<br>
+            3) Configuração de meios de pagamento<br>
+            4) Setups de categorias de produtos<br>
+            5) Políticas e termos
+          </div>
+        </div>
+        <div class="impact-calc">
+          <div class="impact-item">
+            <div class="impact-label">Volume Impactado</div>
+            <div class="impact-value">8</div>
+            <div class="impact-unit">conv/mês</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-label">N1 Potencial (0.60)</div>
+            <div class="impact-value">5</div>
+            <div class="impact-unit">conv/mês</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-label">Prioridade</div>
+            <div class="impact-value" style="color:#d97706">P1</div>
+            <div class="impact-unit">Alta</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gap 5 -->
+    <div class="expandable adapt" onclick="toggleExpand(this)">
+      <div class="expand-header">
+        <div style="flex:1">
+          <div style="font-weight:700;color:#1e293b">#5 · Criação de produtos e upload de estampas</div>
+          <div style="font-size:12px;color:#64748b;margin-top:4px">4 conv/mês — Faltam requisitos técnicos</div>
+        </div>
+        <div class="expand-icon">▼</div>
+      </div>
+      <div class="expand-content">
+        <div class="content-section">
+          <span class="content-label">Conteúdo Existente</span>
+          <div class="content-text">Há conteúdo sobre estampas, mas sem detalhes de requisitos técnicos.</div>
+        </div>
+        <div class="content-section">
+          <span class="content-label">Gap Identificado</span>
+          <div class="content-text">Clientes não sabem os requisitos técnicos: resolução mínima, formatos aceitos, tamanhos por produto.</div>
+        </div>
+        <div class="content-section">
+          <span class="content-label">Sugestão de Adaptação</span>
+          <div class="content-text"><strong>Expandir conteúdo existente com especificações técnicas:</strong><br><br>
+            • <strong>Resolução:</strong> Mínimo 300 DPI<br>
+            • <strong>Formatos aceitos:</strong> JPG, PNG, SVG<br>
+            • <strong>Tamanhos por produto:</strong> Camiseta 30x40cm, Caneca 15cm altura, etc.<br>
+            • <strong>Cores:</strong> RGB ou CMYK (conforme produto)<br>
+            • <strong>Transparência:</strong> Quando é aceita
+          </div>
+        </div>
+        <div class="impact-calc">
+          <div class="impact-item">
+            <div class="impact-label">Volume Impactado</div>
+            <div class="impact-value">4</div>
+            <div class="impact-unit">conv/mês</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-label">N1 Potencial (0.60)</div>
+            <div class="impact-value">2</div>
+            <div class="impact-unit">conv/mês</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-label">Prioridade</div>
+            <div class="impact-value" style="color:#d97706">P2</div>
+            <div class="impact-unit">Média</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gap 11 -->
+    <div class="expandable adapt" onclick="toggleExpand(this)">
+      <div class="expand-header">
+        <div style="flex:1">
+          <div style="font-weight:700;color:#1e293b">#11 · Entrega - Dúvidas sobre frete</div>
+          <div style="font-size:12px;color:#64748b;margin-top:4px">1 conv/mês — Cobertura geográfica</div>
+        </div>
+        <div class="expand-icon">▼</div>
+      </div>
+      <div class="expand-content">
+        <div class="content-section">
+          <span class="content-label">Conteúdo Existente</span>
+          <div class="content-text">Há conteúdo sobre entrega, mas sem detalhes de frete e cobertura geográfica.</div>
+        </div>
+        <div class="content-section">
+          <span class="content-label">Gap Identificado</span>
+          <div class="content-text">Clientes perguntam "Quanto custa o frete?" e "Qual a cobertura geográfica?"</div>
+        </div>
+        <div class="content-section">
+          <span class="content-label">Sugestão de Adaptação</span>
+          <div class="content-text"><strong>Adicionar seção sobre frete ao conteúdo de entrega:</strong><br><br>
+            • Cálculo de frete (por CEP, peso, dimensões)<br>
+            • Regiões cobertas (Brasil todo, exterior?)<br>
+            • Prazos por região<br>
+            • Rastreamento
+          </div>
+        </div>
+        <div class="impact-calc">
+          <div class="impact-item">
+            <div class="impact-label">Volume Impactado</div>
+            <div class="impact-value">1</div>
+            <div class="impact-unit">conv/mês</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-label">N1 Potencial (0.60)</div>
+            <div class="impact-value">1</div>
+            <div class="impact-unit">conv/mês</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-label">Prioridade</div>
+            <div class="impact-value" style="color:#059669">P3</div>
+            <div class="impact-unit">Baixa</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTEÚDOS JÁ COBERTOS -->
+<section>
+  <h2>Conteúdos Já Cobertos (Problema de Ativação)</h2>
+  <div class="section-content">
+    <p style="font-size:13px;color:#475569;margin-bottom:16px">
+      Os temas abaixo <strong>já possuem conteúdo na IDS</strong>, mas <strong>não estão sendo ativados</strong> quando o cliente faz a pergunta. O problema não é de criação de conteúdo, mas de <strong>busca/indexação/palavras-chave</strong>.
+    </p>
+
+    <div style="background:#f0fdf4;border-left:4px solid #059669;padding:16px;border-radius:6px;margin:16px 0">
+      <h3 style="color:#166534;margin-bottom:12px">Diagnóstico</h3>
+      <ul style="font-size:13px;color:#475569;line-height:1.8">
+        <li><strong>Cancelamento de assinatura (5 conv/mês):</strong> Conteúdo existe (ID: 69b9d0ecef78d10016030a10) mas palavras-chave não cobrem variações ("desistir", "sair", "encerrar", "parar de pagar")</li>
+        <li><strong>Cadastro e alteração de dados (2 conv/mês):</strong> Conteúdo existe mas contexto de acionamento pode estar muito específico</li>
+      </ul>
+      <h3 style="color:#166534;margin:16px 0 12px;font-size:14px">Recomendação</h3>
+      <p style="font-size:13px;color:#475569">
+        Revisar e expandir as <strong>palavras-chave e sinônimos</strong> para esses conteúdos. Não é necessário criar novo conteúdo, apenas otimizar a busca.
+      </p>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="gap-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Tema</th>
+            <th>Volume</th>
+            <th>ID Conteúdo Existente</th>
+            <th>Diagnóstico</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="theme-number">4</span></td>
+            <td><span class="theme-title">Cancelamento de assinatura</span></td>
+            <td><span class="volume-badge">5 conv/mês</span></td>
+            <td><code style="background:#f1f5f9;padding:2px 6px;border-radius:3px;font-size:11px">69b9d0ecef78d10016030a10</code></td>
+            <td><span style="font-size:12px;color:#475569">Palavras-chave insuficientes</span></td>
+          </tr>
+          <tr>
+            <td><span class="theme-number">15</span></td>
+            <td><span class="theme-title">Cadastro e alteração de dados</span></td>
+            <td><span class="volume-badge">2 conv/mês</span></td>
+            <td><code style="background:#f1f5f9;padding:2px 6px;border-radius:3px;font-size:11px">Existente</code></td>
+            <td><span style="font-size:12px;color:#475569">Contexto específico demais</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- IMPACTO E PRIORIZAÇÃO -->
+<section>
+  <h2>Impacto Total e Priorização</h2>
+  <div class="section-content">
+
+    <div style="background:#eff6ff;border-left:4px solid #2563eb;padding:16px;border-radius:6px;margin-bottom:20px">
+      <h3 style="color:#1e40af;margin-bottom:12px;font-size:14px">Impacto Estimado</h3>
+      <div class="impact-calc">
+        <div class="impact-item">
+          <div class="impact-label">N2 Atuais por No Content</div>
+          <div class="impact-value">220</div>
+          <div class="impact-unit">tickets/mês</div>
+        </div>
+        <div class="impact-item">
+          <div class="impact-label">Com todos os gaps cobertos</div>
+          <div class="impact-value">193</div>
+          <div class="impact-unit">tickets/mês (redução 12%)</div>
+        </div>
+        <div class="impact-item">
+          <div class="impact-label">N1 Ganho Estimado</div>
+          <div class="impact-value">33</div>
+          <div class="impact-unit">conv/mês (taxa 0.60)</div>
+        </div>
+        <div class="impact-item">
+          <div class="impact-label">Impacto na Retenção</div>
+          <div class="impact-value">+0.9%</div>
+          <div class="impact-unit">pontos de retenção</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin:20px 0 16px;font-size:14px;font-weight:700">Mapa de Priorização</h3>
+
+    <div class="priority-matrix">
+      <div class="priority-box p1">
+        <h4>P1 — Implementar IMEDIATAMENTE</h4>
+        <ul class="priority-list">
+          <li><strong>#1</strong> Dúvidas genéricas (33 conv) — 20 N1</li>
+          <li><strong>#3</strong> Produção e pedidos (7 conv) — 4 N1</li>
+          <li><strong>#6</strong> Fraude WhatsApp (4 conv) — 2 N1</li>
+          <li><strong>#2</strong> Config loja (8 conv) — 5 N1</li>
+        </ul>
+        <p style="font-size:11px;color:#64748b;margin-top:12px;font-weight:600">
+          Subtotal: 52 conv/mês → 31 N1/mês
+        </p>
+      </div>
+
+      <div class="priority-box p2">
+        <h4>P2 — Implementar em 2-3 semanas</h4>
+        <ul class="priority-list">
+          <li><strong>#7</strong> Contato suporte (4 conv) — 2 N1</li>
+          <li><strong>#8</strong> Erros técnicos (3 conv) — 2 N1</li>
+          <li><strong>#5</strong> Criação produtos (4 conv) — 2 N1</li>
+        </ul>
+        <p style="font-size:11px;color:#64748b;margin-top:12px;font-weight:600">
+          Subtotal: 11 conv/mês → 6 N1/mês
+        </p>
+      </div>
+
+      <div class="priority-box p3">
+        <h4>P3 — Implementar em 4-6 semanas</h4>
+        <ul class="priority-list">
+          <li><strong>#9-14</strong> Outros temas (7 conv) — 4 N1</li>
+          <li><strong>#11</strong> Frete (1 conv) — 1 N1</li>
+        </ul>
+        <p style="font-size:11px;color:#64748b;margin-top:12px;font-weight:600">
+          Subtotal: 8 conv/mês → 5 N1/mês
+        </p>
+      </div>
+    </div>
+
+    <p style="font-size:12px;color:#64748b;text-align:center;margin-top:20px">
+      <strong>Total esperado:</strong> 71 conv/mês reduzidas → 42 N1/mês ganhos (com taxa de conversão 0.60)<br>
+      <strong>Ajuste conservador (realizável):</strong> 56 conv/mês → 33 N1/mês (+0.9% retenção)
+    </p>
+  </div>
+</section>
+
+<!-- PRÓXIMOS PASSOS -->
+<section>
+  <h2>Próximos Passos Recomendados</h2>
+  <div class="section-content">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px">
+      <div style="padding:16px;background:#fef2f2;border-radius:8px;border-left:4px solid #dc2626">
+        <h4 style="color:#991b1b;margin-bottom:8px;font-size:13px;font-weight:700">Fase 1 — Semana 1-2</h4>
+        <ul style="font-size:12px;color:#475569;line-height:1.8;margin-left:20px">
+          <li>Criar gap #1 (Guia Triage — 33 conv)</li>
+          <li>Adaptar gap #2 (Config loja — 8 conv)</li>
+          <li>Criar gap #3 (Produção/status — 7 conv)</li>
+          <li>Criar gap #6 (Fraude WhatsApp — 4 conv)</li>
+        </ul>
+        <p style="font-size:11px;color:#991b1b;font-weight:600;margin-top:12px">
+          🎯 Impacto: 52 conv/mês | 31 N1/mês
+        </p>
+      </div>
+
+      <div style="padding:16px;background:#fffbf0;border-radius:8px;border-left:4px solid #d97706">
+        <h4 style="color:#92400e;margin-bottom:8px;font-size:13px;font-weight:700">Fase 2 — Semana 3-4</h4>
+        <ul style="font-size:12px;color:#475569;line-height:1.8;margin-left:20px">
+          <li>Criar gap #7 (Contato suporte)</li>
+          <li>Criar gap #8 (Troubleshooting)</li>
+          <li>Adaptar gap #5 (Requisitos técnicos)</li>
+          <li>Revisar/otimizar gaps já cobertos (4, 15)</li>
+        </ul>
+        <p style="font-size:11px;color:#92400e;font-weight:600;margin-top:12px">
+          🎯 Impacto: 11 conv/mês | 6 N1/mês
+        </p>
+      </div>
+
+      <div style="padding:16px;background:#f0fdf4;border-radius:8px;border-left:4px solid #059669">
+        <h4 style="color:#166534;margin-bottom:8px;font-size:13px;font-weight:700">Fase 3 — Semana 5-8</h4>
+        <ul style="font-size:12px;color:#475569;line-height:1.8;margin-left:20px">
+          <li>Criar gaps #9-14 (temas menores)</li>
+          <li>Adaptar gap #11 (Frete)</li>
+          <li>Monitorar ativação e ajustar KWs</li>
+          <li>Medir impacto real em N2</li>
+        </ul>
+        <p style="font-size:11px;color:#166534;font-weight:600;margin-top:12px">
+          🎯 Impacto: 8 conv/mês | 5 N1/mês
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REFERÊNCIAS E DOWNLOADS -->
+<section>
+  <h2>Referências e Documentação</h2>
+  <div class="section-content">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px">
+      <div style="padding:12px;background:#f8fafc;border-radius:6px;border:1px solid #e2e8f0">
+        <div style="font-weight:700;color:#1e293b;font-size:13px;margin-bottom:4px">Conversas de Origem</div>
+        <p style="font-size:12px;color:#64748b">220 conversas de suporte marcadas como "No relevant content" — disponível em Metabase</p>
+      </div>
+      <div style="padding:12px;background:#f8fafc;border-radius:6px;border:1px solid #e2e8f0">
+        <div style="font-weight:700;color:#1e293b;font-size:13px;margin-bottom:4px">IDS Atual</div>
+        <p style="font-size:12px;color:#64748b">Base de conhecimento existente com 69 conteúdos — alguns citados nos gaps</p>
+      </div>
+      <div style="padding:12px;background:#f8fafc;border-radius:6px;border:1px solid #e2e8f0">
+        <div style="font-weight:700;color:#1e293b;font-size:13px;margin-bottom:4px">Dashboard de Monitoramento</div>
+        <p style="font-size:12px;color:#64748b">Acompanhar redução em N2 "No content" após implementação em Metabase</p>
+      </div>
+      <div style="padding:12px;background:#f8fafc;border-radius:6px;border:1px solid #e2e8f0">
+        <div style="font-weight:700;color:#1e293b;font-size:13px;margin-bottom:4px">Documento de Estilo</div>
+        <p style="font-size:12px;color:#64748b">Guia de tom, estrutura e padrões para criação de conteúdos Reserva INK</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<div class="footer">
+  <p>Relatório de análise de Content Gap para <strong>reservaink_cc</strong> — Cloud Humans Analytics</p>
+  <p style="margin-top:8px">Período: 15/03/2026 a 14/04/2026 | Elaborado: 14/04/2026</p>
+  <p style="margin-top:12px;opacity:.6">Para atualizar este relatório, consulte o skill <strong>ids-no-relevant-content</strong> ou entre em contato com <a href="#">Cloud Humans Support</a></p>
+</div>
+
+<script>
+function toggleExpand(element) {
+  element.classList.toggle('active');
+}
+</script>
+
+</body>
+</html>
