@@ -1,0 +1,114 @@
+{
+  "_schema": "action-plan-map/plan/v1",
+  "project_slug": "linus_email",
+  "date": "20/04/2026",
+  "summary": "Retenção em 56% (30d) com queda DRÁSTICA de 61,2% (06/04) para 44,9% (13/04) — perda de -16,3pp em 1 semana. Gatilhos: (1) Handover by timeout DOBROU (2→5 tickets na última semana, 7,69% dos N2); (2) 21,98% dos N2 por 'Transfer message' (20 tickets/30d) sem Venda do Bot ativada; (3) conteúdo INTERACTIVE 'status pedido' (ID 698de966) com 25,93% de GenCX ruim — maior sinalizador de qualidade no projeto; (4) NO_TAG concentra 27% do volume com 35% GenCX ruim. Canal email com query_transform DESATIVADO (crítico). Potencial: +55 a +75 N1/mês → retenção ~75%.",
+  "impact_retention": "+12 a +18pp",
+  "total_impact": 63,
+  "n1_potential": 63,
+  "executed_at": "2026-04-20",
+  "skill_version": "v5.1",
+  "actions": [
+    {
+      "priority": "P0",
+      "title": "Ativar ConversationHistoryQueryTransformation (crítico para canal email)",
+      "desc": "query_transform=false em projeto de EMAIL é config subótima crítica. Emails são tipicamente longos, multi-turn e com contexto — sem Query Transformation, ClaudIA perde sinal nas mensagens subsequentes. Essa feature reformula a query com base no histórico antes da busca. Ativar em CloudBlocks → conversationHistoryQueryTransformationSettings.enabled=true. Impacto direto em transfer_message (20 tickets) e no_relevant_content (4 tickets).",
+      "impact_tickets": 24,
+      "conversion_rate": 0.5,
+      "impact_est": 12,
+      "type": "config_search"
+    },
+    {
+      "priority": "P0",
+      "title": "Reescrever conteúdo INTERACTIVE 'Qual o status do meu pedido?' (ID 698de966ac818d473ad82810)",
+      "desc": "35 tickets em 30d com retenção 71,43% MAS 25,93% de GenCX ruim — respostas incorretas ou incompletas em 1 a cada 4 casos retidos. Este é o sinal de qualidade mais crítico do projeto. Revisar o flow (provavelmente acessa API de rastreio e formata mal o output) — adicionar validações de status não-padrão, tratamento quando API retorna vazio, e oferecer opção de contato humano quando data prometida já passou.",
+      "impact_tickets": 35,
+      "conversion_rate": 0.25,
+      "impact_est": 9,
+      "type": "eddie_improve"
+    },
+    {
+      "priority": "P0",
+      "title": "Investigar aumento de Handover by timeout (dobrou de 2 para 5 na última semana)",
+      "desc": "7,69% dos N2 em 30d são por timeout — e na última semana DOBROU vs. a anterior. Em canal email, timeout pode indicar: (a) cliente não respondeu solicitação de esclarecimento (timing errado), (b) erro técnico travando conversa. Verificar logs dos 5 cloudchatids da semana 13/04, validar se maximumMinutesWithoutResponse está bem calibrado para email (deve ser maior que chat — 24h vs 10min). Acionar engenharia se houver padrão de erro.",
+      "impact_tickets": 7,
+      "conversion_rate": 0.6,
+      "impact_est": 4,
+      "type": "config_resolution"
+    },
+    {
+      "priority": "P0",
+      "title": "Ativar Venda do Bot (FORWARD_TO_HUMAN_CHECK + MULTIPROMPT)",
+      "desc": "21,98% dos N2 (20 tickets/30d) são por 'transfer message sent by ClaudIA' — o maior motivo depois de N2 legítimo. Cliente está pedindo humano antes de tentar resolver. Em email, a Venda do Bot pode ser MAIS eficaz que em chat pois o cliente tem mais paciência para texto longo. Ativar em CloudBlocks → Flow Prompts → FORWARD_TO_HUMAN_CHECK + MULTIPROMPT.",
+      "impact_tickets": 20,
+      "conversion_rate": 0.3,
+      "impact_est": 6,
+      "type": "config_handover"
+    },
+    {
+      "priority": "P0",
+      "title": "Reescrever N1 'Como fechar parceria' (ID 695294389c408e05560f59fc)",
+      "desc": "26 tickets com retenção de apenas 34,62% e 11,11% GenCX ruim. Conteúdo mais problemático do projeto em volume × qualidade. Mesmo tema do linus mas rendendo muito pior no email — provavelmente porque email traz propostas mais elaboradas (b2b, fornecedores) que demandam resposta detalhada com checklist de dados e próximos passos. Reescrever como formulário estruturado com campos (empresa, CNPJ, produto, volume estimado, canal de contato).",
+      "impact_tickets": 17,
+      "conversion_rate": 0.25,
+      "impact_est": 4,
+      "type": "content_improve"
+    },
+    {
+      "priority": "P1",
+      "title": "Ativar More User Interactions",
+      "desc": "moreUserInteractionsEnabled=false. Para email (conversas tipicamente mais longas), essa feature é especialmente valiosa — melhora o entendimento do contexto acumulado. Ativar em CloudBlocks → contentSearchConfiguration → moreUserInteractionsEnabled=true.",
+      "impact_tickets": 25,
+      "conversion_rate": 0.5,
+      "impact_est": 12,
+      "type": "config_search"
+    },
+    {
+      "priority": "P1",
+      "title": "Aumentar max_no_valid_content de 1 para 3",
+      "desc": "Hoje em 1 — ClaudIA desiste após uma única tentativa sem conteúdo. Em email, onde o custo de cada mensagem é maior, vale dar 3 chances antes de transferir. Config em CloudBlocks → classificationSettings.maxNoValidContentAttempts=3.",
+      "impact_tickets": 10,
+      "conversion_rate": 0.35,
+      "impact_est": 4,
+      "type": "config_classification"
+    },
+    {
+      "priority": "P1",
+      "title": "Reorganizar tag NO_TAG (27% do volume, 35% GenCX ruim)",
+      "desc": "48 tickets em NO_TAG (27% do volume do período) com retenção 39,58% E 35% GenCX ruim — o maior score de GenCX ruim por tag no projeto. Indica que tickets sem tag estão recebendo respostas de conteúdos inadequados. Rodar App TAGs em massa em CloudBlocks e ajustar prompts de classificação específicos para email (que podem precisar de mais contexto do assunto).",
+      "impact_tickets": 29,
+      "conversion_rate": 0.25,
+      "impact_est": 7,
+      "type": "content_reclassify"
+    },
+    {
+      "priority": "P1",
+      "title": "Reescrever INTERACTIVE 'Andamento da minha troca' (ID 698de9d71366e13eda7b2447)",
+      "desc": "11 tickets com retenção 27,27% e 16,67% GenCX ruim. Mesma categoria do conteúdo problemático em linus (47 tickets / 48,94%). Aplicar a mesma reescrita: tratar troca não processada, alteração de troca pendente, estorno não liberado. Para email, adicionar prazo esperado de retorno.",
+      "impact_tickets": 8,
+      "conversion_rate": 0.25,
+      "impact_est": 2,
+      "type": "eddie_improve"
+    },
+    {
+      "priority": "P2",
+      "title": "Ativar enlightenmentQuestionLimit",
+      "desc": "Hoje enlightenment_limit_enabled=false. Em email, o custo de muitas perguntas é maior — ativar o cap garante que ClaudIA tenta alternativas (buscar conteúdo com o que tem) em vez de perguntar indefinidamente. Configurar em CloudBlocks → enlightenmentQuestionLimit.enabled=true (limit já está em 3).",
+      "impact_tickets": 8,
+      "conversion_rate": 0.45,
+      "impact_est": 4,
+      "type": "config_classification"
+    },
+    {
+      "priority": "P2",
+      "title": "Revisar ativação de ProblemResolvedChecker para email",
+      "desc": "fup_active=false no linus_email (vs. true no linus/chat). Em canal email a dinâmica do FUP é diferente — pergunta de satisfação por email tem taxa de resposta menor e pode gerar reabertura indesejada. NÃO ativar cegamente: validar com o cliente Linus se há política de FUP diferente para email. Incluir em revisão mensal.",
+      "impact_tickets": 15,
+      "conversion_rate": 0.2,
+      "impact_est": 3,
+      "type": "config_resolution"
+    }
+  ],
+  "report_html": "reports/action-plan-linus_email.html",
+  "doubts_md": "doubts/doubts-linus_email.md"
+}

@@ -1,0 +1,114 @@
+{
+  "_schema": "action-plan-map/plan/v1",
+  "project_slug": "linus",
+  "date": "20/04/2026",
+  "summary": "Retenção em 60% (30d) com queda de 67,8% (30/03) para 58,4% (13/04) — perda de -9,4pp em 2 semanas. Gatilho principal: casos de 'No relevant content' TRIPLICARAM na última semana (5→14 tickets) + 17,98% dos N2 em 30d são por 'Limit of consecutive clarification attempts reached' (141 tickets). Principais alavancas: (1) aumentar max_clarification_attempts de 2→3 e max_no_valid_content de 1→3; (2) reescrita dos TOP 3 conteúdos INTERACTIVE com retenção <55% (status pedido, andamento troca, parceria); (3) ativação de More User Interactions + enlightenmentQuestionLimit; (4) investigação dos 14 casos de no_relevant_content da última semana para criação de conteúdos. CSAT ClaudIA saudável (84% na última semana). Potencial: +175 a +210 N1/mês → retenção ~67–70%.",
+  "impact_retention": "+9 a +11pp",
+  "total_impact": 198,
+  "n1_potential": 198,
+  "executed_at": "2026-04-20",
+  "skill_version": "v5.1",
+  "actions": [
+    {
+      "priority": "P0",
+      "title": "Aumentar max_clarification_attempts de 2 para 3",
+      "desc": "17,98% dos N2 (141 tickets em 30d) caem em 'Limit of consecutive clarification attempts reached'. Com o limite atual em 2, ClaudIA desiste cedo demais quando a pergunta é ambígua. Aumentar para 3 dá uma chance extra de reformular sem gerar loop longo. Ajuste em CloudBlocks → Classificação e Clarificação → maxClarificationAttempts. Monitorar CSAT e GenCX por 7 dias.",
+      "impact_tickets": 141,
+      "conversion_rate": 0.35,
+      "impact_est": 49,
+      "type": "config_classification"
+    },
+    {
+      "priority": "P0",
+      "title": "Aumentar max_no_valid_content de 1 para 3",
+      "desc": "Config atual faz ClaudIA desistir após 1 tentativa sem conteúdo válido — responsável pelo aumento recente de 'No relevant content found' (5 tickets na semana 06/04 → 14 na semana 13/04, TRIPLICOU). Aumentar para 3 permite reformular query antes de transferir. Single-field change em CloudBlocks → Classificação → maxNoValidContentAttempts. Sem risco operacional.",
+      "impact_tickets": 36,
+      "conversion_rate": 0.35,
+      "impact_est": 13,
+      "type": "config_classification"
+    },
+    {
+      "priority": "P0",
+      "title": "Reescrever conteúdo INTERACTIVE 'Qual o status do meu pedido?' (ID 68ac92970e038847c35060c9)",
+      "desc": "Conteúdo mais acionado do projeto: 117 tickets em 30d com retenção de apenas 51,28% (57 tickets N2). É um Eddie INTERACTIVE que busca rastreio. Reescrever o prompt do flow para (a) tratar casos sem código de rastreio disponível (oferecer consulta por e-mail/CPF), (b) explicar cada status de rastreio quando opaco, (c) oferecer canal alternativo quando API falha. Validar se há quebra de integração com transportadora causando timeout.",
+      "impact_tickets": 57,
+      "conversion_rate": 0.25,
+      "impact_est": 14,
+      "type": "eddie_improve"
+    },
+    {
+      "priority": "P0",
+      "title": "Criar conteúdos para os 14 casos de 'No relevant content' da última semana",
+      "desc": "Na semana 13/04, os casos de transferência por ausência de conteúdo saltaram de 5 para 14 — indicando temas novos não cobertos pela IDS (que hoje tem só 99 conteúdos N1). Extrair os cloudchatids do resolutionreason='No relevant content found' dos últimos 14 dias, clusterizar por tema e criar novos conteúdos N1 via Hub → Conteúdos → Adicionar. Priorizar temas com 3+ tickets.",
+      "impact_tickets": 36,
+      "conversion_rate": 0.6,
+      "impact_est": 22,
+      "type": "content_new"
+    },
+    {
+      "priority": "P1",
+      "title": "Ativar More User Interactions",
+      "desc": "Flag moreUserInteractionsEnabled=false. Essa feature melhora o entendimento em conversas multi-turn — impacta diretamente as clarificações (141 tickets/30d) e perguntas com contexto de mensagens anteriores. Ativar em CloudBlocks → contentSearchConfiguration → moreUserInteractionsEnabled=true. Sem custo adicional, impacto imediato.",
+      "impact_tickets": 100,
+      "conversion_rate": 0.5,
+      "impact_est": 50,
+      "type": "config_search"
+    },
+    {
+      "priority": "P1",
+      "title": "Ativar enlightenmentQuestionLimit",
+      "desc": "enlightenment_limit_enabled=false e limit=3. Sem o cap ativo, ClaudIA pode entrar em loops de clarificação. Ativar o limite previne o esgotamento (que hoje aciona o maxClarificationAttempts) e permite uma transferência mais suave. Configurar em CloudBlocks → enlightenmentQuestionLimit.enabled=true.",
+      "impact_tickets": 40,
+      "conversion_rate": 0.45,
+      "impact_est": 18,
+      "type": "config_classification"
+    },
+    {
+      "priority": "P1",
+      "title": "Reescrever INTERACTIVE 'Quero saber o andamento da minha troca' (ID 694458b5b7d7463eb5100f0d)",
+      "desc": "47 tickets em 30d com retenção 48,94% e 8% de GenCX ruim. O Eddie consulta status de troca mas falha quando (a) troca ainda não foi processada, (b) cliente quer alterar troca pendente, (c) estorno não saiu. Revisar flow para tratar os 3 casos explicitamente e oferecer prazo de retorno quando em análise.",
+      "impact_tickets": 24,
+      "conversion_rate": 0.25,
+      "impact_est": 6,
+      "type": "eddie_improve"
+    },
+    {
+      "priority": "P1",
+      "title": "Reescrever N1 'Como fechar parceria com Linus' (ID 68ac92c4bc6bd062e853a51b)",
+      "desc": "76 tickets, 56,58% retenção. Conteúdo atual parece não cobrir os subtemas de parceria (varejo, influencers, transporte, b2b) que aparecem nas tags parceria (86) e parceria_b2b (35). Quebrar em 2 conteúdos: (1) parceria comercial/b2b com instruções do canal dedicado; (2) colaborações/influencers com fluxo próprio. Consolidar com parceria_b2b.",
+      "impact_tickets": 33,
+      "conversion_rate": 0.25,
+      "impact_est": 8,
+      "type": "content_split"
+    },
+    {
+      "priority": "P1",
+      "title": "Ativar Venda do Bot (FORWARD_TO_HUMAN_CHECK + MULTIPROMPT)",
+      "desc": "9,06% dos N2 (71 tickets/30d) são por 'Some transfer message was sent by ClaudIA' — usuários pedindo humano antes de ClaudIA tentar resolver. Ativar o fluxo de retenção via CloudBlocks → Flow Prompts → FORWARD_TO_HUMAN_CHECK + configurar MULTIPROMPT com perguntas contextuais. Pode recuperar ~30% desses tickets.",
+      "impact_tickets": 71,
+      "conversion_rate": 0.3,
+      "impact_est": 21,
+      "type": "config_handover"
+    },
+    {
+      "priority": "P2",
+      "title": "Upgrade de modelo: CHATGPT4o1120 → CHATGPT52CHAT",
+      "desc": "Projeto está em CHATGPT4o1120 enquanto linus_email já usa CHATGPT52CHAT. Modelo mais novo tende a reduzir alucinação e melhorar clarificação — pode impactar os 2,99% de GenCX ruim do conteúdo de status pedido e os 8% do conteúdo de troca. Trocar em project_setup.selectedgptmodel. Validar custo com produto antes.",
+      "impact_tickets": 80,
+      "conversion_rate": 0.3,
+      "impact_est": 24,
+      "type": "config_model"
+    },
+    {
+      "priority": "P2",
+      "title": "Reorganizar tag NO_TAG (317 tickets = 27% do volume, retenção 27%)",
+      "desc": "NO_TAG concentra 317 tickets (27% do volume) com retenção de apenas 27,13% — muitos deveriam estar marcados com outras tags (desconhece_entrega, alteracoes_pedido, sondagem) que são N2 legítimos. Rodar App TAGs em massa em CloudBlocks e revisar prompts de classificação. A retenção observada deve cair artificialmente mas a visibilidade melhora e libera ação nos N2 reais.",
+      "impact_tickets": 50,
+      "conversion_rate": 0.25,
+      "impact_est": 13,
+      "type": "content_reclassify"
+    }
+  ],
+  "report_html": "reports/action-plan-linus.html",
+  "doubts_md": "doubts/doubts-linus.md"
+}

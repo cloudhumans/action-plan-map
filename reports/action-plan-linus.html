@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Action Plan — Linus | Cloud Humans</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f6fa;color:#1a1a2e}
+
+.header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:40px 48px 36px}
+.header h1{font-size:32px;font-weight:700;margin-bottom:8px;letter-spacing:-.5px}
+.header .subtitle{font-size:15px;opacity:.75;line-height:1.5;max-width:900px}
+.header .meta{margin-top:16px;display:flex;gap:24px;font-size:13px;opacity:.6;flex-wrap:wrap}
+.header-badges{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+.header-badge{display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;backdrop-filter:blur(10px)}
+.header-badge.tier{background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.4);color:#e0e7ff}
+.header-badge.health-attention{background:rgba(217,119,6,.2);border:1px solid rgba(217,119,6,.4);color:#fde68a}
+
+.main{padding:32px 48px;max-width:1200px;margin:0 auto}
+
+section{background:#fff;border-radius:12px;margin-bottom:24px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}
+section h2{font-size:18px;font-weight:700;color:#1e293b;padding:20px 24px 12px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:8px}
+.section-content{padding:20px 24px}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;padding:20px 24px}
+.kpi{padding:16px;background:#f8fafc;border-radius:8px;border-left:3px solid #3b82f6}
+.kpi.critical{border-left-color:#dc2626}
+.kpi.attention{border-left-color:#d97706}
+.kpi.healthy{border-left-color:#16a34a}
+.kpi-label{font-size:12px;color:#64748b;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.kpi-value{font-size:28px;font-weight:700;color:#0f172a;margin-top:6px;line-height:1}
+.kpi-sub{font-size:12px;color:#94a3b8;margin-top:6px}
+
+.metrics-table{width:100%;border-collapse:collapse;font-size:14px;line-height:1.6}
+.metrics-table th{background:#f8fafc;padding:12px 16px;text-align:left;font-weight:700;color:#334155;border-bottom:2px solid #e2e8f0;font-size:13px}
+.metrics-table td{padding:12px 16px;border-bottom:1px solid #e8eaf0}
+.metrics-table tr:last-child td{border-bottom:none}
+.metrics-table .label{color:#475569;font-weight:500}
+.metrics-table .value{font-weight:600;color:#1e293b}
+.metrics-table .critical{color:#dc2626;font-weight:700}
+.metrics-table .attention{color:#d97706}
+.metrics-table .healthy{color:#16a34a;font-weight:600}
+
+.chart-container{margin:16px 0;padding:24px 16px 40px;background:#f8fafc;border-radius:8px}
+.chart-bars{display:flex;gap:10px;align-items:flex-end;height:160px;margin:0 0 28px}
+.bar{flex:1;background:linear-gradient(180deg,#3b82f6,#1e40af);border-radius:4px 4px 0 0;position:relative;transition:opacity .2s;min-height:4px}
+.bar.declining{background:linear-gradient(180deg,#ef4444,#b91c1c)}
+.bar.improving{background:linear-gradient(180deg,#22c55e,#15803d)}
+.bar:hover{opacity:.85}
+.bar-value{position:absolute;top:-22px;font-size:12px;color:#1e293b;width:100%;text-align:center;font-weight:700}
+.bar-label{position:absolute;bottom:-24px;font-size:11px;color:#64748b;width:100%;text-align:center}
+
+.actions-list{display:flex;flex-direction:column;gap:14px;padding:20px 24px}
+.action-card{background:#fff;border:1px solid #e2e8f0;border-left-width:4px;border-radius:8px;padding:16px 20px;transition:box-shadow .2s}
+.action-card:hover{box-shadow:0 2px 6px rgba(0,0,0,.08)}
+.action-card.P0{border-left-color:#dc2626}
+.action-card.P1{border-left-color:#d97706}
+.action-card.P2{border-left-color:#2563eb}
+.action-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:8px;flex-wrap:wrap}
+.action-title{font-size:15px;font-weight:700;color:#0f172a;line-height:1.4;flex:1;min-width:260px}
+.action-badges{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.3px}
+.badge.P0{background:rgba(220,38,38,.1);color:#b91c1c}
+.badge.P1{background:rgba(217,119,6,.1);color:#a16207}
+.badge.P2{background:rgba(37,99,235,.1);color:#1d4ed8}
+.badge.type{background:#f1f5f9;color:#475569;font-weight:600}
+.badge.impact{background:rgba(22,163,74,.1);color:#15803d;font-weight:700}
+.action-desc{font-size:13.5px;color:#475569;line-height:1.6;margin-top:4px}
+.action-meta{font-size:12px;color:#94a3b8;margin-top:10px;display:flex;gap:14px;flex-wrap:wrap}
+.action-meta span strong{color:#64748b}
+
+.impact-summary{margin:20px 24px;padding:20px;background:linear-gradient(135deg,rgba(34,197,94,.05) 0%,rgba(34,197,94,.1) 100%);border:1px solid rgba(34,197,94,.2);border-radius:8px}
+.impact-summary h3{font-size:15px;color:#15803d;margin-bottom:10px;font-weight:700}
+.impact-summary p{font-size:14px;color:#14532d;line-height:1.7}
+.impact-summary strong{color:#15803d}
+
+.n2-reasons{display:flex;flex-direction:column;gap:8px;padding:20px 24px}
+.n2-row{display:grid;grid-template-columns:1fr 90px 90px;gap:12px;padding:8px 12px;background:#f8fafc;border-radius:6px;font-size:13px;align-items:center}
+.n2-row.top{background:rgba(220,38,38,.08)}
+.n2-label{color:#334155;font-weight:500}
+.n2-count{color:#64748b;text-align:right;font-variant-numeric:tabular-nums}
+.n2-pct{color:#1e293b;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+
+.footer{text-align:center;padding:32px;color:#94a3b8;font-size:12px}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>Action Plan — Linus</h1>
+  <div class="subtitle">Plano priorizado para reverter queda de retenção nas últimas 2 semanas. Gatilhos principais: tripling de "No relevant content" na última semana + 17,98% dos N2 em limite de clarificação. CSAT saudável (84%) indica que o problema é cobertura de conteúdo e configuração, não qualidade de resposta.</div>
+  <div class="header-badges">
+    <span class="header-badge tier">Tier 3 · Active</span>
+    <span class="header-badge health-attention">Health: Attention (em queda)</span>
+  </div>
+  <div class="meta">
+    <span>📅 Data: 20/04/2026</span>
+    <span>🎯 CS Owner: Bruna Chaves</span>
+    <span>📊 Janela analisada: 21/03 — 19/04/2026 (30d) + semana 13–19/04</span>
+  </div>
+</div>
+
+<div class="main">
+
+  <section>
+    <h2>📊 KPIs Principais</h2>
+    <div class="kpi-grid">
+      <div class="kpi attention">
+        <div class="kpi-label">Retenção N1 — 30d</div>
+        <div class="kpi-value">60,0%</div>
+        <div class="kpi-sub">Em queda (era 67,8% há 2 sem)</div>
+      </div>
+      <div class="kpi critical">
+        <div class="kpi-label">Retenção N1 — Semana</div>
+        <div class="kpi-value">58,4%</div>
+        <div class="kpi-sub">−9,4pp vs. semana 30/03</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Volume total — 30d</div>
+        <div class="kpi-value">1.908</div>
+        <div class="kpi-sub">N1: 1.144 · N2: 784</div>
+      </div>
+      <div class="kpi healthy">
+        <div class="kpi-label">CSAT ClaudIA</div>
+        <div class="kpi-value">84%</div>
+        <div class="kpi-sub">Última semana · saudável</div>
+      </div>
+      <div class="kpi healthy">
+        <div class="kpi-label">Potencial N1 (plano)</div>
+        <div class="kpi-value">+198</div>
+        <div class="kpi-sub">+9 a +11pp retenção</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>📈 Tendência Semanal (últimas 7 semanas)</h2>
+    <div class="chart-container">
+      <div class="chart-bars">
+        <div class="bar" style="height:56%" title="02-08/03: 55,79%">
+          <div class="bar-value">55,8%</div>
+          <div class="bar-label">02-08/03</div>
+        </div>
+        <div class="bar" style="height:53%" title="09-15/03: 53,33%">
+          <div class="bar-value">53,3%</div>
+          <div class="bar-label">09-15/03</div>
+        </div>
+        <div class="bar" style="height:57%" title="16-22/03: 56,78%">
+          <div class="bar-value">56,8%</div>
+          <div class="bar-label">16-22/03</div>
+        </div>
+        <div class="bar" style="height:55%" title="23-29/03: 55,19%">
+          <div class="bar-value">55,2%</div>
+          <div class="bar-label">23-29/03</div>
+        </div>
+        <div class="bar improving" style="height:68%" title="30/03-05/04: 67,77%">
+          <div class="bar-value">67,8%</div>
+          <div class="bar-label">30/03-05/04</div>
+        </div>
+        <div class="bar declining" style="height:62%" title="06-12/04: 62,03%">
+          <div class="bar-value">62,0%</div>
+          <div class="bar-label">06-12/04</div>
+        </div>
+        <div class="bar declining" style="height:58%" title="13-19/04: 58,39%">
+          <div class="bar-value">58,4%</div>
+          <div class="bar-label">13-19/04</div>
+        </div>
+      </div>
+      <p style="font-size:13px;color:#64748b;line-height:1.6;margin-top:16px">
+        Após pico de <strong>67,8%</strong> na semana 30/03, retenção vem caindo consistentemente: −5,7pp na semana seguinte e mais −3,6pp na última. A perda acumulada é de <strong>−9,4pp em 2 semanas</strong>. O CSAT se mantém saudável (84%) — sinal de que o problema não é qualidade das respostas, mas sim <strong>cobertura de conteúdo</strong> (casos de "No relevant content" triplicaram) e <strong>configurações de clarificação</strong> restritivas demais.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>🔍 Motivos de Transferência (N2) — 30 dias</h2>
+    <div class="n2-reasons">
+      <div class="n2-row top">
+        <div class="n2-label">Limite de clarificações consecutivas atingido</div>
+        <div class="n2-count">141</div>
+        <div class="n2-pct">17,98%</div>
+      </div>
+      <div class="n2-row top">
+        <div class="n2-label">Eddie encerrado com handover (fluxo N2)</div>
+        <div class="n2-count">112</div>
+        <div class="n2-pct">14,29%</div>
+      </div>
+      <div class="n2-row top">
+        <div class="n2-label">Transfer message enviada por ClaudIA (cliente pediu humano)</div>
+        <div class="n2-count">71</div>
+        <div class="n2-pct">9,06%</div>
+      </div>
+      <div class="n2-row">
+        <div class="n2-label">No relevant content found (TRIPLICOU na última semana)</div>
+        <div class="n2-count">36</div>
+        <div class="n2-pct">4,59%</div>
+      </div>
+      <div class="n2-row">
+        <div class="n2-label">Conteúdo N2 explicitamente acionado</div>
+        <div class="n2-count">310</div>
+        <div class="n2-pct">39,54%</div>
+      </div>
+      <div class="n2-row">
+        <div class="n2-label">Frustração detectada</div>
+        <div class="n2-count">44</div>
+        <div class="n2-pct">5,61%</div>
+      </div>
+      <div class="n2-row">
+        <div class="n2-label">Outros / Handover by timeout</div>
+        <div class="n2-count">70</div>
+        <div class="n2-pct">8,93%</div>
+      </div>
+    </div>
+    <div style="padding:0 24px 20px;font-size:13px;color:#64748b;line-height:1.6">
+      <strong>Leitura:</strong> 3 drivers corrigíveis concentram 32% dos N2 — clarificação (141), transfer message (71) e no_relevant_content (36, triplicou em 1 semana). As 2 primeiras são ajustes de configuração, a terceira demanda criação de novos conteúdos N1.
+    </div>
+  </section>
+
+  <section>
+    <h2>🎯 Plano de Ação (11 ações priorizadas)</h2>
+    <div class="actions-list">
+
+      <!-- P0 -->
+      <div class="action-card P0">
+        <div class="action-head">
+          <div class="action-title">Aumentar max_clarification_attempts de 2 para 3</div>
+          <div class="action-badges">
+            <span class="badge P0">P0</span>
+            <span class="badge type">config_classification</span>
+            <span class="badge impact">+49 N1</span>
+          </div>
+        </div>
+        <div class="action-desc">
+          <strong>17,98% dos N2 (141 tickets em 30d)</strong> caem em "Limit of consecutive clarification attempts reached". Com o limite atual em 2, ClaudIA desiste cedo demais quando a pergunta é ambígua. Aumentar para 3 dá uma chance extra de reformular sem gerar loop longo. Ajuste em CloudBlocks → Classificação e Clarificação → <code>maxClarificationAttempts</code>. Monitorar CSAT e GenCX por 7 dias.
+        </div>
+        <div class="action-meta">
+          <span><strong>Tickets impactados:</strong> 141</span>
+          <span><strong>Conversão:</strong> 35%</span>
+          <span><strong>Impacto:</strong> +49 N1</span>
+        </div>
+      </div>
+
+      <div class="action-card P0">
+        <div class="action-head">
+          <div class="action-title">Aumentar max_no_valid_content de 1 para 3</div>
+          <div class="action-badges">
+            <span class="badge P0">P0</span>
+            <span class="badge type">config_classification</span>
+            <span class="badge impact">+13 N1</span>
+          </div>
+        </div>
+        <div class="action-desc">
+          Config atual faz ClaudIA desistir após 1 tentativa sem conteúdo válido — responsável pelo aumento recente de "No relevant content found" (<strong>5 tickets na semana 06/04 → 14 na semana 13/04, TRIPLICOU</strong>). Aumentar para 3 permite reformular query antes de transferir. Single-field change em CloudBlocks → Classificação → <code>maxNoValidContentAttempts</code>. Sem risco operacional.
+        </div>
+        <div class="action-meta">
+          <span><strong>Tickets impactados:</strong> 36</span>
+          <span><strong>Conversão:</strong> 35%</span>
+          <span><strong>Impacto:</strong> +13 N1</span>
+        </div>
+      </div>
+
+      <div class="action-card P0">
+        <div class="action-head">
+          <div class="action-title">Reescrever conteúdo INTERACTIVE "Qual o status do meu pedido?" (ID 68ac92970e038847c35060c9)</div>
+          <div class="action-badges">
+            <span class="badge P0">P0</span>
+            <span class="badge type">eddie_improve</span>
+            <span class="badge impact">+14 N1</span>
+          </div>
+        </div>
+        <div class="action-desc">
+          Conteúdo mais acionado do projeto: <strong>117 tickets em 30d</strong> com retenção de apenas <strong>51,28%</strong> (57 tickets N2). É um Eddie INTERACTIVE que busca rastreio. Reescrever o prompt do flow para (a) tratar casos sem código de rastreio disponível (oferecer consulta por e-mail/CPF), (b) explicar cada status de rastreio quando opaco, (c) oferecer canal alternativo quando API falha. Validar se há quebra de integração com transportadora causando timeout.
+        </div>
+        <div class="action-meta">
+          <span><strong>Tickets N2 recuperáveis:</strong> 57</span>
+          <span><strong>Conversão:</strong> 25%</span>
+          <span><strong>Impacto:</strong> +14 N1</span>
+        </div>
+      </div>
+
+      <div class="action-card P0">
+        <div class="action-head">
+          <div class="action-title">Criar conteúdos para os 14 casos de "No relevant content" da última semana</div>
+          <div class="action-badges">
+            <span class="badge P0">P0</span>
+            <span class="badge type">content_new</span>
+            <span class="badge impact">+22 N1</span>
+          </div>
+        </div>
+        <div class="action-desc">
+          Na semana 13/04, os casos de transferência por ausência de conteúdo saltaram de <strong>5 para 14</strong> — indicando temas novos não cobertos pela IDS (que hoje tem só 99 conteúdos N1). Extrair os cloudchatids do <code>resolutionreason='No relevant content found'</code> dos últimos 14 dias, clusterizar por tema e criar novos conteúdos N1 via Hub → Conteúdos → Adicionar. Priorizar temas com 3+ tickets.
+        </div>
+        <div class="action-meta">
+          <span><strong>Tickets/mês estimados:</strong> 36</span>
+          <span><strong>Conversão:</strong> 60%</span>
+          <span><strong>Impacto:</strong> +22 N1</span>
+        </div>
+      </div>
+
+      <!-- P1 -->
+      <div class="action-card P1">
+        <div class="action-head">
+          <div class="action-title">Ativar More User Interactions</div>
+          <div class="action-badges">
+            <span class="badge P1">P1</span>
+            <span class="badge type">config_search</span>
+            <span class="badge impact">+50 N1</span>
+          </div>
+        </div>
+        <div class="action-desc">
+          Flag <code>moreUserInteractionsEnabled=false</code>. Essa feature melhora o entendimento em conversas multi-turn — impacta diretamente as clarificações (141 tickets/30d) e perguntas com contexto de mensagens anteriores. Ativar em CloudBlocks → contentSearchConfiguration → <code>moreUserInteractionsEnabled=true</code>. Sem custo adicional, impacto imediato.
+        </div>
+        <div class="action-meta">
+          <span><strong>Tickets impactados:</strong> 100</span>
+          <span><strong>Conversão:</strong> 50%</span>
+          <span><strong>Impacto:</strong> +50 N1</span>
+        </div>
+      </div>
+
+      <div class="action-card P1">
+        <div class="action-head">
+          <div class="action-title">Ativar enlightenmentQuestionLimit</div>
+          <div class="action-badges">
+            <span class="badge P1">P1</span>
+            <span class="badge type">config_classification</span>
+            <span class="badge impact">+18 N1</span>
+          </div>
+        </div>
+        <div class="action-desc">
+          <code>enlightenment_limit_enabled=false</code> e <code>limit=3</code>. Sem o cap ativo, ClaudIA pode entrar em loops de clarificação. Ativar o limite previne o esgotamento (que hoje aciona o <code>maxClarificationAttempts</code>) e permite uma transferência mais suave. Configurar em CloudBlocks → <code>enlightenmentQuestionLimit.enabled=true</code>.
+        </div>
+        <div class="action-meta">
+          <span><strong>Tickets impactados:</strong> 40</span>
+          <span><strong>Conversão:</strong> 45%</span>
+          <span><strong>Impacto:</strong> +18 N1</span>
+        </div>
+      </div>
+
+      <div class="action-card P1">
+        <div class="action-head">
+          <div class="action-title">Reescrever INTERACTIVE "Quero saber o andamento da minha troca" (ID 694458b5b7d7463eb5100f0d)</div>
+          <div class="action-badges">
+            <span class="badge P1">P1</span>
+            <span class="badge type">eddie_improve</span>
+            <span class="badge impact">+6 N1</span>
+          </div>
+        </div>
+        <div class="action-desc">
+          <strong>47 tickets em 30d com retenção 48,94% e 8% de GenCX ruim</strong>. O Eddie consulta status de troca mas falha quando (a) troca ainda não foi processada, (b) cliente quer alterar troca pendente, (c) estorno não saiu. Revisar flow para tratar os 3 casos explicitamente e oferecer prazo de retorno quando em análise.
+        </div>
+        <div class="action-meta">
+          <span><strong>Tickets N2 recuperáveis:</strong> 24</span>
+          <span><strong>Conversão:</strong> 25%</span>
+          <span><strong>Impacto:</strong> +6 N1</span>
+        </div>
+      </div>
+
+      <div class="action-card P1">
+        <div class="action-head">
+          <div class="action-title">Reescrever N1 "Como fechar parceria com Linus" (ID 68ac92c4bc6bd062e853a51b)</div>
+          <div class="action-badges">
+            <span class="badge P1">P1</span>
+            <span class="badge type">content_split</span>
+            <span class="badge impact">+8 N1</span>
+          </div>
+        </div>
+        <div class="action-desc">
+          <strong>76 tickets, 56,58% retenção.</strong> Conteúdo atual parece não cobrir os subtemas de parceria (varejo, influencers, transporte, b2b) que aparecem nas tags <code>parceria</code> (86) e <code>parceria_b2b</code> (35). Quebrar em 2 conteúdos: (1) parceria comercial/b2b com instruções do canal dedicado; (2) colaborações/influencers com fluxo próprio. Consolidar com <code>parceria_b2b</code>.
+        </div>
+        <div class="action-meta">
+          <span><strong>Tickets impactados:</strong> 33</span>
+          <span><strong>Conversão:</strong> 25%</span>
+          <span><strong>Impacto:</strong> +8 N1</span>
+        </div>
+      </div>
+
+      <div class="action-card P1">
+        <div class="action-head">
+          <div class="action-title">Ativar Venda do Bot (FORWARD_TO_HUMAN_CHECK + MULTIPROMPT)</div>
+          <div class="action-badges">
+            <span class="badge P1">P1</span>
+            <span class="badge type">config_handover</span>
+            <span class="badge impact">+21 N1</span>
+          </div>
+        </div>
+        <div class="action-desc">
+          <strong>9,06% dos N2 (71 tickets/30d)</strong> são por "Some transfer message was sent by ClaudIA" — usuários pedindo humano antes de ClaudIA tentar resolver. Ativar o fluxo de retenção via CloudBlocks → Flow Prompts → <code>FORWARD_TO_HUMAN_CHECK</code> + configurar <code>MULTIPROMPT</code> com perguntas contextuais. Pode recuperar ~30% desses tickets.
+        </div>
+        <div class="action-meta">
+          <span><strong>Tickets impactados:</strong> 71</span>
+          <span><strong>Conversão:</strong> 30%</span>
+          <span><strong>Impacto:</strong> +21 N1</span>
+        </div>
+      </div>
+
+      <!-- P2 -->
+      <div class="action-card P2">
+        <div class="action-head">
+          <div class="action-title">Upgrade de modelo: CHATGPT4o1120 → CHATGPT52CHAT</div>
+          <div class="action-badges">
+            <span class="badge P2">P2</span>
+            <span class="badge type">config_model</span>
+            <span class="badge impact">+24 N1</span>
+          </div>
+        </div>
+        <div class="action-desc">
+          Projeto está em <code>CHATGPT4o1120</code> enquanto <code>linus_email</code> já usa <code>CHATGPT52CHAT</code>. Modelo mais novo tende a reduzir alucinação e melhorar clarificação — pode impactar os 2,99% de GenCX ruim do conteúdo de status pedido e os 8% do conteúdo de troca. Trocar em <code>project_setup.selectedgptmodel</code>. Validar custo com produto antes.
+        </div>
+        <div class="action-meta">
+          <span><strong>Tickets impactados:</strong> 80</span>
+          <span><strong>Conversão:</strong> 30%</span>
+          <span><strong>Impacto:</strong> +24 N1</span>
+        </div>
+      </div>
+
+      <div class="action-card P2">
+        <div class="action-head">
+          <div class="action-title">Reorganizar tag NO_TAG (317 tickets = 27% do volume, retenção 27%)</div>
+          <div class="action-badges">
+            <span class="badge P2">P2</span>
+            <span class="badge type">content_reclassify</span>
+            <span class="badge impact">+13 N1</span>
+          </div>
+        </div>
+        <div class="action-desc">
+          <strong>NO_TAG concentra 317 tickets (27% do volume)</strong> com retenção de apenas 27,13% — muitos deveriam estar marcados com outras tags (<code>desconhece_entrega</code>, <code>alteracoes_pedido</code>, <code>sondagem</code>) que são N2 legítimos. Rodar App TAGs em massa em CloudBlocks e revisar prompts de classificação. A retenção observada deve cair artificialmente mas a visibilidade melhora e libera ação nos N2 reais.
+        </div>
+        <div class="action-meta">
+          <span><strong>Tickets impactados:</strong> 50</span>
+          <span><strong>Conversão:</strong> 25%</span>
+          <span><strong>Impacto:</strong> +13 N1</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="impact-summary">
+      <h3>💡 Impacto Consolidado do Plano</h3>
+      <p>
+        Executando as 11 ações, o impacto bruto somado é de <strong>+238 N1/mês</strong>. Aplicando fator de sobreposição de 17% (ações de config competem por parte dos mesmos tickets), o impacto líquido esperado é de <strong>+198 N1/mês</strong>, movendo a retenção de <strong>60% → ~69%</strong> (<strong>+9 a +11pp</strong>).
+        As 4 ações P0 concentram <strong>+98 N1</strong> e são ajustes baratos (3 de config + 1 eddie + 1 conteúdo novo) — executar nos primeiros 3 dias.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>📑 Tabela de Impacto por Prioridade</h2>
+    <table class="metrics-table">
+      <thead>
+        <tr>
+          <th>Prioridade</th>
+          <th>Qtd. ações</th>
+          <th>Tickets impactados</th>
+          <th>Impacto bruto (N1)</th>
+          <th>% do total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge P0">P0</span></td>
+          <td class="value">4</td>
+          <td class="value">270</td>
+          <td class="critical">+98</td>
+          <td class="value">41%</td>
+        </tr>
+        <tr>
+          <td><span class="badge P1">P1</span></td>
+          <td class="value">5</td>
+          <td class="value">282</td>
+          <td class="attention">+103</td>
+          <td class="value">43%</td>
+        </tr>
+        <tr>
+          <td><span class="badge P2">P2</span></td>
+          <td class="value">2</td>
+          <td class="value">130</td>
+          <td class="value">+37</td>
+          <td class="value">16%</td>
+        </tr>
+        <tr style="background:#f8fafc;font-weight:700">
+          <td>Total (bruto)</td>
+          <td class="value">11</td>
+          <td class="value">682</td>
+          <td class="healthy">+238</td>
+          <td class="value">100%</td>
+        </tr>
+        <tr style="background:rgba(22,163,74,.08);font-weight:700">
+          <td>Total líquido (-17%)</td>
+          <td>—</td>
+          <td>—</td>
+          <td class="healthy">+198</td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+</div>
+
+<div class="footer">
+  Cloud Humans · Action Plan Map · Gerado em 20/04/2026 por ch-action-plan v5.1<br>
+  Dashboard: <a href="https://cloudhumans.github.io/action-plan-map/#linus" style="color:#3b82f6">https://cloudhumans.github.io/action-plan-map/#linus</a>
+</div>
+</body>
+</html>

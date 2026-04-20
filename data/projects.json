@@ -1,6 +1,6 @@
 {
   "_schema": "action-plan-map/projects/v1",
-  "_updated": "2026-04-10",
+  "_updated": "2026-04-20",
   "projects": [
     {
       "slug": "adaflow",
@@ -1017,13 +1017,29 @@
       "cs_owner": "Bruna Chaves",
       "status": "Active",
       "retention_goal": null,
-      "retention_current": 58.5,
-      "volume_total": 2289,
-      "volume_n1": 1340,
-      "volume_n2": 949,
-      "health": "good",
-      "has_plan": false,
-      "plan_date": null,
+      "retention_current": 60.0,
+      "volume_total": 1908,
+      "volume_n1": 1144,
+      "volume_n2": 784,
+      "health": "attention",
+      "has_plan": true,
+      "plan_date": "20/04/2026",
+      "report_password": null
+    },
+    {
+      "slug": "linus_email",
+      "display_name": "Linus Email",
+      "tier": "Tier 3",
+      "cs_owner": "Bruna Chaves",
+      "status": "Active",
+      "retention_goal": null,
+      "retention_current": 56.0,
+      "volume_total": 200,
+      "volume_n1": 112,
+      "volume_n2": 88,
+      "health": "critical",
+      "has_plan": true,
+      "plan_date": "20/04/2026",
       "report_password": null
     },
     {

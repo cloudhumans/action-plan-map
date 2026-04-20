@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Action Plan — Linus Email | Cloud Humans</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f6fa;color:#1a1a2e}
+
+.header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:40px 48px 36px}
+.header h1{font-size:32px;font-weight:700;margin-bottom:8px;letter-spacing:-.5px}
+.header .subtitle{font-size:15px;opacity:.75;line-height:1.5;max-width:900px}
+.header .meta{margin-top:16px;display:flex;gap:24px;font-size:13px;opacity:.6;flex-wrap:wrap}
+.header-badges{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+.header-badge{display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;backdrop-filter:blur(10px)}
+.header-badge.tier{background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.4);color:#e0e7ff}
+.header-badge.health-critical{background:rgba(220,38,38,.2);border:1px solid rgba(220,38,38,.4);color:#fecaca}
+
+.main{padding:32px 48px;max-width:1200px;margin:0 auto}
+
+section{background:#fff;border-radius:12px;margin-bottom:24px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}
+section h2{font-size:18px;font-weight:700;color:#1e293b;padding:20px 24px 12px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:8px}
+.section-content{padding:20px 24px}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;padding:20px 24px}
+.kpi{padding:16px;background:#f8fafc;border-radius:8px;border-left:3px solid #3b82f6}
+.kpi.critical{border-left-color:#dc2626}
+.kpi.attention{border-left-color:#d97706}
+.kpi.healthy{border-left-color:#16a34a}
+.kpi-label{font-size:12px;color:#64748b;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.kpi-value{font-size:28px;font-weight:700;color:#0f172a;margin-top:6px;line-height:1}
+.kpi-sub{font-size:12px;color:#94a3b8;margin-top:6px}
+
+.metrics-table{width:100%;border-collapse:collapse;font-size:14px;line-height:1.6}
+.metrics-table th{background:#f8fafc;padding:12px 16px;text-align:left;font-weight:700;color:#334155;border-bottom:2px solid #e2e8f0;font-size:13px}
+.metrics-table td{padding:12px 16px;border-bottom:1px solid #e8eaf0}
+.metrics-table tr:last-child td{border-bottom:none}
+.metrics-table .label{color:#475569;font-weight:500}
+.metrics-table .value{font-weight:600;color:#1e293b}
+.metrics-table .critical{color:#dc2626;font-weight:700}
+.metrics-table .attention{color:#d97706}
+.metrics-table .healthy{color:#16a34a;font-weight:600}
+
+.chart-container{margin:16px 0;padding:24px 16px 40px;background:#f8fafc;border-radius:8px}
+.chart-bars{display:flex;gap:10px;align-items:flex-end;height:160px;margin:0 0 28px}
+.bar{flex:1;background:linear-gradient(180deg,#3b82f6,#1e40af);border-radius:4px 4px 0 0;position:relative;transition:opacity .2s;min-height:4px}
+.bar.declining{background:linear-gradient(180deg,#ef4444,#b91c1c)}
+.bar.improving{background:linear-gradient(180deg,#22c55e,#15803d)}
+.bar:hover{opacity:.85}
+.bar-value{position:absolute;top:-22px;font-size:12px;color:#1e293b;width:100%;text-align:center;font-weight:700}
+.bar-label{position:absolute;bottom:-24px;font-size:11px;color:#64748b;width:100%;text-align:center}
+
+.actions-list{display:flex;flex-direction:column;gap:14px;padding:20px 24px}
+.action-card{background:#fff;border:1px solid #e2e8f0;border-left-width:4px;border-radius:8px;padding:16px 20px;transition:box-shadow .2s}
+.action-card:hover{box-shadow:0 2px 6px rgba(0,0,0,.08)}
+.action-card.P0{border-left-color:#dc2626}
+.action-card.P1{border-left-color:#d97706}
+.action-card.P2{border-left-color:#2563eb}
+.action-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:8px;flex-wrap:wrap}
+.action-title{font-size:15px;font-weight:700;color:#0f172a;line-height:1.4;flex:1;min-width:260px}
+.action-badges{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.3px}
+.badge.P0{background:rgba(220,38,38,.1);color:#b91c1c}
+.badge.P1{background:rgba(217,119,6,.1);color:#a16207}
+.badge.P2{background:rgba(37,99,235,.1);color:#1d4ed8}
+.badge.type{background:#f1f5f9;color:#475569;font-weight:600}
+.badge.impact{background:rgba(22,163,74,.1);color:#15803d;font-weight:700}
+.action-desc{font-size:13.5px;color:#475569;line-height:1.6;margin-top:4px}
+.action-meta{font-size:12px;color:#94a3b8;margin-top:10px;display:flex;gap:14px;flex-wrap:wrap}
+.action-meta span strong{color:#64748b}
+
+.impact-summary{margin:20px 24px;padding:20px;background:linear-gradient(135deg,rgba(34,197,94,.05) 0%,rgba(34,197,94,.1) 100%);border:1px solid rgba(34,197,94,.2);border-radius:8px}
+.impact-summary h3{font-size:15px;color:#15803d;margin-bottom:10px;font-weight:700}
+.impact-summary p{font-size:14px;color:#14532d;line-height:1.7}
+.impact-summary strong{color:#15803d}
+
+.n2-reasons{display:flex;flex-direction:column;gap:8px;padding:20px 24px}
+.n2-row{display:grid;grid-template-columns:1fr 90px 90px;gap:12px;padding:8px 12px;background:#f8fafc;border-radius:6px;font-size:13px;align-items:center}
+.n2-row.top{background:rgba(220,38,38,.08)}
+.n2-label{color:#334155;font-weight:500}
+.n2-count{color:#64748b;text-align:right;font-variant-numeric:tabular-nums}
+.n2-pct{color:#1e293b;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+
+.footer{text-align:center;padding:32px;color:#94a3b8;font-size:12px}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>Action Plan — Linus Email</h1>
+  <div class="subtitle">Plano priorizado para reverter queda drástica de retenção na última semana. Canal email com config subótima crítica (query_transform DESATIVADO) + INTERACTIVE "status pedido" com 25,93% de GenCX ruim + Handover by timeout DOBROU na última semana.</div>
+  <div class="header-badges">
+    <span class="header-badge tier">Tier 3 · Active</span>
+    <span class="header-badge health-critical">Health: Critical</span>
+  </div>
+  <div class="meta">
+    <span>📅 Data: 20/04/2026</span>
+    <span>🎯 CS Owner: Bruna Chaves</span>
+    <span>📊 Janela analisada: 21/03 — 19/04/2026 (30d) + semana 13–19/04</span>
+  </div>
+</div>
+
+<div class="main">
+
+  <section>
+    <h2>📊 KPIs Principais</h2>
+    <div class="kpi-grid">
+      <div class="kpi attention">
+        <div class="kpi-label">Retenção N1 — 30d</div>
+        <div class="kpi-value">56,0%</div>
+        <div class="kpi-sub">Em queda abrupta</div>
+      </div>
+      <div class="kpi critical">
+        <div class="kpi-label">Retenção N1 — Semana</div>
+        <div class="kpi-value">44,9%</div>
+        <div class="kpi-sub">−16,3pp em 1 semana</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Volume total — 30d</div>
+        <div class="kpi-value">200</div>
+        <div class="kpi-sub">N1: 112 · N2: 88</div>
+      </div>
+      <div class="kpi critical">
+        <div class="kpi-label">GenCX ruim (Status pedido)</div>
+        <div class="kpi-value">25,9%</div>
+        <div class="kpi-sub">1 em cada 4 retidas</div>
+      </div>
+      <div class="kpi healthy">
+        <div class="kpi-label">Potencial N1 (plano)</div>
+        <div class="kpi-value">+63</div>
+        <div class="kpi-sub">+12 a +18pp retenção</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>📈 Tendência Semanal (últimas 5 semanas)</h2>
+    <div class="chart-container">
+      <div class="chart-bars">
+        <div class="bar" style="height:54%" title="16-22/03: 54,0%">
+          <div class="bar-value">54,0%</div>
+          <div class="bar-label">16-22/03</div>
+        </div>
+        <div class="bar" style="height:58%" title="23-29/03: 58,0%">
+          <div class="bar-value">58,0%</div>
+          <div class="bar-label">23-29/03</div>
+        </div>
+        <div class="bar improving" style="height:65%" title="30/03-05/04: 65,0%">
+          <div class="bar-value">65,0%</div>
+          <div class="bar-label">30/03-05/04</div>
+        </div>
+        <div class="bar" style="height:61%" title="06-12/04: 61,2%">
+          <div class="bar-value">61,2%</div>
+          <div class="bar-label">06-12/04</div>
+        </div>
+        <div class="bar declining" style="height:45%" title="13-19/04: 44,9%">
+          <div class="bar-value">44,9%</div>
+          <div class="bar-label">13-19/04</div>
+        </div>
+      </div>
+      <p style="font-size:13px;color:#64748b;line-height:1.6;margin-top:16px">
+        Queda <strong>DRÁSTICA</strong> de 61,2% (06/04) para 44,9% (13/04) — perda de <strong>−16,3pp em 1 semana</strong>. Gatilhos: (a) Handover by timeout DOBROU (2→5 tickets), (b) piora agressiva no INTERACTIVE "status pedido" (25,93% de GenCX ruim), (c) NO_TAG concentra 27% do volume com 35% GenCX ruim. A boa notícia: volume baixo (200/mês) significa que ajustes pequenos têm alto impacto percentual.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>🔍 Motivos de Transferência (N2) — 30 dias</h2>
+    <div class="n2-reasons">
+      <div class="n2-row top">
+        <div class="n2-label">Transfer message enviada por ClaudIA (cliente pediu humano)</div>
+        <div class="n2-count">20</div>
+        <div class="n2-pct">21,98%</div>
+      </div>
+      <div class="n2-row top">
+        <div class="n2-label">Handover by timeout (DOBROU 2→5 na última semana)</div>
+        <div class="n2-count">7</div>
+        <div class="n2-pct">7,69%</div>
+      </div>
+      <div class="n2-row top">
+        <div class="n2-label">No relevant content found</div>
+        <div class="n2-count">4</div>
+        <div class="n2-pct">4,40%</div>
+      </div>
+      <div class="n2-row">
+        <div class="n2-label">Eddie encerrado com handover (fluxo N2)</div>
+        <div class="n2-count">15</div>
+        <div class="n2-pct">16,48%</div>
+      </div>
+      <div class="n2-row">
+        <div class="n2-label">Conteúdo N2 explicitamente acionado</div>
+        <div class="n2-count">28</div>
+        <div class="n2-pct">30,77%</div>
+      </div>
+      <div class="n2-row">
+        <div class="n2-label">Limite de clarificações</div>
+        <div class="n2-count">8</div>
+        <div class="n2-pct">8,79%</div>
+      </div>
+      <div class="n2-row">
+        <div class="n2-label">Outros</div>
+        <div class="n2-count">9</div>
+        <div class="n2-pct">9,89%</div>
+      </div>
+    </div>
+    <div style="padding:0 24px 20px;font-size:13px;color:#64748b;line-height:1.6">
+      <strong>Leitura:</strong> 21,98% dos N2 são "transfer message" (cliente pedindo humano) e o handover by timeout DOBROU na última semana. Para canal email, ambos são altamente corrigíveis via config + ajuste em prompt de retenção.
+    </div>
+  </section>
+
+  <section>
+    <h2>🎯 Plano de Ação (11 ações priorizadas)</h2>
+    <div class="actions-list">
+
+      <!-- P0 -->
+      <div class="action-card P0">
+        <div class="action-head">
+          <div class="action-title">Ativar ConversationHistoryQueryTransformation (crítico para canal email)</div>
+          <div class="action-badges">
+            <span class="badge P0">P0</span>
+            <span class="badge type">config_search</span>
+            <span class="badge impact">+12 N1</span>
+          </div>
+        </div>
+        <div class="action-desc">
+          <code>query_transform=false</code> em projeto de EMAIL é config subótima <strong>crítica</strong>. Emails são tipicamente longos, multi-turn e com contexto — sem Query Transformation, ClaudIA perde sinal nas mensagens subsequentes. Essa feature reformula a query com base no histórico antes da busca. Ativar em CloudBlocks → <code>conversationHistoryQueryTransformationSettings.enabled=true</code>. Impacto direto em transfer_message (20 tickets) e no_relevant_content (4 tickets).
+        </div>
+        <div class="action-meta">
+          <span><strong>Tickets impactados:</strong> 24</span>
+          <span><strong>Conversão:</strong> 50%</span>
+          <span><strong>Impacto:</strong> +12 N1</span>
+        </div>
+      </div>
+
+      <div class="action-card P0">
+        <div class="action-head">
+          <div class="action-title">Reescrever INTERACTIVE "Qual o status do meu pedido?" (ID 698de966ac818d473ad82810)</div>
+          <div class="action-badges">
+            <span class="badge P0">P0</span>
+            <span class="badge type">eddie_improve</span>
+            <span class="badge impact">+9 N1</span>
+          </div>
+        </div>
+        <div class="action-desc">
+          <strong>35 tickets em 30d com retenção 71,43% MAS 25,93% de GenCX ruim</strong> — respostas incorretas ou incompletas em 1 a cada 4 casos retidos. Este é o sinal de qualidade mais crítico do projeto. Revisar o flow (provavelmente acessa API de rastreio e formata mal o output) — adicionar validações de status não-padrão, tratamento quando API retorna vazio, e oferecer opção de contato humano quando data prometida já passou.
+        </div>
+        <div class="action-meta">
+          <span><strong>Tickets impactados:</strong> 35</span>
+          <span><strong>Conversão:</strong> 25%</span>
+          <span><strong>Impacto:</strong> +9 N1</span>
+        </div>
+      </div>
+
+      <div class="action-card P0">
+        <div class="action-head">
+          <div class="action-title">Investigar aumento de Handover by timeout (DOBROU de 2 para 5 na última semana)</div>
+          <div class="action-badges">
+            <span class="badge P0">P0</span>
+            <span class="badge type">config_resolution</span>
+            <span class="badge impact">+4 N1</span>
+          </div>
+        </div>
+        <div class="action-desc">
+          <strong>7,69% dos N2 em 30d são por timeout — e na última semana DOBROU</strong> vs. a anterior. Em canal email, timeout pode indicar: (a) cliente não respondeu solicitação de esclarecimento (timing errado), (b) erro técnico travando conversa. Verificar logs dos 5 <code>cloudchatids</code> da semana 13/04, validar se <code>maximumMinutesWithoutResponse</code> está bem calibrado para email (deve ser maior que chat — 24h vs 10min). Acionar engenharia se houver padrão de erro.
+        </div>
+        <div class="action-meta">
+          <span><strong>Tickets impactados:</strong> 7</span>
+          <span><strong>Conversão:</strong> 60%</span>
+          <span><strong>Impacto:</strong> +4 N1</span>
+        </div>
+      </div>
+
+      <div class="action-card P0">
+        <div class="action-head">
+          <div class="action-title">Ativar Venda do Bot (FORWARD_TO_HUMAN_CHECK + MULTIPROMPT)</div>
+          <div class="action-badges">
+            <span class="badge P0">P0</span>
+            <span class="badge type">config_handover</span>
+            <span class="badge impact">+6 N1</span>
+          </div>
+        </div>
+        <div class="action-desc">
+          <strong>21,98% dos N2 (20 tickets/30d)</strong> são por "transfer message sent by ClaudIA" — o maior motivo depois de N2 legítimo. Cliente está pedindo humano antes de tentar resolver. Em email, a Venda do Bot pode ser MAIS eficaz que em chat pois o cliente tem mais paciência para texto longo. Ativar em CloudBlocks → Flow Prompts → <code>FORWARD_TO_HUMAN_CHECK</code> + <code>MULTIPROMPT</code>.
+        </div>
+        <div class="action-meta">
+          <span><strong>Tickets impactados:</strong> 20</span>
+          <span><strong>Conversão:</strong> 30%</span>
+          <span><strong>Impacto:</strong> +6 N1</span>
+        </div>
+      </div>
+
+      <div class="action-card P0">
+        <div class="action-head">
+          <div class="action-title">Reescrever N1 "Como fechar parceria" (ID 695294389c408e05560f59fc)</div>
+          <div class="action-badges">
+            <span class="badge P0">P0</span>
+            <span class="badge type">content_improve</span>
+            <span class="badge impact">+4 N1</span>
+          </div>
+        </div>
+        <div class="action-desc">
+          <strong>26 tickets com retenção de apenas 34,62%</strong> e 11,11% GenCX ruim. Conteúdo mais problemático do projeto em volume × qualidade. Mesmo tema do linus mas rendendo muito pior no email — provavelmente porque email traz propostas mais elaboradas (b2b, fornecedores) que demandam resposta detalhada com checklist de dados e próximos passos. Reescrever como formulário estruturado com campos (empresa, CNPJ, produto, volume estimado, canal de contato).
+        </div>
+        <div class="action-meta">
+          <span><strong>Tickets impactados:</strong> 17</span>
+          <span><strong>Conversão:</strong> 25%</span>
+          <span><strong>Impacto:</strong> +4 N1</span>
+        </div>
+      </div>
+
+      <!-- P1 -->
+      <div class="action-card P1">
+        <div class="action-head">
+          <div class="action-title">Ativar More User Interactions</div>
+          <div class="action-badges">
+            <span class="badge P1">P1</span>
+            <span class="badge type">config_search</span>
+            <span class="badge impact">+12 N1</span>
+          </div>
+        </div>
+        <div class="action-desc">
+          <code>moreUserInteractionsEnabled=false</code>. Para email (conversas tipicamente mais longas), essa feature é especialmente valiosa — melhora o entendimento do contexto acumulado. Ativar em CloudBlocks → <code>contentSearchConfiguration</code> → <code>moreUserInteractionsEnabled=true</code>.
+        </div>
+        <div class="action-meta">
+          <span><strong>Tickets impactados:</strong> 25</span>
+          <span><strong>Conversão:</strong> 50%</span>
+          <span><strong>Impacto:</strong> +12 N1</span>
+        </div>
+      </div>
+
+      <div class="action-card P1">
+        <div class="action-head">
+          <div class="action-title">Aumentar max_no_valid_content de 1 para 3</div>
+          <div class="action-badges">
+            <span class="badge P1">P1</span>
+            <span class="badge type">config_classification</span>
+            <span class="badge impact">+4 N1</span>
+          </div>
+        </div>
+        <div class="action-desc">
+          Hoje em 1 — ClaudIA desiste após uma única tentativa sem conteúdo. Em email, onde o custo de cada mensagem é maior, vale dar 3 chances antes de transferir. Config em CloudBlocks → <code>classificationSettings.maxNoValidContentAttempts=3</code>.
+        </div>
+        <div class="action-meta">
+          <span><strong>Tickets impactados:</strong> 10</span>
+          <span><strong>Conversão:</strong> 35%</span>
+          <span><strong>Impacto:</strong> +4 N1</span>
+        </div>
+      </div>
+
+      <div class="action-card P1">
+        <div class="action-head">
+          <div class="action-title">Reorganizar tag NO_TAG (27% do volume, 35% GenCX ruim)</div>
+          <div class="action-badges">
+            <span class="badge P1">P1</span>
+            <span class="badge type">content_reclassify</span>
+            <span class="badge impact">+7 N1</span>
+          </div>
+        </div>
+        <div class="action-desc">
+          <strong>48 tickets em NO_TAG</strong> (27% do volume do período) com retenção 39,58% E 35% GenCX ruim — o maior score de GenCX ruim por tag no projeto. Indica que tickets sem tag estão recebendo respostas de conteúdos inadequados. Rodar App TAGs em massa em CloudBlocks e ajustar prompts de classificação específicos para email (que podem precisar de mais contexto do assunto).
+        </div>
+        <div class="action-meta">
+          <span><strong>Tickets impactados:</strong> 29</span>
+          <span><strong>Conversão:</strong> 25%</span>
+          <span><strong>Impacto:</strong> +7 N1</span>
+        </div>
+      </div>
+
+      <div class="action-card P1">
+        <div class="action-head">
+          <div class="action-title">Reescrever INTERACTIVE "Andamento da minha troca" (ID 698de9d71366e13eda7b2447)</div>
+          <div class="action-badges">
+            <span class="badge P1">P1</span>
+            <span class="badge type">eddie_improve</span>
+            <span class="badge impact">+2 N1</span>
+          </div>
+        </div>
+        <div class="action-desc">
+          <strong>11 tickets com retenção 27,27% e 16,67% GenCX ruim</strong>. Mesma categoria do conteúdo problemático em linus (47 tickets / 48,94%). Aplicar a mesma reescrita: tratar troca não processada, alteração de troca pendente, estorno não liberado. Para email, adicionar prazo esperado de retorno.
+        </div>
+        <div class="action-meta">
+          <span><strong>Tickets impactados:</strong> 8</span>
+          <span><strong>Conversão:</strong> 25%</span>
+          <span><strong>Impacto:</strong> +2 N1</span>
+        </div>
+      </div>
+
+      <!-- P2 -->
+      <div class="action-card P2">
+        <div class="action-head">
+          <div class="action-title">Ativar enlightenmentQuestionLimit</div>
+          <div class="action-badges">
+            <span class="badge P2">P2</span>
+            <span class="badge type">config_classification</span>
+            <span class="badge impact">+4 N1</span>
+          </div>
+        </div>
+        <div class="action-desc">
+          Hoje <code>enlightenment_limit_enabled=false</code>. Em email, o custo de muitas perguntas é maior — ativar o cap garante que ClaudIA tenta alternativas (buscar conteúdo com o que tem) em vez de perguntar indefinidamente. Configurar em CloudBlocks → <code>enlightenmentQuestionLimit.enabled=true</code> (limit já está em 3).
+        </div>
+        <div class="action-meta">
+          <span><strong>Tickets impactados:</strong> 8</span>
+          <span><strong>Conversão:</strong> 45%</span>
+          <span><strong>Impacto:</strong> +4 N1</span>
+        </div>
+      </div>
+
+      <div class="action-card P2">
+        <div class="action-head">
+          <div class="action-title">Revisar ativação de ProblemResolvedChecker para email</div>
+          <div class="action-badges">
+            <span class="badge P2">P2</span>
+            <span class="badge type">config_resolution</span>
+            <span class="badge impact">+3 N1</span>
+          </div>
+        </div>
+        <div class="action-desc">
+          <code>fup_active=false</code> no <code>linus_email</code> (vs. <code>true</code> no linus/chat). Em canal email a dinâmica do FUP é diferente — pergunta de satisfação por email tem taxa de resposta menor e pode gerar reabertura indesejada. <strong>NÃO ativar cegamente</strong>: validar com o cliente Linus se há política de FUP diferente para email. Incluir em revisão mensal.
+        </div>
+        <div class="action-meta">
+          <span><strong>Tickets impactados:</strong> 15</span>
+          <span><strong>Conversão:</strong> 20%</span>
+          <span><strong>Impacto:</strong> +3 N1</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="impact-summary">
+      <h3>💡 Impacto Consolidado do Plano</h3>
+      <p>
+        Executando as 11 ações, o impacto bruto somado é de <strong>+67 N1/mês</strong>. Aplicando sobreposição conservadora de 6% (projeto é pequeno, menos overlap entre ações), impacto líquido <strong>+63 N1/mês</strong>, movendo retenção de <strong>56% → ~75%</strong> (<strong>+12 a +18pp</strong>).
+        Como volume é pequeno (~200 tickets/mês), o ROI por ação é muito alto — cada ticket recuperado vale ~0,5pp. Priorizar o quick win de ativar <code>query_transform</code> que é single-field change e resolve a raiz de 24 dos 91 N2/mês.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>📑 Tabela de Impacto por Prioridade</h2>
+    <table class="metrics-table">
+      <thead>
+        <tr>
+          <th>Prioridade</th>
+          <th>Qtd. ações</th>
+          <th>Tickets impactados</th>
+          <th>Impacto bruto (N1)</th>
+          <th>% do total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge P0">P0</span></td>
+          <td class="value">5</td>
+          <td class="value">103</td>
+          <td class="critical">+35</td>
+          <td class="value">52%</td>
+        </tr>
+        <tr>
+          <td><span class="badge P1">P1</span></td>
+          <td class="value">4</td>
+          <td class="value">72</td>
+          <td class="attention">+25</td>
+          <td class="value">37%</td>
+        </tr>
+        <tr>
+          <td><span class="badge P2">P2</span></td>
+          <td class="value">2</td>
+          <td class="value">23</td>
+          <td class="value">+7</td>
+          <td class="value">11%</td>
+        </tr>
+        <tr style="background:#f8fafc;font-weight:700">
+          <td>Total (bruto)</td>
+          <td class="value">11</td>
+          <td class="value">198</td>
+          <td class="healthy">+67</td>
+          <td class="value">100%</td>
+        </tr>
+        <tr style="background:rgba(22,163,74,.08);font-weight:700">
+          <td>Total líquido (-6%)</td>
+          <td>—</td>
+          <td>—</td>
+          <td class="healthy">+63</td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+</div>
+
+<div class="footer">
+  Cloud Humans · Action Plan Map · Gerado em 20/04/2026 por ch-action-plan v5.1<br>
+  Dashboard: <a href="https://cloudhumans.github.io/action-plan-map/#linus_email" style="color:#3b82f6">https://cloudhumans.github.io/action-plan-map/#linus_email</a>
+</div>
+</body>
+</html>
