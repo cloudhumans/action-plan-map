@@ -1,36 +1,21 @@
-# Dúvidas e Gaps — Darwin — 2026-04-06
+# Dúvidas e Gaps — Darwin — 20/04/2026
 
 ## Dúvidas sobre Features/Configurações
-- [ ] `query_transform` (OFF): O que exatamente faz? Darwin é seguradora — muitas perguntas são complexas. Poderia ajudar?
-- [ ] `output_transformation` (OFF): Deveria estar ligada? Qual o impacto esperado?
-- [ ] `agentic_enabled` (OFF): Feature nova — relevante para Darwin que tem processos multi-step (sinistro, cancelamento)?
-- [ ] `attachment_handover` (OFF): Corretores frequentemente enviam documentos (apólices, fotos de sinistro). Ativar pode melhorar o fluxo.
-- [ ] `clarification_enabled` (null): Campo retorna null — está usando o classificador? Qual o default?
-- [ ] `tone_of_voice_enabled` (null): Campo retorna null — qual a configuração de tom atual?
-- [ ] `max_no_valid_content` = 1: Extremamente baixo — após 1 tentativa sem conteúdo válido já transfere. É intencional? Aumentar para 2-3 poderia reter mais.
-- [ ] `confidence_n2_threshold` = 0.90: Alto — está descartando conteúdos que poderiam ser usados com 85% de confiança. Testar redução para 0.85.
+- [ ] `clarificationsettings__enabled = null`: Qual o comportamento default quando o campo está null? É tratado como false, true, ou herda configuração de classificação? Necessita confirmação com time de produto antes de setá-lo explicitamente.
+- [ ] `conversationhistoryquerytransformationsettings__enabled = FALSE` (query_transform): Qual o impacto real de ativar? A documentação não é clara sobre o mecanismo exato para este tipo de projeto (seguradora, canal WhatsApp/chat). Não recomendado sem validação prévia.
+- [ ] `agentic_enabled = FALSE`: Feature nova, sem documentação suficiente para recomendar ativação. Avaliar com time de produto se faz sentido para o contexto de seguradora.
 
 ## Dados que Faltaram para Análise Completa
-- [ ] **Detalhamento do Multiprompt handover (1,056 tix = 16.8%)**: Não consegui entender POR QUE tantos tickets saem por multiprompt. Preciso acessar LLM Calls para ver o padrão de conversa que leva ao handover. Está configurado como "Venda do Bot"? Se sim, está falhando sistematicamente.
-- [ ] **IDS completa**: Quantos conteúdos existem? Quais são os Eddie flows ativos? Há duplicatas?
-- [ ] **Eddie flows existentes**: 1,210 N2 por "Eddie returned N2" — quais flows estão retornando N2? São flows que realmente precisam transferir ou poderiam resolver?
-- [ ] **Auditoria (Layer 3)**: Não executei — validar se os N1 atuais estão corretos, especialmente nas tags com GenCX alto.
-- [ ] **Transfer messages**: 882 N2 por "transfer message sent" — quais mensagens do usuário estão sendo interpretadas como pedido de transferência? Base Prompt pode estar muito permissivo.
-- [ ] **Detalhamento GenCX ruim em motivo_comercial (27.6%)**: Quais conversas específicas têm score ruim? O conteúdo está desatualizado ou a resposta é incorreta?
+- [ ] Query de `active_flow_flow_id` falhou — coluna não existe no schema atual. Seria necessário para análise individual dos Eddie flows (14,56% dos N2 em 30d são Eddie N2). Avaliar se existe query alternativa ou tabela nova.
+- [ ] CSAT real por tag/conteúdo — só temos GenCX. CSAT dos usuários finais ajudaria a priorizar conteúdos com impacto percebido (não só volumétrico).
+- [ ] Dados operacionais do cliente (horário de atendimento, e-mail do atendimento para dispensa de vistoria 0km, prazo de retorno em casos específicos) — necessários para completar a reescrita de vários conteúdos.
 
 ## Hipóteses que Precisam de Validação
-- [ ] **Hipótese:** O Multiprompt handover (16.8%) está alto porque a "Venda do Bot" está mal configurada — tenta reter mas não tem conteúdo suficiente para convencer. **Validação:** Revisar FlowPrompt MULTIPROMPT e FORWARD_TO_HUMAN_CHECK no CloudBlocks.
-- [ ] **Hipótese:** Os 882 N2 por "transfer message" podem incluir frases comuns de corretores de seguros ("preciso resolver isso urgente", "meu cliente precisa disso agora") sendo interpretadas como pedido de transferência. **Validação:** Amostra de LLM Calls com esse motivo de N2.
-- [ ] **Hipótese:** GenCX ruim em motivo_comercial (27.6%) indica que o conteúdo sobre a própria Darwin (institucional, comercial) está desatualizado ou inadequado. **Validação:** Revisar os conteúdos N1 dessa tag na IDS.
-- [ ] **Hipótese:** O modelo CHATGPT4o1120 pode estar contribuindo para timeouts (116 N2). **Validação:** Comparar com projetos que usam CHATGPT52CHAT para ver se timeout é menor.
-- [ ] **Hipótese:** Posição do sinistro (404 tix) é plenamente automatizável via Eddie com API de sinistros. **Validação:** Confirmar com AM se Darwin possui API de consulta de sinistros disponível para integração.
-- [ ] **Hipótese:** O `max_no_valid_content = 1` é o principal driver dos 405 N2 por "no relevant content" — transfere após 1 tentativa sem achar conteúdo. **Validação:** Aumentar para 2-3 em ambiente de teste e medir impacto.
+- [ ] Hipótese: Multiprompt handover em 32,92% dos N2 é impulsionado por corretores pedindo humano mesmo quando a ClaudIA poderia resolver. | Validação necessária: auditar amostra de 30-50 N2 com resolutionreason = Multiprompt handover para confirmar padrão.
+- [ ] Hipótese: Os conteúdos N2 de maior volume (vistoria, pagamento serviço, oficina credenciada) são candidatos a transformação agêntica se Darwin tiver APIs disponíveis. | Validação necessária: validar com Darwin se há APIs de status de pedido/vistoria/pagamento de sinistro.
+- [ ] Hipótese: O upgrade de gpt_model vai reduzir GenCX sem regredir retenção. | Validação necessária: A/B test em 7 dias após mudança.
 
 ## Sugestões de Dados Adicionais
-- [ ] Acesso aos LLM Calls dos tickets com Multiprompt handover — entender o padrão
-- [ ] Lista completa da IDS com contagem por tipo (N1/N2/INTERACTIVE)
-- [ ] Eddie flows ativos e seus rates de N2 return
-- [ ] FlowPrompts configurados (MULTIPROMPT, FORWARD_TO_HUMAN_CHECK, RESET_AND_REVERT)
-- [ ] Amostra de conversas com "transfer message sent" para entender quais frases ativam
-- [ ] Informação sobre APIs Darwin disponíveis (sinistros, apólices, financeiro) — crucial para Eddie flows
-- [ ] Dados de auditoria (Layer 3) para % erro e N1 que deveriam ser N2
+- [ ] Acesso ao repositório de Eddie flows do Darwin para avaliar quais flows têm erro e quais são candidatos a agêntico.
+- [ ] Histórico de CSAT por período para identificar se a tendência positiva da última semana é correlacionada com alguma mudança já feita.
+- [ ] Auditoria manual (pelo menos 50 tickets de N2) para calibrar % de erro 1/2 na qualidade das respostas.

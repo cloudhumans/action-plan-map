@@ -1,87 +1,128 @@
 {
   "_schema": "action-plan-map/plan/v1",
   "project_slug": "darwin",
-  "date": "06/04/2026",
-  "summary": "Retenção em declínio: 36.2% → 31.4% na semana de 30/03. Distribuição de N2 muito fragmentada — Multiprompt (16.8%), Transfer messages (14.0%), Clarificação (14.6%) e Eddie N2 (19.2%). GenCX crítico em 8.3% com tags comercial (27.6% ruim) e assistências (15.6% ruim).",
-  "impact_retention": "+15 a +20pp",
-  "total_impact": 1850,
-  "n1_potential": 55.5,
-  "executed_at": "2026-04-06",
-  "skill_version": "v4",
+  "date": "20/04/2026",
+  "summary": "Retenção em 35,5% (30d) com leve recuperação para 38,87% na última semana — ainda crítica. Principais alavancas: (1) reescrita dos TOP 3 conteúdos N1 (cancelar seguro anual, status sinistro, parcelas em atraso) que juntos concentram 677 tickets com retenção < 36%; (2) correção de 5 configs sub-ótimas (confidence_n2=0.90, max_no_valid_content=1, more_user_interactions=FALSE, gpt_model antigo, enlightenment_limit desativado); (3) criação de 4 novos conteúdos identificados nos N2 da semana passada (erro renovação portal, assistência 24h alternativa, renovação automática incompleta, exclusão usuário). Potencial: +797 N1/mês → retenção ~48,4%.",
+  "impact_retention": "+9 a +12pp",
+  "total_impact": 797,
+  "n1_potential": 797,
+  "executed_at": "2026-04-20",
+  "skill_version": "v5.1",
   "actions": [
     {
       "priority": "P0",
-      "title": "Investigar Multiprompt handover (16.8%)",
-      "desc": "1,056 N2 por multiprompt — extremamente alto. Indica que Venda do Bot está tentando reter mas falhando. Investigar LLM Calls e FlowPrompt MULTIPROMPT.",
-      "impact_tickets": 1056,
-      "conversion_rate": 0.3,
-      "impact_est": 317
-    },
-    {
-      "priority": "P0",
-      "title": "Reduzir Transfer messages (14.0%)",
-      "desc": "882 N2 por mensagem de transferência detectada. Revisar Base Prompt e FlowPrompt FORWARD_TO_HUMAN_CHECK — possíveis frases de corretores sendo interpretadas como pedido de humano.",
-      "impact_tickets": 882,
-      "conversion_rate": 0.3,
-      "impact_est": 265
-    },
-    {
-      "priority": "P0",
-      "title": "Reescrever conteúdos com GenCX crítico",
-      "desc": "GenCX 8.33% ruim (🔴). Tags críticas: motivo_comercial (27.6% ruim, CSAT 36.8%), motivo_assistências (15.6% ruim). Revisar e reescrever conteúdos dessas tags.",
-      "impact_tickets": 300,
+      "title": "Reescrever conteúdo N1 #1 — Cancelamento de seguro anual",
+      "desc": "Conteúdo ID 69811748 com 349 tickets/mês e retenção de 0,29%. Ambiguidade de público-alvo (corretor vs. cliente) e falta de clareza sobre Tabela de Prazo Curto. Texto reescrito pronto no Deep Dive: instruções separadas por perfil (corretor/cliente), lista de campos obrigatórios no e-mail, prazo de retorno 24h úteis.",
+      "impact_tickets": 348,
       "conversion_rate": 0.25,
-      "impact_est": 75
+      "impact_est": 87,
+      "type": "content_improve"
     },
     {
-      "priority": "P1",
-      "title": "Ativar More User Interactions",
-      "desc": "Feature OFF. Melhora entendimento em perguntas complexas de seguros.",
-      "impact_tickets": 400,
-      "conversion_rate": 0.7,
-      "impact_est": 280
+      "priority": "P0",
+      "title": "Reescrever conteúdo N1 #2 — Status do sinistro do cliente",
+      "desc": "Conteúdo ID 6981174b com 342 tickets/mês e retenção de 2,92%. Entrega apenas link externo sem instrução de acesso/navegação/status. Reescrita adiciona: passo a passo de login, explicação de cada etapa (Abertura→Análise→Vistoria→Regulação→Parecer Final), canal alternativo quando portal falha.",
+      "impact_tickets": 332,
+      "conversion_rate": 0.25,
+      "impact_est": 83,
+      "type": "content_improve"
     },
     {
-      "priority": "P1",
-      "title": "Aumentar max_no_valid_content de 1 para 3",
-      "desc": "923 N2 por clarificação (14.6%). max_no_valid_content=1 é muito baixo — transfere após 1 tentativa sem conteúdo.",
-      "impact_tickets": 923,
+      "priority": "P0",
+      "title": "Ajustar max_no_valid_content de 1 para 3",
+      "desc": "Config atual faz ClaudIA desistir após 1 tentativa sem conteúdo válido — responsável direto pelos 12,58% de N2 por 'No relevant content' (151 tickets semana passada, 406 em 30d). Aumentar para 3 dá margem para reformular a query antes de transferir. Single-field change, sem risco, impacto imediato.",
+      "impact_tickets": 620,
       "conversion_rate": 0.35,
-      "impact_est": 323
+      "impact_est": 217,
+      "type": "config_classification"
+    },
+    {
+      "priority": "P0",
+      "title": "Reduzir confidence_n2_threshold de 0.90 para 0.75",
+      "desc": "Threshold muito alto (esperado: 0.65–0.80) está rejeitando conteúdos com confiança entre 0.65–0.89 que poderiam ter sido usados. Impacta os N2 por 'N2 section' (935 em 30d) e parte do Multiprompt handover. Ajustar em passo conservador (0.75) e monitorar GenCX por 7 dias antes de descer mais.",
+      "impact_tickets": 500,
+      "conversion_rate": 0.35,
+      "impact_est": 175,
+      "type": "config_threshold"
     },
     {
       "priority": "P1",
-      "title": "Criar conteúdo para no_relevant_content",
-      "desc": "405 N2 (6.4%) sem conteúdo encontrado. Rodar extração de temas e criar novos conteúdos na IDS.",
-      "impact_tickets": 405,
-      "conversion_rate": 0.6,
-      "impact_est": 243
+      "title": "Reescrever conteúdo N1 #3 — Parcelas em atraso / consultar apólice",
+      "desc": "Conteúdo ID 69811727, 207 tickets/mês, retenção 35,75%. Mistura plano mensal e anual sem clareza, não explica caminho no Portal do Corretor. Reescrita separa mensal vs. anual com passos claros no portal e instruções para visualização de bilhete/apólice.",
+      "impact_tickets": 133,
+      "conversion_rate": 0.25,
+      "impact_est": 33,
+      "type": "content_improve"
     },
     {
       "priority": "P1",
-      "title": "Avaliar automatização Eddie para top N2",
-      "desc": "Top 4 N2: cancelar seguro (442 tix, ⚠️), posição sinistro (404 tix, ✅ automatizável via API), dispensa vistoria 0km (74 tix, ⚠️), reativar seguro (66 tix, ⚠️).",
-      "impact_tickets": 986,
-      "conversion_rate": 0.15,
-      "impact_est": 148
+      "title": "Melhorar conteúdos N1 #4 a #10 — pagamento PIX, erro transmissão, contato, status vistoria, link vistoria, prazo sinistro, vistoria 0km",
+      "desc": "7 conteúdos com retenção entre 9% e 49% e 404 tickets recuperáveis. Todos com texto reescrito pronto no Deep Dive (ver relatório IDS Quality Eval). Problemas recorrentes: falta de passo a passo no portal, ausência de canal alternativo quando portal falha, ausência de horários de atendimento, e instruções genéricas sem pré-requisitos.",
+      "impact_tickets": 404,
+      "conversion_rate": 0.25,
+      "impact_est": 101,
+      "type": "content_improve"
+    },
+    {
+      "priority": "P1",
+      "title": "Upgrade gpt_model de CHATGPT4o1120 para CHATGPT52CHAT",
+      "desc": "Modelo atual é anterior ao recomendado. Modelo novo oferece melhor compreensão contextual e menor taxa de alucinação, reduzindo GenCX (atualmente em 7%, na borda do crítico). Fazer em janela de baixo volume e monitorar GenCX nas 48h seguintes.",
+      "impact_tickets": 584,
+      "conversion_rate": 0.30,
+      "impact_est": 175,
+      "type": "config_model"
+    },
+    {
+      "priority": "P1",
+      "title": "Ativar more_user_interactions (histórico de conversa na busca)",
+      "desc": "Feature desativada impede ClaudIA de usar histórico da conversa para enriquecer busca. Em conversas multi-etapa (sinistro, renovação, vistoria), contexto é crítico. Impacta diretamente os 13,67% de N2 por clarificação (164 tickets semana passada, 645 em 30d).",
+      "impact_tickets": 337,
+      "conversion_rate": 0.35,
+      "impact_est": 118,
+      "type": "config_search"
+    },
+    {
+      "priority": "P1",
+      "title": "Criar 4 novos conteúdos N1 identificados em 'No relevant content' — semana passada",
+      "desc": "4 temas CRIAR identificados nos 151 N2 da semana: (1) Erro no portal ao calcular/renovar (sistema recusa renovação mas aceita como novo); (2) Canal alternativo de assistência 24h quando app/portal falha; (3) Renovação automática com cobertura incompleta; (4) Exclusão de usuário no portal do corretor. Textos sugeridos prontos no relatório Content Gap.",
+      "impact_tickets": 120,
+      "conversion_rate": 0.60,
+      "impact_est": 72,
+      "type": "content_new"
     },
     {
       "priority": "P2",
-      "title": "Reduzir FUP negativo — revisar texto",
-      "desc": "258 N2 por FUP negativo. fup_autodetect já ativo. Revisar texto do FUP.",
-      "impact_tickets": 258,
-      "conversion_rate": 0.5,
-      "impact_est": 129
+      "title": "Ativar enlightenment_limit_enabled (cap de clarificação = 2)",
+      "desc": "Cap já configurado (limit=2) mas flag está FALSE — ou seja, nunca é aplicado. Sem cap, clarificação pode entrar em loop. Contribui para os 645 N2 por clarificação em 30d. Apenas habilitar o flag — sem ajuste adicional necessário.",
+      "impact_tickets": 226,
+      "conversion_rate": 0.35,
+      "impact_est": 79,
+      "type": "config_classification"
     },
     {
       "priority": "P2",
-      "title": "Reduzir timeout handovers",
-      "desc": "116 N2 por timeout. Verificar se modelo CHATGPT4o1120 está causando lentidão.",
-      "impact_tickets": 116,
-      "conversion_rate": 0.6,
-      "impact_est": 70
+      "title": "Adaptar 3 conteúdos existentes — PIX corretor, Bluetooth 2º motorista, reativação plano mensal",
+      "desc": "3 temas com conteúdo similar mas insuficiente. Ajustes: (1) adicionar versão para corretor no conteúdo de parcela em atraso; (2) passo a passo específico para segundo condutor no Bluetooth; (3) orientação sobre nova contratação após descontinuação do plano mensal.",
+      "impact_tickets": 56,
+      "conversion_rate": 0.35,
+      "impact_est": 20,
+      "type": "content_improve"
+    },
+    {
+      "priority": "P2",
+      "title": "Corrigir labels e complementar conteúdos 'Já cobertos'",
+      "desc": "2 conteúdos existem mas não são ativados corretamente: (1) 'A classe bônus influencia no meu preço?' precisa incluir informação sobre plano anual e ser movido para label 'motivo_renovação,dúvidas'; (2) condições gerais precisa variação de pergunta 'Preciso do PDF das condições gerais para enviar ao cliente'.",
+      "impact_tickets": 25,
+      "conversion_rate": 0.20,
+      "impact_est": 5,
+      "type": "content_reclassify"
     }
   ],
   "report_html": "reports/action-plan-darwin.html",
+  "sub_reports": {
+    "ids_quality_eval": "reports/ids-quality-eval-darwin.html",
+    "content_gap": "reports/content-gap-darwin.html",
+    "config_deep_dive": "reports/config-deep-dive-darwin.html"
+  },
   "doubts_md": "doubts/doubts-darwin.md"
 }

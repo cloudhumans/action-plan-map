@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Config Deep Dive — Darwin | Cloud Humans</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f6fa;color:#1a1a2e;line-height:1.6}
+
+.header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:40px 48px 36px}
+.header h1{font-size:32px;font-weight:700;margin-bottom:8px;letter-spacing:-.5px}
+.header .subtitle{font-size:15px;opacity:.75;line-height:1.5;max-width:900px;margin-top:12px}
+.header .meta{margin-top:16px;display:flex;gap:24px;font-size:13px;opacity:.6;flex-wrap:wrap}
+.header-badges{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+.header-badge{display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;backdrop-filter:blur(10px)}
+.header-badge.tier{background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.4);color:#e0e7ff}
+.header-badge.critical{background:rgba(220,38,38,.2);border:1px solid rgba(220,38,38,.4);color:#fecaca}
+.header-badge.attention{background:rgba(217,119,6,.2);border:1px solid rgba(217,119,6,.4);color:#fed7aa}
+.header-badge.ok{background:rgba(5,150,105,.2);border:1px solid rgba(5,150,105,.4);color:#d1fae5}
+
+.main{padding:32px 48px;max-width:1200px;margin:0 auto}
+
+section{background:#fff;border-radius:12px;margin-bottom:24px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}
+section h2{font-size:18px;font-weight:700;color:#1e293b;padding:20px 24px 12px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:8px}
+section h3{font-size:14px;font-weight:700;color:#334155;margin:16px 0 12px}
+.section-content{padding:20px 24px}
+
+.metrics-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin:16px 0}
+.metric-card{text-align:center;padding:20px;border-radius:12px;border:1px solid #e2e8f0}
+.metric-card.primary{background:#fef2f2;border-color:#fecaca}
+.metric-card.secondary{background:#f0fdf4;border-color:#d1fae5}
+.metric-card.tertiary{background:#eff6ff;border-color:#bfdbfe}
+.metric-card.quaternary{background:#fefce8;border-color:#fed7aa}
+.metric-value{font-size:32px;font-weight:800;margin-bottom:4px}
+.metric-label{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.metric-card.primary .metric-value{color:#dc2626}
+.metric-card.primary .metric-label{color:#991b1b}
+.metric-card.secondary .metric-value{color:#059669}
+.metric-card.secondary .metric-label{color:#166534}
+.metric-card.tertiary .metric-value{color:#2563eb}
+.metric-card.tertiary .metric-label{color:#1e40af}
+.metric-card.quaternary .metric-value{color:#d97706}
+.metric-card.quaternary .metric-label{color:#92400e}
+
+.config-card{border-left:4px solid;padding:20px 24px;margin:16px 0;background:#f8fafc;border-radius:8px}
+.config-card.critical{border-left-color:#dc2626;background:#fff5f5}
+.config-card.attention{border-left-color:#d97706;background:#fffbf0}
+.config-card.ok{border-left-color:#059669;background:#f0fdf4}
+
+.config-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px;flex-wrap:wrap}
+.config-head h4{font-size:15px;font-weight:700;color:#1e293b}
+.config-code{font-family:'SF Mono',Monaco,'Cascadia Code',monospace;font-size:12px;background:#e2e8f0;color:#1e293b;padding:2px 8px;border-radius:4px}
+
+.config-values{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.value-box{padding:10px 14px;border-radius:6px;background:#fff;border:1px solid #e2e8f0}
+.value-label{font-size:11px;font-weight:700;text-transform:uppercase;color:#64748b;margin-bottom:4px;letter-spacing:.5px}
+.value-content{font-family:'SF Mono',Monaco,'Cascadia Code',monospace;font-size:14px;font-weight:700;color:#1e293b}
+.value-box.current{border-left:3px solid #dc2626}
+.value-box.recommended{border-left:3px solid #059669}
+
+.impact-block{margin-top:12px;padding:12px;background:#fff;border-radius:6px;border:1px solid #e2e8f0;font-size:13px;color:#475569}
+.impact-block strong{color:#1e293b}
+
+.table-wrapper{overflow-x:auto;margin:16px 0}
+.config-table{width:100%;border-collapse:collapse;font-size:13px}
+.config-table th{background:#f8fafc;padding:12px 16px;text-align:left;font-weight:700;color:#334155;border-bottom:2px solid #e2e8f0}
+.config-table td{padding:12px 16px;border-bottom:1px solid #e8eaf0}
+.config-table tr:last-child td{border-bottom:none}
+.config-table tr:hover{background:#f8fafc}
+.config-table td code{font-family:'SF Mono',Monaco,'Cascadia Code',monospace;font-size:12px;background:#f1f5f9;padding:2px 6px;border-radius:4px}
+
+.badge{display:inline-block;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.badge.critical{background:#fecaca;color:#991b1b}
+.badge.attention{background:#fed7aa;color:#92400e}
+.badge.ok{background:#d1fae5;color:#166534}
+.badge.doubt{background:#e0e7ff;color:#3730a3}
+
+.rollout-step{display:flex;gap:16px;align-items:flex-start;padding:16px;margin:12px 0;background:#f8fafc;border-radius:8px;border-left:4px solid #7c3aed}
+.rollout-num{flex-shrink:0;width:32px;height:32px;border-radius:50%;background:#7c3aed;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+.rollout-content{flex:1}
+.rollout-content h4{font-size:14px;font-weight:700;color:#1e293b;margin-bottom:4px}
+.rollout-content p{font-size:13px;color:#475569;line-height:1.6}
+
+.footer{text-align:center;padding:28px 48px;font-size:12px;color:#94a3b8;border-top:1px solid #e8eaf0;margin-top:32px}
+.footer a{color:#6366f1;text-decoration:none;font-weight:600}
+.footer a:hover{text-decoration:underline}
+
+@media(max-width:900px){
+  .header,.main,.footer{padding-left:20px;padding-right:20px}
+  .header h1{font-size:24px}
+  .metrics-cards{grid-template-columns:1fr 1fr}
+  .config-values{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Config Deep Dive — Darwin</h1>
+  <p class="subtitle">Auditoria completa das configurações do projeto Darwin na plataforma ClaudIA: 24 flags avaliadas, 5 sub-ótimas identificadas, 3 com dúvida (investigação necessária). As correções recomendadas isoladamente podem adicionar ~764 N1/mês.</p>
+  <div class="meta">
+    <span>Snapshot: 20/04/2026 (project_setup)</span>
+    <span>Elaborado: 20/04/2026</span>
+    <span>Skill: ch-action-plan v5.1 (sub-agente config-deep-dive)</span>
+  </div>
+  <div class="header-badges">
+    <span class="header-badge tier">Darwin</span>
+    <span class="header-badge critical">5 Configs Críticas</span>
+    <span class="header-badge attention">3 Em Dúvida</span>
+    <span class="header-badge ok">16 OK</span>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- RESUMO EXECUTIVO -->
+<section>
+  <h2>Resumo Executivo</h2>
+  <div class="section-content">
+    <p style="font-size:14px;line-height:1.7;color:#334155;margin-bottom:20px">
+      A auditoria das 24 flags de configuração do Darwin revelou <strong style="color:#dc2626">5 ajustes sub-ótimos</strong> que explicam boa parte dos 64,54% de N2 atuais. Em ordem de impacto:
+    </p>
+    <ol style="margin-left:20px;font-size:13px;color:#475569;line-height:1.9;margin-bottom:20px">
+      <li><strong>max_no_valid_content = 1</strong> → deveria ser <strong>3</strong> (impacto estimado +217 N1/mês)</li>
+      <li><strong>gpt_model = CHATGPT4o1120</strong> → deveria ser <strong>CHATGPT52CHAT</strong> (impacto +175 N1/mês via menor GenCX ruim)</li>
+      <li><strong>baseconfidencescoren2 = 0,90</strong> → deveria ser <strong>0,75</strong> (impacto +175 N1/mês)</li>
+      <li><strong>more_user_interactions = FALSE</strong> → deveria ser <strong>TRUE</strong> (impacto +118 N1/mês)</li>
+      <li><strong>enlightenment_limit_enabled = FALSE</strong> → deveria ser <strong>TRUE</strong> (impacto +79 N1/mês)</li>
+    </ol>
+    <p style="font-size:13px;color:#475569;margin-bottom:20px">
+      <strong>Total bruto:</strong> +764 N1/mês (soma isolada, pré-dedupe). Após aplicar fator de overlap (30%), consolidado em <strong>+535 N1/mês</strong> no plano de ação consolidado (subconjunto da soma total +797 que inclui conteúdo).
+    </p>
+
+    <div class="metrics-cards">
+      <div class="metric-card primary">
+        <div class="metric-value">5</div>
+        <div class="metric-label">Configs Sub-Ótimas</div>
+      </div>
+      <div class="metric-card quaternary">
+        <div class="metric-value">3</div>
+        <div class="metric-label">Em Dúvida</div>
+      </div>
+      <div class="metric-card tertiary">
+        <div class="metric-value">24</div>
+        <div class="metric-label">Flags Auditadas</div>
+      </div>
+      <div class="metric-card secondary">
+        <div class="metric-value">+764</div>
+        <div class="metric-label">N1/mês Potencial (bruto)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AJUSTES RECOMENDADOS -->
+<section>
+  <h2>Ajustes Recomendados (5 configs)</h2>
+  <div class="section-content">
+
+    <div class="config-card critical">
+      <div class="config-head">
+        <h4>#1 — max_no_valid_content</h4>
+        <span class="badge critical">Crítico</span>
+      </div>
+      <span class="config-code">classificationsettings__maxnovalidcontentattempts</span>
+      <p style="font-size:13px;color:#475569;margin:10px 0">
+        Define quantas tentativas a ClaudIA faz de buscar conteúdo relevante antes de desistir e transferir. Com valor atual (1), qualquer query que não retorne match na primeira busca vira N2 imediatamente — é responsável direto pelos <strong>12,58% de N2 por "No relevant content"</strong> (151 na semana passada, 406 em 30d).
+      </p>
+      <div class="config-values">
+        <div class="value-box current">
+          <div class="value-label">Valor atual</div>
+          <div class="value-content">1</div>
+        </div>
+        <div class="value-box recommended">
+          <div class="value-label">Recomendado</div>
+          <div class="value-content">3</div>
+        </div>
+      </div>
+      <div class="impact-block">
+        <strong>Impacto estimado:</strong> 620 tickets endereçáveis × conversão 0,35 = <strong>+217 N1/mês</strong>. Risco: baixíssimo — apenas dá mais oportunidades de busca. Alteração single-field, sem lock-in.
+      </div>
+    </div>
+
+    <div class="config-card critical">
+      <div class="config-head">
+        <h4>#2 — baseconfidencescoren2 (threshold de confiança)</h4>
+        <span class="badge critical">Crítico</span>
+      </div>
+      <span class="config-code">baseconfidencescoren2</span>
+      <p style="font-size:13px;color:#475569;margin:10px 0">
+        Threshold mínimo de confiança para usar um conteúdo encontrado. Em 0,90, qualquer match com confiança entre 0,65 e 0,89 é descartado e vira N2. A faixa saudável observada em projetos estáveis é <strong>0,65 a 0,80</strong>. Impacta diretamente os N2 por "N2 section" (935 em 30d) e parte do handover via Multiprompt.
+      </p>
+      <div class="config-values">
+        <div class="value-box current">
+          <div class="value-label">Valor atual</div>
+          <div class="value-content">0.90</div>
+        </div>
+        <div class="value-box recommended">
+          <div class="value-label">Recomendado (passo 1)</div>
+          <div class="value-content">0.75</div>
+        </div>
+      </div>
+      <div class="impact-block">
+        <strong>Impacto estimado:</strong> ~500 tickets endereçáveis × conversão 0,35 = <strong>+175 N1/mês</strong>. Risco: médio — descer o threshold aumenta retenção mas pode elevar GenCX ruim. <strong>Rollout em dois passos:</strong> baixar para 0,75, monitorar GenCX por 7 dias; se estável, avaliar descer para 0,70.
+      </div>
+    </div>
+
+    <div class="config-card critical">
+      <div class="config-head">
+        <h4>#3 — gpt_model</h4>
+        <span class="badge critical">Crítico</span>
+      </div>
+      <span class="config-code">selectedgptmodel</span>
+      <p style="font-size:13px;color:#475569;margin:10px 0">
+        Modelo atual (CHATGPT4o1120) é uma geração anterior ao recomendado (CHATGPT52CHAT). O modelo novo oferece melhor compreensão contextual (especialmente em português), menor taxa de alucinação e melhor raciocínio em conversas multi-turn. Com GenCX Ruim% atual em 7% (borda do crítico), o upgrade reduz o risco de piora.
+      </p>
+      <div class="config-values">
+        <div class="value-box current">
+          <div class="value-label">Valor atual</div>
+          <div class="value-content">CHATGPT4o1120</div>
+        </div>
+        <div class="value-box recommended">
+          <div class="value-label">Recomendado</div>
+          <div class="value-content">CHATGPT52CHAT</div>
+        </div>
+      </div>
+      <div class="impact-block">
+        <strong>Impacto estimado:</strong> ~584 tickets endereçáveis (todo volume atual) × conversão 0,30 = <strong>+175 N1/mês</strong> via menor GenCX ruim e melhor retenção natural. Risco: médio — fazer em janela de baixo volume (ex: sábado manhã) e monitorar GenCX/CSAT por 48h seguintes.
+      </div>
+    </div>
+
+    <div class="config-card attention">
+      <div class="config-head">
+        <h4>#4 — more_user_interactions</h4>
+        <span class="badge attention">Atenção</span>
+      </div>
+      <span class="config-code">contentsearchconfiguration__moreuserinteractionsenabled</span>
+      <p style="font-size:13px;color:#475569;margin:10px 0">
+        Quando TRUE, a ClaudIA usa o histórico da conversa (últimas N mensagens do usuário) para enriquecer a busca por conteúdo. Feature especialmente crítica em conversas multi-etapa (sinistro, renovação, vistoria), onde a intenção vai sendo construída ao longo do diálogo. Hoje está desativada.
+      </p>
+      <div class="config-values">
+        <div class="value-box current">
+          <div class="value-label">Valor atual</div>
+          <div class="value-content">FALSE</div>
+        </div>
+        <div class="value-box recommended">
+          <div class="value-label">Recomendado</div>
+          <div class="value-content">TRUE</div>
+        </div>
+      </div>
+      <div class="impact-block">
+        <strong>Impacto estimado:</strong> 337 tickets endereçáveis (recortes dos 13,67% de N2 por clarificação) × conversão 0,35 = <strong>+118 N1/mês</strong>. Risco: baixo — feature amplamente estável, ativar simplesmente habilita um enriquecimento da query.
+      </div>
+    </div>
+
+    <div class="config-card attention">
+      <div class="config-head">
+        <h4>#5 — enlightenment_limit_enabled</h4>
+        <span class="badge attention">Atenção</span>
+      </div>
+      <span class="config-code">enlightenmentquestionlimit__enabled / enlightenmentquestionlimit__limit</span>
+      <p style="font-size:13px;color:#475569;margin:10px 0">
+        O limite de clarificação já está configurado (<code>limit = 2</code>), mas a flag <code>enabled</code> está FALSE — ou seja, <strong>o cap nunca é aplicado</strong>. Sem cap, a ClaudIA pode entrar em loop de perguntas de clarificação, frustrando o usuário e contribuindo para os 645 N2 por clarificação em 30d (e parte dos 112 N2 por frustração).
+      </p>
+      <div class="config-values">
+        <div class="value-box current">
+          <div class="value-label">Valor atual</div>
+          <div class="value-content">FALSE (limit=2 ignorado)</div>
+        </div>
+        <div class="value-box recommended">
+          <div class="value-label">Recomendado</div>
+          <div class="value-content">TRUE (aplicar cap=2)</div>
+        </div>
+      </div>
+      <div class="impact-block">
+        <strong>Impacto estimado:</strong> 226 tickets endereçáveis × conversão 0,35 = <strong>+79 N1/mês</strong>. Risco: baixo — só ativa um limite já dimensionado. Impede loop de clarificação, força transferência limpa quando realmente necessária.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FLAGS EM DÚVIDA -->
+<section>
+  <h2>Flags em Dúvida (não recomendadas sem validação)</h2>
+  <div class="section-content">
+    <p style="font-size:13px;color:#475569;margin-bottom:16px">
+      Em respeito à regra de conservadorismo do skill ("na dúvida, não inclua"), as flags abaixo aparecem com valor <code>null</code> ou comportamento não documentado. Foram levadas ao Documento de Dúvidas (<code>doubts/doubts-darwin.md</code>) para investigação com produto antes de qualquer recomendação.
+    </p>
+    <div class="table-wrapper">
+      <table class="config-table">
+        <thead>
+          <tr>
+            <th>Flag</th>
+            <th>Valor atual</th>
+            <th>Por que não recomendar agora</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>clarificationsettings__enabled</code></td>
+            <td><span class="badge doubt">null</span></td>
+            <td>Não fica claro se <code>null</code> equivale a "herda default" ou "desabilitado". Precisa confirmar com produto antes de mexer.</td>
+          </tr>
+          <tr>
+            <td><code>conversationhistoryquerytransformationsettings__enabled</code></td>
+            <td><span class="badge doubt">null</span></td>
+            <td>Feature Query Transformation não está claramente documentada. Regra do skill veta recomendação sem validação prévia.</td>
+          </tr>
+          <tr>
+            <td><code>agenticconfigs__enabled</code></td>
+            <td><span class="badge doubt">null</span></td>
+            <td>Feature nova ainda em evolução. Aguardando guideline do time de produto para decidir se deve ser ativada em Darwin.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- FLAGS OK -->
+<section>
+  <h2>Flags OK (sem alteração recomendada)</h2>
+  <div class="section-content">
+    <p style="font-size:13px;color:#475569;margin-bottom:16px">
+      As 16 flags abaixo estão configuradas dentro da faixa esperada. Mantidas como estão.
+    </p>
+    <div class="table-wrapper">
+      <table class="config-table">
+        <thead>
+          <tr>
+            <th>Flag</th>
+            <th>Valor atual</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>classificationsettings__enabled</code></td><td>TRUE</td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td><code>classificationsettings__maxclarificationattempts</code></td><td>2</td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td><code>contentsearchconfiguration__moregptsectionsenabled</code></td><td>TRUE</td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td><code>contentsearchconfiguration__topk</code></td><td>5</td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td><code>detecttransfermessage</code></td><td>TRUE</td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td><code>enableaudiotranscription</code></td><td>TRUE</td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td><code>attachmenthandover__enabled</code></td><td>TRUE</td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td><code>frustrationdetection__enabled</code></td><td>TRUE</td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td><code>enlightenmentquestionlimit__limit</code></td><td>2</td><td><span class="badge ok">OK (cap correto; flag <em>enabled</em> precisa subir)</span></td></tr>
+          <tr><td><code>eddieconfiguration__maxrepeatperflow</code></td><td>3</td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td><code>eddieconfiguration__maxrepeattransfer</code></td><td>2</td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td><code>problemresolvedchecker__jobactive</code></td><td>TRUE</td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td><code>problemresolvedchecker__autodetectproblemsolved</code></td><td>TRUE</td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td><code>repeatedsectionlimit</code></td><td>3</td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td><code>toneofvoice__enabled</code></td><td>FALSE</td><td><span class="badge ok">OK (Base Prompt já cobre tom de voz)</span></td></tr>
+          <tr><td><code>language</code></td><td>pt-BR</td><td><span class="badge ok">OK</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ROLLOUT -->
+<section>
+  <h2>Ordem de Rollout Recomendada</h2>
+  <div class="section-content">
+    <p style="font-size:13px;color:#475569;margin-bottom:16px">
+      Para maximizar ganho e minimizar risco, ajustar uma config por vez, esperar 48h de observação antes do próximo ajuste e monitorar: retenção, GenCX Ruim%, CSAT ClaudIA e motivos de N2.
+    </p>
+
+    <div class="rollout-step">
+      <div class="rollout-num">1</div>
+      <div class="rollout-content">
+        <h4>Dia 1 — max_no_valid_content 1 → 3 + enlightenment_limit_enabled FALSE → TRUE</h4>
+        <p>Dois ajustes simultâneos, ambos de baixíssimo risco e com impacto imediato em motivos distintos (No content + Clarificação em loop). Observar por 48h. Impacto conjunto esperado: +296 N1/mês.</p>
+      </div>
+    </div>
+
+    <div class="rollout-step">
+      <div class="rollout-num">2</div>
+      <div class="rollout-content">
+        <h4>Dia 3 — more_user_interactions FALSE → TRUE</h4>
+        <p>Ativar contexto de conversa na busca. Observar especialmente conversas multi-etapa (sinistro, renovação) por 72h. Impacto esperado: +118 N1/mês.</p>
+      </div>
+    </div>
+
+    <div class="rollout-step">
+      <div class="rollout-num">3</div>
+      <div class="rollout-content">
+        <h4>Dia 6 — baseconfidencescoren2 0,90 → 0,75</h4>
+        <p>Passo 1 do ajuste de threshold. Monitorar GenCX Ruim% nas 72h seguintes; se estável ou em queda, avaliar descer para 0,70. Se subir, voltar para 0,80. Impacto esperado (passo 1): +175 N1/mês.</p>
+      </div>
+    </div>
+
+    <div class="rollout-step">
+      <div class="rollout-num">4</div>
+      <div class="rollout-content">
+        <h4>Dia 10 — gpt_model CHATGPT4o1120 → CHATGPT52CHAT</h4>
+        <p>Última config e de maior superfície de impacto. Fazer em janela de baixo volume (sábado de manhã). Monitorar GenCX, CSAT e tempo de resposta nas 48h seguintes. Impacto esperado: +175 N1/mês.</p>
+      </div>
+    </div>
+
+    <div class="rollout-step">
+      <div class="rollout-num">5</div>
+      <div class="rollout-content">
+        <h4>Dia 14 — Consolidar e iterar</h4>
+        <p>Revisar métricas pós-rollout completo. Recalibrar se necessário (ex: subir ou descer threshold). Iniciar trabalho de conteúdo (reescritas de #1, #2 e #3 do IDS Quality Eval).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- METODOLOGIA -->
+<section>
+  <h2>Metodologia</h2>
+  <div class="section-content">
+    <ol style="margin-left:20px;font-size:13px;color:#475569;line-height:1.8">
+      <li>Snapshot da tabela <code>project_setup</code> filtrada por <code>project_name = 'darwin'</code>.</li>
+      <li>Cada flag comparada contra a faixa saudável documentada na Referência de Produto ClaudIA.</li>
+      <li>Classificação em Crítico (gap claro + impacto ≥ 100 N1/mês), Atenção (gap + impacto ≥ 50 N1/mês) ou OK.</li>
+      <li>Cálculo de impacto: tickets endereçáveis × conversion_rate canonical (35% config_threshold/classification/search; 30% config_model).</li>
+      <li>Flags com valor <code>null</code> ou documentação incerta movidas ao Documento de Dúvidas (regra de conservadorismo).</li>
+      <li>Ordem de rollout priorizando risco crescente: baixo risco primeiro, mudanças de modelo/threshold por último.</li>
+    </ol>
+    <p style="font-size:12px;color:#94a3b8;margin-top:16px;font-style:italic">
+      Observação: impactos são aditivos apenas parcialmente — há overlap entre configs que atacam o mesmo motivo de N2. No plano de ação consolidado aplicamos um fator de dedupe de 30% sobre a soma bruta.
+    </p>
+  </div>
+</section>
+
+</div>
+
+<div class="footer">
+  Elaborado pelo time Cloud Humans · Skill: ch-action-plan v5.1 (sub-agente config-deep-dive) · <a href="../index.html#darwin">← Voltar ao Action Plan Map</a>
+</div>
+
+</body>
+</html>

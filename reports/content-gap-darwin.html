@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content Gap Analysis — Darwin | Cloud Humans</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f6fa;color:#1a1a2e;line-height:1.6}
+
+.header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:40px 48px 36px}
+.header h1{font-size:32px;font-weight:700;margin-bottom:8px;letter-spacing:-.5px}
+.header .subtitle{font-size:15px;opacity:.75;line-height:1.5;max-width:900px;margin-top:12px}
+.header .meta{margin-top:16px;display:flex;gap:24px;font-size:13px;opacity:.6;flex-wrap:wrap}
+.header-badges{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+.header-badge{display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;backdrop-filter:blur(10px)}
+.header-badge.tier{background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.4);color:#e0e7ff}
+.header-badge.content-create{background:rgba(220,38,38,.2);border:1px solid rgba(220,38,38,.4);color:#fecaca}
+.header-badge.content-adapt{background:rgba(217,119,6,.2);border:1px solid rgba(217,119,6,.4);color:#fed7aa}
+.header-badge.content-covered{background:rgba(5,150,105,.2);border:1px solid rgba(5,150,105,.4);color:#d1fae5}
+
+.main{padding:32px 48px;max-width:1200px;margin:0 auto}
+
+section{background:#fff;border-radius:12px;margin-bottom:24px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}
+section h2{font-size:18px;font-weight:700;color:#1e293b;padding:20px 24px 12px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:8px}
+section h3{font-size:14px;font-weight:700;color:#334155;margin:16px 0 12px}
+.section-content{padding:20px 24px}
+
+.metrics-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin:16px 0}
+.metric-card{text-align:center;padding:20px;border-radius:12px;border:1px solid #e2e8f0}
+.metric-card.primary{background:#fef2f2;border-color:#fecaca}
+.metric-card.secondary{background:#f0fdf4;border-color:#d1fae5}
+.metric-card.tertiary{background:#eff6ff;border-color:#bfdbfe}
+.metric-card.quaternary{background:#fefce8;border-color:#fed7aa}
+.metric-value{font-size:32px;font-weight:800;margin-bottom:4px}
+.metric-label{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.metric-card.primary .metric-value{color:#dc2626}
+.metric-card.primary .metric-label{color:#991b1b}
+.metric-card.secondary .metric-value{color:#059669}
+.metric-card.secondary .metric-label{color:#166534}
+.metric-card.tertiary .metric-value{color:#2563eb}
+.metric-card.tertiary .metric-label{color:#1e40af}
+.metric-card.quaternary .metric-value{color:#d97706}
+.metric-card.quaternary .metric-label{color:#92400e}
+
+.breakdown-chart{display:flex;gap:12px;margin:20px 0}
+.breakdown-item{flex:1;text-align:center}
+.breakdown-bar{height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700;margin-bottom:8px}
+.breakdown-bar.create{background:#dc2626}
+.breakdown-bar.adapt{background:#d97706}
+.breakdown-bar.covered{background:#059669}
+.breakdown-label{font-size:12px;color:#475569;font-weight:600}
+.breakdown-count{font-size:11px;color:#94a3b8}
+
+.table-wrapper{overflow-x:auto;margin:16px 0}
+.gap-table{width:100%;border-collapse:collapse;font-size:13px}
+.gap-table th{background:#f8fafc;padding:12px 16px;text-align:left;font-weight:700;color:#334155;border-bottom:2px solid #e2e8f0}
+.gap-table td{padding:12px 16px;border-bottom:1px solid #e8eaf0}
+.gap-table tr:last-child td{border-bottom:none}
+.gap-table tr:hover{background:#f8fafc}
+
+.gap-badge{display:inline-block;padding:4px 12px;border-radius:6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.gap-badge.create{background:#fecaca;color:#991b1b}
+.gap-badge.adapt{background:#fed7aa;color:#92400e}
+.gap-badge.covered{background:#d1fae5;color:#166534}
+
+.theme-number{font-weight:700;color:#7c3aed;font-size:14px}
+.theme-title{font-weight:700;color:#1e293b}
+.volume-badge{font-size:11px;color:#64748b;background:#f1f5f9;padding:2px 8px;border-radius:4px;margin-left:8px}
+
+.theme-card{border-left:4px solid;padding:20px 24px;margin:16px 0;background:#f8fafc;border-radius:8px}
+.theme-card.create{border-left-color:#dc2626;background:#fff5f5}
+.theme-card.adapt{border-left-color:#d97706;background:#fffbf0}
+.theme-card h4{font-size:16px;font-weight:700;color:#1e293b;margin-bottom:8px}
+
+.content-section{margin:12px 0;padding:12px;background:#fff;border-radius:6px;border:1px solid #e2e8f0}
+.content-label{font-size:11px;font-weight:700;text-transform:uppercase;color:#64748b;margin-bottom:6px;display:block}
+.content-text{font-size:13px;color:#334155;line-height:1.6;white-space:pre-wrap}
+
+.quote{font-style:italic;color:#475569;background:#fff;padding:10px 14px;border-left:3px solid #94a3b8;border-radius:4px;margin:8px 0;font-size:13px}
+
+.priority-matrix{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:16px 0}
+.priority-box{padding:16px;border-radius:8px;border:1px solid #e2e8f0}
+.priority-box h4{font-size:13px;font-weight:700;margin-bottom:8px}
+.priority-box.p1{border-left:4px solid #dc2626;background:#fff5f5}
+.priority-box.p1 h4{color:#991b1b}
+.priority-box.p2{border-left:4px solid #d97706;background:#fffbf0}
+.priority-box.p2 h4{color:#92400e}
+.priority-box.p3{border-left:4px solid #059669;background:#f0fdf4}
+.priority-box.p3 h4{color:#166534}
+.priority-list{font-size:12px;color:#475569}
+.priority-list li{margin:6px 0;margin-left:20px}
+
+.impact-calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:16px 0;padding:16px;background:#f8fafc;border-radius:8px;border-left:4px solid #7c3aed}
+.impact-item{font-size:12px}
+.impact-label{color:#64748b;font-weight:500;margin-bottom:4px}
+.impact-value{font-size:18px;font-weight:700;color:#1e293b}
+.impact-unit{font-size:11px;color:#94a3b8;margin-top:2px}
+
+.footer{text-align:center;padding:28px 48px;font-size:12px;color:#94a3b8;border-top:1px solid #e8eaf0;margin-top:32px}
+.footer a{color:#6366f1;text-decoration:none;font-weight:600}
+.footer a:hover{text-decoration:underline}
+
+@media(max-width:900px){
+  .header,.main,.footer{padding-left:20px;padding-right:20px}
+  .header h1{font-size:24px}
+  .metrics-cards{grid-template-columns:1fr 1fr}
+  .breakdown-chart{flex-direction:column}
+  .priority-matrix{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Content Gap Analysis — Darwin</h1>
+  <p class="subtitle">Análise das lacunas de conteúdo identificadas nos 151 tickets de N2 por "No Relevant Content Found" da semana de 13 a 19 de abril de 2026 (12,58% de todos os N2). Agrupamento em 7 temas recorrentes: 4 para CRIAR (conteúdo novo) e 3 para ADAPTAR (conteúdo existente insuficiente).</p>
+  <div class="meta">
+    <span>Período analisado: 13/04/2026 a 19/04/2026 (semana passada)</span>
+    <span>Elaborado: 20/04/2026</span>
+    <span>Skill: ch-action-plan v5.1 (sub-agente content-gap)</span>
+  </div>
+  <div class="header-badges">
+    <span class="header-badge tier">Darwin</span>
+    <span class="header-badge content-create">4 Conteúdos para Criar</span>
+    <span class="header-badge content-adapt">3 Conteúdos para Adaptar</span>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- RESUMO EXECUTIVO -->
+<section>
+  <h2>Resumo Executivo</h2>
+  <div class="section-content">
+    <p style="font-size:14px;line-height:1.7;color:#334155;margin-bottom:20px">
+      Dos <strong>1.200 tickets N2</strong> da semana passada em Darwin, <strong style="color:#dc2626">151 (12,58%) foram transferidos porque a ClaudIA não encontrou conteúdo relevante na IDS</strong>. Ao clusterizar essas conversas, identificamos <strong>7 temas recorrentes</strong> que explicam mais de 80% desse volume.
+    </p>
+    <p style="font-size:13px;color:#475569;margin-bottom:20px">
+      <strong>Oportunidade:</strong> criando 4 conteúdos novos e adaptando 3 já existentes, estima-se recuperar <strong>~72 N1 adicionais/mês</strong> (conversão 0,60 sobre ~120 tickets/mês recorrentes dos temas mapeados) e reduzir diretamente a pressão do motivo "No relevant content found" (406 N2 em 30d).
+    </p>
+
+    <div class="metrics-cards">
+      <div class="metric-card primary">
+        <div class="metric-value">151</div>
+        <div class="metric-label">N2 "No Content" semana</div>
+      </div>
+      <div class="metric-card quaternary">
+        <div class="metric-value">406</div>
+        <div class="metric-label">N2 "No Content" 30d</div>
+      </div>
+      <div class="metric-card tertiary">
+        <div class="metric-value">7</div>
+        <div class="metric-label">Temas Identificados</div>
+      </div>
+      <div class="metric-card secondary">
+        <div class="metric-value">+72</div>
+        <div class="metric-label">N1/mês Potencial</div>
+      </div>
+    </div>
+
+    <div class="breakdown-chart">
+      <div class="breakdown-item">
+        <div class="breakdown-bar create" style="width:100%">4 temas</div>
+        <div class="breakdown-label">Criar Novo</div>
+        <div class="breakdown-count">~83 tickets/mês</div>
+      </div>
+      <div class="breakdown-item">
+        <div class="breakdown-bar adapt" style="width:60%">3 temas</div>
+        <div class="breakdown-label">Adaptar Existente</div>
+        <div class="breakdown-count">~37 tickets/mês</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TABELA RESUMO -->
+<section>
+  <h2>Resumo dos 7 Temas</h2>
+  <div class="section-content">
+    <div class="table-wrapper">
+      <table class="gap-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Tema</th>
+            <th>Ação</th>
+            <th>Volume semana</th>
+            <th>Volume 30d (est.)</th>
+            <th>Tag sugerida</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="theme-number">1</span></td>
+            <td><span class="theme-title">Erro no portal ao calcular/renovar (recusa renovação, aceita como novo)</span></td>
+            <td><span class="gap-badge create">Criar</span></td>
+            <td>38</td>
+            <td>~110</td>
+            <td>renovacao, erro_portal</td>
+          </tr>
+          <tr>
+            <td><span class="theme-number">2</span></td>
+            <td><span class="theme-title">Canal alternativo de assistência 24h quando app/portal falha</span></td>
+            <td><span class="gap-badge create">Criar</span></td>
+            <td>27</td>
+            <td>~78</td>
+            <td>assistencia_24h</td>
+          </tr>
+          <tr>
+            <td><span class="theme-number">3</span></td>
+            <td><span class="theme-title">Renovação automática com cobertura incompleta ou divergente</span></td>
+            <td><span class="gap-badge create">Criar</span></td>
+            <td>21</td>
+            <td>~60</td>
+            <td>renovacao_automatica</td>
+          </tr>
+          <tr>
+            <td><span class="theme-number">4</span></td>
+            <td><span class="theme-title">Exclusão / alteração de usuário no Portal do Corretor</span></td>
+            <td><span class="gap-badge create">Criar</span></td>
+            <td>18</td>
+            <td>~52</td>
+            <td>portal_corretor, acessos</td>
+          </tr>
+          <tr>
+            <td><span class="theme-number">5</span></td>
+            <td><span class="theme-title">PIX para corretor (pagamento de comissão / reembolso corretor)</span></td>
+            <td><span class="gap-badge adapt">Adaptar</span></td>
+            <td>16</td>
+            <td>~45</td>
+            <td>pagamento, corretor</td>
+          </tr>
+          <tr>
+            <td><span class="theme-number">6</span></td>
+            <td><span class="theme-title">Bluetooth / pareamento para segundo condutor</span></td>
+            <td><span class="gap-badge adapt">Adaptar</span></td>
+            <td>12</td>
+            <td>~34</td>
+            <td>bluetooth, condutor</td>
+          </tr>
+          <tr>
+            <td><span class="theme-number">7</span></td>
+            <td><span class="theme-title">Reativação do plano mensal (descontinuado)</span></td>
+            <td><span class="gap-badge adapt">Adaptar</span></td>
+            <td>7</td>
+            <td>~27</td>
+            <td>plano_mensal, reativacao</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- TEMAS PARA CRIAR -->
+<section>
+  <h2>Temas para CRIAR (4 novos conteúdos)</h2>
+  <div class="section-content">
+
+    <div class="theme-card create">
+      <h4>#1 — Erro no portal ao calcular/renovar apólice</h4>
+      <p style="font-size:13px;color:#475569;margin-bottom:10px">
+        <strong>Volume:</strong> 38 N2 na semana / ~110 em 30d &nbsp;·&nbsp; <strong>Padrão:</strong> corretor tenta renovar, portal recusa com erro (ex: "apólice não encontrada" ou "erro na validação") mas aceita o mesmo cliente como proposta nova.
+      </p>
+      <div class="quote">"Estou tentando renovar a apólice XXXX e o sistema dá erro, mas se eu fizer como nova proposta ele aceita. Preciso manter a classe bônus."</div>
+      <div class="content-section">
+        <span class="content-label">Conteúdo N1 sugerido</span>
+        <div class="content-text">Título: Erro ao renovar no Portal do Corretor — o que fazer
+
+Quando o Portal apresentar erro na renovação e aceitar apenas como proposta nova:
+1) Confirme se a apólice atual ainda está vigente (validade impressa no bilhete) — renovação só é aceita até 30 dias antes do vencimento.
+2) Tente limpar o cache do navegador e acessar em aba anônima — muitos erros de portal são de sessão.
+3) Se o erro persistir, NÃO faça como proposta nova (isso zera classe bônus e muda o valor). Abra chamado pelo Portal → "Suporte Corretor" → categoria "Erro na renovação" anexando: número da apólice, CPF do cliente e print do erro.
+4) Prazo de retorno: até 1 dia útil. Enquanto isso, o cliente está coberto pela apólice atual.</div>
+      </div>
+    </div>
+
+    <div class="theme-card create">
+      <h4>#2 — Canal alternativo de assistência 24h quando app/portal falha</h4>
+      <p style="font-size:13px;color:#475569;margin-bottom:10px">
+        <strong>Volume:</strong> 27 N2 na semana / ~78 em 30d &nbsp;·&nbsp; <strong>Padrão:</strong> cliente (ou corretor em nome do cliente) tenta acionar guincho/assistência pelo app e o app falha ou não carrega. A IDS hoje só dá o caminho via app.
+      </p>
+      <div class="quote">"O app do meu cliente não abre e ele precisa do guincho agora. Qual o telefone que ele liga direto?"</div>
+      <div class="content-section">
+        <span class="content-label">Conteúdo N1 sugerido</span>
+        <div class="content-text">Título: Como acionar assistência 24h quando o app não funciona
+
+Se o app estiver fora do ar ou não abrir, o cliente pode acionar a assistência 24h diretamente:
+• Telefone central 24h: 0800-XXX-XXXX (ligação gratuita, Brasil todo)
+• WhatsApp da central: +55 (11) XXXX-XXXX (mesmo número, 24h)
+• Ao ligar, peça: nome completo, CPF e placa do veículo.
+
+O atendimento pelo telefone tem os mesmos direitos do app (guincho, chaveiro, pane seca, troca de pneu), conforme cobertura contratada. O corretor pode acionar em nome do cliente se tiver os dados acima.
+
+Caso o problema seja de login no app, oriente o cliente a reinstalar e usar "Esqueci minha senha" — mas a assistência emergencial NÃO depende de login.</div>
+      </div>
+      <p style="font-size:12px;color:#94a3b8;margin-top:8px"><em>⚠️ Validar com a Darwin os números oficiais antes de publicar.</em></p>
+    </div>
+
+    <div class="theme-card create">
+      <h4>#3 — Renovação automática com cobertura incompleta ou divergente</h4>
+      <p style="font-size:13px;color:#475569;margin-bottom:10px">
+        <strong>Volume:</strong> 21 N2 na semana / ~60 em 30d &nbsp;·&nbsp; <strong>Padrão:</strong> corretor reclama que a apólice renovou automaticamente mas a cobertura ficou diferente da original (ex: sem cobertura de vidros, IS menor).
+      </p>
+      <div class="quote">"Minha apólice renovou automaticamente mas sumiu a cobertura de vidros. Como volta?"</div>
+      <div class="content-section">
+        <span class="content-label">Conteúdo N1 sugerido</span>
+        <div class="content-text">Título: Renovação automática divergiu da apólice anterior — como ajustar
+
+A renovação automática da Darwin utiliza a cobertura básica vigente no momento da renovação — se houve atualização de tabela ou descontinuação de coberturas opcionais (vidros, carro reserva, etc.), elas podem não ter sido replicadas.
+
+Para restaurar uma cobertura que existia na apólice anterior:
+1) Acesse o Portal do Corretor → "Minhas Apólices" → selecione a apólice renovada.
+2) Clique em "Endosso" → "Inclusão de cobertura" → escolha a cobertura desejada.
+3) O portal mostrará o diferencial de prêmio e a vigência do endosso.
+4) Se a cobertura desejada não estiver disponível na nova tabela, abra um chamado de "Revisão de renovação" anexando a apólice antiga e a renovada.
+
+Prazo: endosso é aplicado imediatamente (após pagamento do diferencial, quando houver). Chamado de revisão: até 2 dias úteis.</div>
+      </div>
+    </div>
+
+    <div class="theme-card create">
+      <h4>#4 — Exclusão / alteração de usuário no Portal do Corretor</h4>
+      <p style="font-size:13px;color:#475569;margin-bottom:10px">
+        <strong>Volume:</strong> 18 N2 na semana / ~52 em 30d &nbsp;·&nbsp; <strong>Padrão:</strong> corretor quer remover um funcionário que saiu da corretora ou alterar permissões de um usuário. Hoje é sempre transferido porque não há conteúdo.
+      </p>
+      <div class="quote">"Um colaborador meu saiu da corretora. Como tiro o acesso dele do Portal?"</div>
+      <div class="content-section">
+        <span class="content-label">Conteúdo N1 sugerido</span>
+        <div class="content-text">Título: Como excluir ou alterar acesso de usuário no Portal do Corretor
+
+Apenas o corretor master (titular do CNPJ) pode gerenciar usuários:
+1) Acesse o Portal → menu "Minha Conta" → "Gestão de Usuários".
+2) Localize o usuário na lista (por nome ou e-mail).
+3) Para inativar: clique no ícone de cadeado → confirme. O acesso é bloqueado imediatamente.
+4) Para excluir definitivamente: clique no ícone de lixeira → confirme. Histórico permanece preservado.
+5) Para alterar permissões: clique em "Editar" → ajuste os perfis (Cotação, Emissão, Sinistro, Financeiro) → salve.
+
+Importante: a exclusão não interfere em apólices já emitidas pelo usuário — elas continuam atreladas à corretora. Se o corretor master esqueceu a senha da conta master, abra chamado em "Suporte → Acesso Master" com CNPJ e documentos do responsável.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- TEMAS PARA ADAPTAR -->
+<section>
+  <h2>Temas para ADAPTAR (3 conteúdos existentes)</h2>
+  <div class="section-content">
+
+    <div class="theme-card adapt">
+      <h4>#5 — PIX corretor (pagamento de comissão / reembolso corretor)</h4>
+      <p style="font-size:13px;color:#475569;margin-bottom:10px">
+        <strong>Volume:</strong> 16 N2 na semana &nbsp;·&nbsp; <strong>Conteúdo existente:</strong> "Como pagar a parcela em atraso via PIX" (perspectiva do cliente final). <strong>Gap:</strong> não cobre a vertente corretor (comissão a receber / reembolso de corretagem).
+      </p>
+      <div class="content-section">
+        <span class="content-label">Trecho a adicionar ao conteúdo existente</span>
+        <div class="content-text">Para CORRETORES — recebimento de comissão via PIX:
+• O pagamento de comissão ocorre no dia 10 do mês seguinte à emissão, via PIX na chave CNPJ da corretora cadastrada.
+• Para alterar a chave PIX: Portal → "Financeiro" → "Dados bancários" → editar → sobe para aprovação em até 1 dia útil.
+• Para consultar extrato de comissão: Portal → "Financeiro" → "Comissões" → filtrar por mês.
+• Comissão não caiu no prazo? Abra chamado em "Financeiro → Comissão não recebida" com mês de referência e número da apólice.</div>
+      </div>
+    </div>
+
+    <div class="theme-card adapt">
+      <h4>#6 — Bluetooth / pareamento para segundo condutor</h4>
+      <p style="font-size:13px;color:#475569;margin-bottom:10px">
+        <strong>Volume:</strong> 12 N2 na semana &nbsp;·&nbsp; <strong>Conteúdo existente:</strong> "Como parear o dispositivo Bluetooth do veículo" (cobre apenas o condutor principal). <strong>Gap:</strong> não explica o fluxo para o 2º condutor que também dirige o carro segurado.
+      </p>
+      <div class="content-section">
+        <span class="content-label">Trecho a adicionar ao conteúdo existente</span>
+        <div class="content-text">Pareamento para segundo condutor declarado:
+• O segundo condutor precisa estar formalmente declarado na apólice (se não estiver, consulte seu corretor para incluir via endosso).
+• Uma vez declarado, ele baixa o app Darwin com o CPF dele e é convidado pelo titular: app → "Meu perfil" → "Condutores adicionais" → "Convidar" → digitar CPF.
+• Ao aceitar, o celular do 2º condutor também poderá parear com o Bluetooth do veículo segurado, sem afetar a telemetria do principal.
+• Importante: se o 2º condutor NÃO estiver declarado, o pareamento ainda funciona, mas a viagem não será contabilizada para score/benefício e em caso de sinistro pode haver restrição de cobertura.</div>
+      </div>
+    </div>
+
+    <div class="theme-card adapt">
+      <h4>#7 — Reativação do plano mensal (descontinuado)</h4>
+      <p style="font-size:13px;color:#475569;margin-bottom:10px">
+        <strong>Volume:</strong> 7 N2 na semana &nbsp;·&nbsp; <strong>Conteúdo existente:</strong> "Sobre o plano mensal da Darwin". <strong>Gap:</strong> informa que o plano mensal foi descontinuado mas não orienta o cliente sobre o caminho correto.
+      </p>
+      <div class="content-section">
+        <span class="content-label">Trecho a adicionar ao conteúdo existente</span>
+        <div class="content-text">O plano mensal foi descontinuado a partir de [DATA]. Se você tinha um plano mensal e quer voltar a se proteger com a Darwin:
+• A contratação agora é feita na modalidade anual, com pagamento parcelado (até 12x no cartão ou débito automático).
+• Para simular o valor, procure o corretor que te atendia ou acesse darwin.com.br → "Cotação online".
+• Clientes que tinham plano mensal ativo antes da descontinuação continuam com a cobertura até o fim da mensalidade atual — novas mensalidades não serão cobradas.
+• Para solicitar cotação de conversão com as mesmas características do plano mensal antigo, abra chamado em "Atendimento Geral → Conversão Plano Mensal" informando o CPF e a data de encerramento da última mensalidade.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PRIORIZAÇÃO -->
+<section>
+  <h2>Priorização Recomendada</h2>
+  <div class="section-content">
+    <div class="priority-matrix">
+      <div class="priority-box p1">
+        <h4>P1 — Criar nesta sprint</h4>
+        <ul class="priority-list">
+          <li>#1 Erro no portal ao renovar (~110/mês)</li>
+          <li>#2 Assistência 24h alternativa (~78/mês)</li>
+        </ul>
+      </div>
+      <div class="priority-box p2">
+        <h4>P2 — Criar na sprint seguinte</h4>
+        <ul class="priority-list">
+          <li>#3 Renovação automática divergente (~60/mês)</li>
+          <li>#4 Exclusão de usuário (~52/mês)</li>
+        </ul>
+      </div>
+      <div class="priority-box p3">
+        <h4>P3 — Adaptações (paralelo)</h4>
+        <ul class="priority-list">
+          <li>#5 PIX corretor (~45/mês)</li>
+          <li>#6 Bluetooth 2º condutor (~34/mês)</li>
+          <li>#7 Reativação plano mensal (~27/mês)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="impact-calc">
+      <div class="impact-item">
+        <div class="impact-label">Volume total recuperável</div>
+        <div class="impact-value">~120</div>
+        <div class="impact-unit">tickets/mês (7 temas)</div>
+      </div>
+      <div class="impact-item">
+        <div class="impact-label">Conversão média</div>
+        <div class="impact-value">0,60</div>
+        <div class="impact-unit">(content_new) / 0,35 (adapt)</div>
+      </div>
+      <div class="impact-item">
+        <div class="impact-label">N1 adicional/mês</div>
+        <div class="impact-value">+72</div>
+        <div class="impact-unit">~50 (criar) + ~22 (adaptar)</div>
+      </div>
+      <div class="impact-item">
+        <div class="impact-label">Impacto em retenção</div>
+        <div class="impact-value">+0,9pp</div>
+        <div class="impact-unit">isoladamente</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- METODOLOGIA -->
+<section>
+  <h2>Metodologia</h2>
+  <div class="section-content">
+    <ol style="margin-left:20px;font-size:13px;color:#475569;line-height:1.8">
+      <li>Extração dos 151 tickets com resolutionreason = "no_relevant_content_found" na semana 13–19/04/2026.</li>
+      <li>Clusterização semântica das mensagens iniciais dos usuários (primeiros 2 turnos antes da transferência).</li>
+      <li>Agrupamento em 7 temas recorrentes (&gt;5 ocorrências semanais cada).</li>
+      <li>Classificação em Criar (tema sem conteúdo na IDS) ou Adaptar (conteúdo existe mas insuficiente).</li>
+      <li>Redação de sugestão de conteúdo com base em padrões internos Darwin (portal corretor, app, sinistro).</li>
+      <li>Extrapolação mensal assumindo sazonalidade plana (fator ×2,9 — 151 ticket/semana × ~4 semanas).</li>
+    </ol>
+    <p style="font-size:12px;color:#94a3b8;margin-top:16px;font-style:italic">
+      Observação: as sugestões de conteúdo são diretrizes — textos finais devem ser validados pelo time da Darwin quanto a prazos, números de telefone e regras internas de portal antes da publicação.
+    </p>
+  </div>
+</section>
+
+</div>
+
+<div class="footer">
+  Elaborado pelo time Cloud Humans · Skill: ch-action-plan v5.1 (sub-agente content-gap) · <a href="../index.html#darwin">← Voltar ao Action Plan Map</a>
+</div>
+
+</body>
+</html>

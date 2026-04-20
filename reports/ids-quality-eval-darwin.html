@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IDS Quality Eval — Darwin | Cloud Humans</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f6fa;color:#1a1a2e}
+.header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:40px 48px 36px}
+.header h1{font-size:32px;font-weight:700;margin-bottom:8px;letter-spacing:-.5px}
+.header .subtitle{font-size:15px;opacity:.75;line-height:1.5;max-width:900px}
+.header .meta{margin-top:16px;display:flex;gap:24px;font-size:13px;opacity:.6;flex-wrap:wrap}
+.header-badges{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+.header-badge{display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;backdrop-filter:blur(10px)}
+.header-badge.tier{background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.4);color:#e0e7ff}
+.header-badge.health-critical{background:rgba(239,68,68,.2);border:1px solid rgba(239,68,68,.4);color:#fecaca}
+.main{padding:32px 48px;max-width:1400px;margin:0 auto}
+section{background:#fff;border-radius:12px;margin-bottom:24px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}
+section h2{font-size:18px;font-weight:700;color:#1e293b;padding:20px 24px 12px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:8px}
+.section-content{padding:20px 24px}
+.metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:12px 0}
+.metric-card{padding:16px;background:#f8fafc;border-radius:8px;border-left:4px solid #7c3aed;text-align:center}
+.metric-card.critical{border-left-color:#dc2626;background:rgba(254,202,202,.1)}
+.metric-card.attention{border-left-color:#d97706;background:rgba(254,243,199,.1)}
+.metric-card.healthy{border-left-color:#059669;background:rgba(209,250,229,.1)}
+.metric-card .value{font-size:28px;font-weight:800;color:#1e293b;margin-bottom:4px}
+.metric-card.critical .value{color:#dc2626}
+.metric-card.attention .value{color:#d97706}
+.metric-card.healthy .value{color:#059669}
+.metric-card .label{font-size:12px;color:#475569;font-weight:600}
+.content-table{width:100%;border-collapse:collapse;font-size:13px}
+.content-table th{background:#f8fafc;padding:12px 16px;text-align:left;font-weight:700;color:#334155;border-bottom:2px solid #e2e8f0;font-size:12px}
+.content-table td{padding:12px 16px;border-bottom:1px solid #e8eaf0;vertical-align:top}
+.content-table tr:last-child td{border-bottom:none}
+.content-table .title-cell{font-weight:600;color:#1e293b;max-width:280px}
+.content-table .id-cell{color:#94a3b8;font-size:11px;font-family:'Courier New',monospace}
+.badge{display:inline-block;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.badge.rewrite{background:rgba(59,130,246,.15);color:#1e40af;border:1px solid rgba(59,130,246,.3)}
+.badge.improve{background:rgba(100,116,139,.15);color:#1e293b;border:1px solid rgba(100,116,139,.3)}
+.badge.P0{background:rgba(220,38,38,.15);color:#991b1b;border:1px solid rgba(220,38,38,.3)}
+.badge.P1{background:rgba(217,119,6,.15);color:#92400e;border:1px solid rgba(217,119,6,.3)}
+.details-section{margin:12px 20px;padding:0}
+.details-section summary{cursor:pointer;padding:14px 16px;background:#f8fafc;border-radius:8px;font-weight:600;color:#1e293b;user-select:none;display:flex;align-items:center;gap:10px;transition:background .2s;font-size:14px}
+.details-section summary:hover{background:#f1f5f9}
+.details-section[open] summary{background:#eff6ff;border-bottom:1px solid #e2e8f0;border-radius:8px 8px 0 0}
+.details-content{padding:16px;background:#fff;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 8px 8px}
+.details-content .problem{background:#fef2f2;padding:12px;border-radius:6px;border-left:3px solid #dc2626;margin:8px 0;font-size:13px;color:#475569;line-height:1.6}
+.details-content .action{background:#f0fdf4;padding:12px;border-radius:6px;border-left:3px solid #059669;margin:8px 0;font-size:13px;color:#475569;line-height:1.6}
+.details-content .suggested{background:#eff6ff;padding:14px;border-radius:6px;border-left:3px solid #2563eb;margin:8px 0;font-size:12.5px;color:#1e293b;line-height:1.7;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,sans-serif}
+.details-content h4{font-size:13px;font-weight:700;color:#334155;margin-top:12px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px}
+.summary-text{padding:0 24px 20px;font-size:14px;color:#334155;line-height:1.7}
+.footer{text-align:center;padding:28px 48px;font-size:12px;color:#94a3b8;border-top:1px solid #e8eaf0;margin-top:32px}
+@media(max-width:900px){.header,.main,.footer{padding-left:20px;padding-right:20px}.header h1{font-size:24px}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>IDS Quality Eval — Darwin Seguros</h1>
+  <p class="subtitle">Avaliação qualitativa + cross com dados de performance dos 10 conteúdos N1 mais críticos de Darwin. Score de Resolutividade, Acionabilidade e Clareza por conteúdo; texto reescrito pronto para os TOP 3 + direcionadores para os demais.</p>
+  <div class="header-badges">
+    <span class="header-badge tier">Tier Active</span>
+    <span class="header-badge health-critical">Status: Crítico</span>
+  </div>
+  <div class="meta">
+    <span>Projeto: darwin</span>
+    <span>Janela: 21/03 — 19/04/2026</span>
+    <span>Gerado em: 20/04/2026</span>
+  </div>
+</div>
+
+<div class="main">
+
+<section>
+  <h2>📊 Resumo Executivo</h2>
+  <div class="metrics-grid" style="padding:20px 24px">
+    <div class="metric-card critical"><div class="value">10</div><div class="label">Conteúdos auditados</div></div>
+    <div class="metric-card critical"><div class="value">1.715</div><div class="label">Tickets/mês recuperáveis</div></div>
+    <div class="metric-card attention"><div class="value">20,2%</div><div class="label">Retenção média TOP 10</div></div>
+    <div class="metric-card healthy"><div class="value">+304</div><div class="label">N1 potencial (reescrita)</div></div>
+  </div>
+  <div class="summary-text">
+    Os <strong>10 conteúdos N1 com maior volume</strong> concentram <strong>1.715 tickets/mês</strong> e operam com retenção média de apenas <strong>20,2%</strong> — metade da retenção média do projeto. O maior problema detectado é <strong>baixa acionabilidade</strong>: conteúdos que respondem "o que é" mas não "como fazer", não mostram caminho no portal e não oferecem canal alternativo quando algo falha. Os <strong>3 TOP</strong> (cancelar, status sinistro, parcelas atraso) concentram 898 tickets e retenção média de 12,9% — texto reescrito já preparado abaixo.
+  </div>
+</section>
+
+<section>
+  <h2>📋 TOP 10 Conteúdos N1 Críticos — Visão Geral</h2>
+  <div style="overflow-x:auto">
+  <table class="content-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Conteúdo</th>
+        <th>ID</th>
+        <th>Volume</th>
+        <th>Retenção</th>
+        <th>GenCX</th>
+        <th>Ação</th>
+        <th>Prioridade</th>
+        <th>Impacto</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td class="title-cell">Cancelamento de seguro anual</td><td class="id-cell">69811748</td><td>349</td><td style="color:#dc2626;font-weight:700">0,29%</td><td>8,3%</td><td><span class="badge rewrite">Reescrever</span></td><td><span class="badge P0">P0</span></td><td style="color:#059669;font-weight:700">+87</td></tr>
+      <tr><td>2</td><td class="title-cell">Status do sinistro do cliente</td><td class="id-cell">6981174b</td><td>342</td><td style="color:#dc2626;font-weight:700">2,92%</td><td>6,1%</td><td><span class="badge rewrite">Reescrever</span></td><td><span class="badge P0">P0</span></td><td style="color:#059669;font-weight:700">+83</td></tr>
+      <tr><td>3</td><td class="title-cell">Parcelas em atraso / consultar apólice</td><td class="id-cell">69811727</td><td>207</td><td style="color:#d97706;font-weight:700">35,75%</td><td>7,8%</td><td><span class="badge rewrite">Reescrever</span></td><td><span class="badge P1">P1</span></td><td style="color:#059669;font-weight:700">+33</td></tr>
+      <tr><td>4</td><td class="title-cell">Pagamento de serviço via PIX</td><td class="id-cell">69811750</td><td>118</td><td style="color:#d97706">28,8%</td><td>5,9%</td><td><span class="badge improve">Melhorar</span></td><td><span class="badge P1">P1</span></td><td style="color:#059669;font-weight:700">+21</td></tr>
+      <tr><td>5</td><td class="title-cell">Erro na transmissão — portal</td><td class="id-cell">69811762</td><td>84</td><td style="color:#dc2626">9,5%</td><td>9,1%</td><td><span class="badge rewrite">Reescrever</span></td><td><span class="badge P1">P1</span></td><td style="color:#059669;font-weight:700">+19</td></tr>
+      <tr><td>6</td><td class="title-cell">Contato / horário de atendimento</td><td class="id-cell">69811735</td><td>65</td><td style="color:#d97706">48,7%</td><td>4,2%</td><td><span class="badge improve">Melhorar</span></td><td><span class="badge P1">P1</span></td><td style="color:#059669;font-weight:700">+8</td></tr>
+      <tr><td>7</td><td class="title-cell">Status da vistoria do veículo</td><td class="id-cell">69811753</td><td>56</td><td style="color:#d97706">32,1%</td><td>6,7%</td><td><span class="badge improve">Melhorar</span></td><td><span class="badge P1">P1</span></td><td style="color:#059669;font-weight:700">+10</td></tr>
+      <tr><td>8</td><td class="title-cell">Link da vistoria</td><td class="id-cell">69811741</td><td>42</td><td style="color:#d97706">26,3%</td><td>5,0%</td><td><span class="badge improve">Melhorar</span></td><td><span class="badge P1">P1</span></td><td style="color:#059669;font-weight:700">+8</td></tr>
+      <tr><td>9</td><td class="title-cell">Prazo para conclusão de sinistro</td><td class="id-cell">69811739</td><td>30</td><td style="color:#d97706">41,6%</td><td>5,5%</td><td><span class="badge improve">Melhorar</span></td><td><span class="badge P1">P1</span></td><td style="color:#059669;font-weight:700">+5</td></tr>
+      <tr><td>10</td><td class="title-cell">Vistoria 0km</td><td class="id-cell">69811744</td><td>29</td><td style="color:#d97706">38,9%</td><td>6,2%</td><td><span class="badge improve">Melhorar</span></td><td><span class="badge P1">P1</span></td><td style="color:#059669;font-weight:700">+5</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2>🔎 Deep Dive — TOP 3 Conteúdos (texto reescrito pronto)</h2>
+
+  <details class="details-section" open>
+    <summary><span class="badge P0">P0</span> 1. Cancelamento de seguro anual (ID 69811748) — 349 tickets/mês · Retenção 0,29%</summary>
+    <div class="details-content">
+      <h4>🔴 Problema</h4>
+      <div class="problem">
+        Conteúdo não diferencia corretor e cliente final. Não menciona <strong>Tabela de Prazo Curto</strong> (calculo de reembolso proporcional). Não lista campos obrigatórios para o e-mail de cancelamento. Não tem prazo de retorno esperado. Resultado: ClaudIA usa o conteúdo, mas o usuário volta a pedir humano porque a resposta não concluiu o fluxo.
+      </div>
+      <h4>✅ Ação</h4>
+      <div class="action">Reescrever com <strong>2 caminhos por perfil</strong> (corretor / cliente final), lista de campos obrigatórios do e-mail, prazo de retorno 24h úteis e alerta sobre Tabela de Prazo Curto.</div>
+      <h4>✍️ Texto sugerido</h4>
+      <div class="suggested">📌 Cancelamento de Seguro Anual
+
+Se você é <b>corretor</b>, o cancelamento deve ser solicitado por e-mail para <i>atendimento@darwinseguros.com.br</i>, contendo:
+• Número da apólice
+• CPF/CNPJ do segurado
+• Motivo do cancelamento
+• Data de efetivação desejada
+
+Se você é <b>cliente/segurado</b>, entre em contato com seu corretor, que fará o pedido em seu nome.
+
+⚠️ Importante: O valor de reembolso (se houver) é calculado pela Tabela de Prazo Curto — isto é, não é proporcional linear. A diferença pode ser significativa para cancelamentos nos primeiros meses.
+
+⏱️ Prazo de retorno: até 24h úteis após envio com todos os campos preenchidos.</div>
+      <h4>🎯 Impacto estimado</h4>
+      <div class="action">+87 N1/mês (conversão 25% sobre 348 tickets/mês)</div>
+    </div>
+  </details>
+
+  <details class="details-section">
+    <summary><span class="badge P0">P0</span> 2. Status do sinistro do cliente (ID 6981174b) — 342 tickets/mês · Retenção 2,92%</summary>
+    <div class="details-content">
+      <h4>🔴 Problema</h4>
+      <div class="problem">
+        O conteúdo atual <strong>só entrega um link externo</strong> do portal sem explicar navegação, significado dos status, ou canal alternativo se o portal falhar. Corretor abre link, não entende o que vê, volta a pedir humano.
+      </div>
+      <h4>✅ Ação</h4>
+      <div class="action">Reescrever com passo a passo de login, <strong>glossário de etapas</strong> (Abertura → Análise → Vistoria → Regulação → Parecer Final) e canal alternativo quando o portal falha.</div>
+      <h4>✍️ Texto sugerido</h4>
+      <div class="suggested">📌 Consultar Status do Sinistro
+
+Você pode acompanhar o andamento do sinistro pelo Portal do Corretor ou do Segurado:
+
+1️⃣ Acesse <i>portal.darwinseguros.com.br</i>
+2️⃣ Login com seu CPF/CNPJ e senha
+3️⃣ Menu <b>Sinistros</b> → selecione o número da comunicação
+
+📊 Cada sinistro passa pelas etapas:
+• <b>Abertura</b>: registro da comunicação (até 24h)
+• <b>Análise documental</b>: verificação de cobertura (2-3 dias úteis)
+• <b>Vistoria</b>: agendamento e execução (até 5 dias úteis)
+• <b>Regulação</b>: apuração dos danos e laudo técnico (até 10 dias úteis)
+• <b>Parecer final</b>: decisão e liberação do pagamento (até 30 dias úteis corridos a partir da abertura)
+
+🔄 Se o portal apresentar erro ou estiver fora do ar, envie o número do sinistro + CPF para <i>sinistros@darwinseguros.com.br</i> que retornamos com o status em até 4h úteis.</div>
+      <h4>🎯 Impacto estimado</h4>
+      <div class="action">+83 N1/mês (conversão 25% sobre 332 tickets/mês)</div>
+    </div>
+  </details>
+
+  <details class="details-section">
+    <summary><span class="badge P1">P1</span> 3. Parcelas em atraso / consultar apólice (ID 69811727) — 207 tickets/mês · Retenção 35,75%</summary>
+    <div class="details-content">
+      <h4>🔴 Problema</h4>
+      <div class="problem">
+        Mistura instruções de <strong>plano mensal e anual</strong> sem clareza. Não separa corretor de cliente, não explica caminho específico no Portal do Corretor para ver parcelas em aberto, e não mostra como visualizar/baixar bilhete/apólice.
+      </div>
+      <h4>✅ Ação</h4>
+      <div class="action">Separar em blocos <strong>Plano Mensal</strong> e <strong>Plano Anual</strong>, com passos claros no Portal do Corretor e instruções de download do bilhete.</div>
+      <h4>✍️ Texto sugerido</h4>
+      <div class="suggested">📌 Parcelas em Atraso e Consulta de Apólice
+
+▶️ <b>Plano Mensal</b> — se houver parcela em atraso:
+1️⃣ Acesse o Portal do Corretor
+2️⃣ Menu <b>Financeiro</b> → <b>Faturas em aberto</b>
+3️⃣ A parcela em atraso aparece com status "Atrasada" e gera boleto/PIX para pagamento imediato
+
+▶️ <b>Plano Anual</b> — se houver parcela em atraso:
+1️⃣ Acesse o Portal do Corretor
+2️⃣ Menu <b>Carteira</b> → localize a apólice → aba <b>Parcelas</b>
+3️⃣ Selecione a parcela em atraso e emita o segundo boleto
+
+📄 Para baixar bilhete/apólice:
+• Portal do Corretor → <b>Minha Carteira</b> → selecione a apólice → botão <b>Baixar apólice (PDF)</b>
+
+⚠️ Parcelas em atraso acima de 30 dias podem levar à suspensão da cobertura. Regularize antes disso para manter proteção ativa.</div>
+      <h4>🎯 Impacto estimado</h4>
+      <div class="action">+33 N1/mês (conversão 25% sobre 133 tickets recuperáveis)</div>
+    </div>
+  </details>
+</section>
+
+<section>
+  <h2>📝 Direcionadores — Conteúdos #4 a #10</h2>
+  <div class="section-content" style="line-height:1.8;font-size:13.5px;color:#334155">
+    Os outros 7 conteúdos compartilham 3 falhas recorrentes: <strong>(a) ausência de passo a passo no portal</strong>, <strong>(b) ausência de canal alternativo quando o portal falha</strong> e <strong>(c) ausência de horários de atendimento ou prazos esperados</strong>.
+    <br><br>
+    Padrão de reescrita recomendado para todos:
+    <ol style="margin:12px 0 0 24px">
+      <li>Abrir com <b>1 frase de resposta direta</b></li>
+      <li>Bloco numerado de <b>passos no portal</b></li>
+      <li>Bloco com <b>canal alternativo</b> (e-mail/telefone + horário)</li>
+      <li>Bloco de <b>prazo esperado de resposta</b></li>
+    </ol>
+    Impacto somado estimado: <strong>+76 N1/mês</strong> (conteúdos #4 a #10).
+  </div>
+</section>
+
+<div class="footer">
+  Cloud Humans · IDS Quality Eval · Gerado em 20/04/2026 por ch-action-plan v5.1 · <a href="action-plan-darwin.html" style="color:#7c3aed">Voltar ao Plano de Ação</a>
+</div>
+</div>
+</body>
+</html>
