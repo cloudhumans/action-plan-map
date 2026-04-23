@@ -2,84 +2,103 @@
   "_schema": "action-plan-map/plan/v1",
   "project_slug": "nextfit",
   "date": "23/04/2026",
-  "summary": "Nextfit apresenta retenção em queda (59%→45%) com GenCX crítico de 16.8%. Transfer message 56.2% (1962 tickets), no relevant content 22.6% (789 tickets) e conteúdos N1 de baixa qualidade oferecem potencial de +700 N1/mês.",
-  "impact_retention": "+10 a +13pp",
-  "total_impact": 700,
-  "n1_potential": 943,
-  "volume_total": 7030,
-  "n2_total": 3749,
-  "retention_atual": 46,
+  "summary": "Retenção em queda (~45%, vindo de 57%) com GenCX crítico (16.8%). 58% da IDS tem duplicatas (71 pares idênticos) e 22.7% dos N2 são por falta de conteúdo. Foco total em limpeza e criação de conteúdo para recuperar +546 N1/mês.",
+  "impact_retention": "+7 a +9pp",
+  "total_impact": 546,
+  "n1_potential": 546,
+  "volume_total": 7000,
+  "n2_total": 3525,
+  "retention_atual": 45,
   "executed_at": "2026-04-23",
   "skill_version": "v5.1",
   "actions": [
     {
       "priority": "P0",
-      "title": "Ativar Venda do Bot (FORWARD_TO_HUMAN_CHECK)",
-      "desc": "56.2% dos N2 (1962 tickets/mês) são por transfer message. Ativar em CloudBlocks → Flow Prompts → FORWARD_TO_HUMAN_CHECK + MULTIPROMPT.",
-      "impact_tickets": 1962,
-      "conversion_rate": 0.15,
-      "impact_est": 294,
-      "type": "config_handover"
+      "title": "Limpeza massiva de 71 pares duplicados na IDS (67 com título idêntico)",
+      "desc": "58% da IDS tem duplicatas. 67 pares com título literalmente idêntico (score 1.00), incluindo 5 entradas 'Página Não Encontrada' (lixo). As duplicatas confundem o modelo de busca, degradam GenCX e reduzem retenção. Remover o conteúdo duplicado com menor volume/retenção de cada par.",
+      "impact_tickets": 500,
+      "conversion_rate": 0.40,
+      "impact_est": 200,
+      "type": "content_dedupe"
     },
     {
       "priority": "P0",
-      "title": "Criar 7 novos conteúdos para gaps de cobertura",
-      "desc": "Content Gap: Acesso bloqueado (~133 conv/mês), Cancelamento contrato (~89), Pinggo desconectando (~84), Cobrança divergente (~76), Transferência saldo (~65), Desconto 1º mês (~53), Alteração presença (~45). Total ~623 conv/mês sem cobertura.",
-      "impact_tickets": 623,
-      "conversion_rate": 0.35,
-      "impact_est": 218,
+      "title": "Reclassificar 2 conteúdos 'Solicitar Atendimento' de N1 para N2",
+      "desc": "IDs 699f106adca55df434774890 e 699f106adca55df43477488f são conteúdos N1 que apenas instruem o cliente a abrir chamado para atendimento humano — não resolvem nenhum problema. São duplicatas entre si (score 0.954). Consolidar em 1 e reclassificar como N2.",
+      "impact_tickets": 218,
+      "conversion_rate": 0.25,
+      "impact_est": 55,
+      "type": "content_reclassify"
+    },
+    {
+      "priority": "P0",
+      "title": "Criar 7 conteúdos novos para gaps de 'No relevant content'",
+      "desc": "800 N2/mês (22.7%) por falta de conteúdo. Top gaps identificados: Cancelamento conta gestor (39 conv), Mensalidade inesperada (31), Acesso bloqueado (29), Pingoo desconectando (27), Alteração CPF/CNPJ (23), Desconto 1º mês (20), Desconto pontualidade (18). Textos sugeridos prontos no relatório de Content Gap.",
+      "impact_tickets": 187,
+      "conversion_rate": 0.60,
+      "impact_est": 112,
       "type": "content_new"
     },
     {
       "priority": "P1",
-      "title": "Ativar more_interactions e query_transform",
-      "desc": "more_interactions=false perde contexto multi-mensagem. query_transform=false usa mensagem literal. Ativar ambos melhora recall da busca na IDS.",
-      "impact_tickets": 400,
-      "conversion_rate": 0.3,
-      "impact_est": 120,
-      "type": "config_search"
-    },
-    {
-      "priority": "P1",
-      "title": "Consolidar duplicatas e reescrever 8 conteúdos N1 problemáticos",
-      "desc": "IDS Quality Eval: par duplicado 'Como Solicitar Atendimento' (217 tickets, ~35%), 'Controle de Acesso' (116 tickets, 26.7%), 'Ativar Next Fit Pay' (61, 34.4%). ~298 tickets recuperáveis.",
-      "impact_tickets": 298,
+      "title": "Reescrever top 5 conteúdos N1 com baixa retenção e GenCX crítico",
+      "desc": "Conteúdos identificados: Controle de Acesso (26.7% ret, 85 tickets impactados), Recuperar Senha (49.6%, 58 tickets), Ativar Next Fit Pay (35.5%, 40 tickets), Ativar Pinggo.ai (42.4%, 34 tickets), Pix Automático (36.9%, 29 tickets). Textos reescritos prontos no relatório de IDS Quality Eval.",
+      "impact_tickets": 246,
       "conversion_rate": 0.25,
-      "impact_est": 75,
+      "impact_est": 62,
       "type": "content_improve"
     },
     {
       "priority": "P1",
-      "title": "Ativar clarificação com enlightenment_limit",
-      "desc": "7% dos N2 (245 tickets) por clarificação. Ativar clarification_enabled + enlightenment_limit_enabled.",
-      "impact_tickets": 245,
+      "title": "Quebrar 'Como Criar Automações de Campanhas no CRM' em 3 N1s menores",
+      "desc": "Conteúdo enciclopédico com 8+ seções que não responde dúvidas pontuais. Quebrar em: (A) Como criar automação do zero, (B) Minha automação não está disparando, (C) Como comprar saldo de SMS/e-mail.",
+      "impact_tickets": 30,
       "conversion_rate": 0.35,
-      "impact_est": 86,
-      "type": "config_classification"
+      "impact_est": 11,
+      "type": "content_split"
+    },
+    {
+      "priority": "P1",
+      "title": "Ativar moreUserInteractionsEnabled para melhorar contexto multi-turn",
+      "desc": "Configuração sutil (toggle true/false, sem risco). Permite que o modelo use mais contexto das interações anteriores do cliente na busca de conteúdo, melhorando respostas em conversas de múltiplas etapas.",
+      "impact_tickets": 50,
+      "conversion_rate": 0.35,
+      "impact_est": 18,
+      "type": "config_search"
     },
     {
       "priority": "P2",
-      "title": "Ativar fup_autodetect",
-      "desc": "Ativar auto-detecção de follow-up para reduzir fricção no FUP.",
-      "impact_tickets": 150,
-      "conversion_rate": 0.5,
-      "impact_est": 75,
+      "title": "Ajustar maxNoValidContentAttempts de 1 para 2",
+      "desc": "Atualmente o sistema desiste após 1 tentativa de busca sem conteúdo válido. Aumentar para 2 dá uma segunda chance antes de transferir, especialmente para perguntas reformuladas pelo cliente.",
+      "impact_tickets": 40,
+      "conversion_rate": 0.35,
+      "impact_est": 14,
+      "type": "config_threshold"
+    },
+    {
+      "priority": "P2",
+      "title": "Ativar autoDetectProblemSolved no FUP",
+      "desc": "O ProblemResolvedChecker está ativo mas autoDetect está OFF. Ativar reduz fricção do FUP perguntando menos vezes ao cliente se o problema foi resolvido quando o sistema já detecta sinais de resolução.",
+      "impact_tickets": 87,
+      "conversion_rate": 0.50,
+      "impact_est": 44,
       "type": "config_resolution"
     },
     {
       "priority": "P2",
-      "title": "Ativar multitopic_search",
-      "desc": "Busca monotópica não captura dúvidas compostas. Ativar para melhorar cobertura.",
-      "impact_tickets": 150,
-      "conversion_rate": 0.5,
-      "impact_est": 75,
-      "type": "config_search"
+      "title": "Revisar 69 pares de similaridade MÉDIA na IDS",
+      "desc": "Além dos 71 pares críticos, há 69 pares com sobreposição significativa (score 0.80-0.89). Inclui série de 9 'Guia para Dashboard de [X]' semelhantes e pares como 'Alterar Senha' vs 'Redefinir Senha'. Diferenciar ou consolidar conforme recomendações do relatório de Duplicate Analysis.",
+      "impact_tickets": 100,
+      "conversion_rate": 0.30,
+      "impact_est": 30,
+      "type": "content_dedupe"
     }
   ],
   "report_html": "reports/action-plan-nextfit.html",
   "sub_reports": {
     "ids_quality_eval": "reports/ids-quality-eval-nextfit.html",
-    "content_gap": "reports/content-gap-nextfit.html"
+    "content_gap": "reports/content-gap-nextfit.html",
+    "duplicate_analysis": "reports/duplicate-analysis-nextfit.html"
   },
   "doubts_md": "doubts/doubts-nextfit.md"
 }

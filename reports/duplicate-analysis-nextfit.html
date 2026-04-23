@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Duplicate Analysis — Nextfit</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f6fa;color:#1a1a2e}
+  .header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:40px 48px 36px}
+  .header h1{font-size:28px;font-weight:700;margin-bottom:8px}
+  .header .subtitle{font-size:15px;opacity:.75;line-height:1.5}
+  .header .meta{margin-top:16px;display:flex;gap:24px;font-size:13px;opacity:.6;flex-wrap:wrap}
+  .main{padding:32px 48px;max-width:1200px;margin:0 auto}
+  section{background:#fff;border-radius:12px;margin-bottom:24px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}
+  section h2{font-size:18px;font-weight:700;color:#1e293b;padding:20px 24px 12px;border-bottom:1px solid #e2e8f0}
+  .section-content{padding:20px 24px}
+  .footer{text-align:center;padding:32px;color:#94a3b8;font-size:12px}
+
+  /* KPIs */
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px}
+  .kpi-card{background:#f8fafc;border-radius:10px;padding:18px 16px;text-align:center;border:1px solid #e2e8f0}
+  .kpi-card .kpi-value{font-size:30px;font-weight:800;line-height:1.1;margin-bottom:6px}
+  .kpi-card .kpi-label{font-size:12px;color:#64748b;line-height:1.4}
+  .kpi-red .kpi-value{color:#dc2626}
+  .kpi-orange .kpi-value{color:#ea580c}
+  .kpi-blue .kpi-value{color:#2563eb}
+  .kpi-green .kpi-value{color:#16a34a}
+  .kpi-purple .kpi-value{color:#7c3aed}
+  .kpi-teal .kpi-value{color:#0d9488}
+
+  /* Critical finding */
+  .critical-box{background:#fef2f2;border:1.5px solid #fca5a5;border-radius:10px;padding:18px 20px;display:flex;gap:14px;align-items:flex-start}
+  .critical-box .icon{font-size:22px;flex-shrink:0;margin-top:2px}
+  .critical-box .text{font-size:14px;color:#7f1d1d;line-height:1.6;font-weight:500}
+  .critical-box .text strong{color:#b91c1c}
+
+  /* Tabs */
+  .tabs{display:flex;gap:0;border-bottom:2px solid #e2e8f0;margin-bottom:0}
+  .tab-btn{padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer;border:none;background:none;color:#64748b;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s}
+  .tab-btn:hover{color:#1e293b}
+  .tab-btn.active.alta{color:#dc2626;border-bottom-color:#dc2626}
+  .tab-btn.active.media{color:#ea580c;border-bottom-color:#ea580c}
+  .tab-pane{display:none;padding:20px 24px}
+  .tab-pane.active{display:block}
+
+  /* Pair cards */
+  .pair-card{border-radius:8px;border:1px solid #e2e8f0;margin-bottom:16px;overflow:hidden}
+  .pair-card.alta{border-left:4px solid #dc2626}
+  .pair-card.media{border-left:4px solid #ea580c}
+  .pair-card-header{background:#f8fafc;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+  .pair-title{font-size:14px;font-weight:700;color:#1e293b;flex:1}
+  .pair-badges{display:flex;gap:8px;align-items:center;flex-shrink:0}
+  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.3px}
+  .badge-alta{background:#fee2e2;color:#dc2626}
+  .badge-media{background:#ffedd5;color:#ea580c}
+  .badge-score{background:#1e293b;color:#fff}
+  .badge-rec{background:#dbeafe;color:#1d4ed8}
+  .pair-body{padding:14px 16px}
+  .pair-ids{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+  .id-block{background:#f1f5f9;border-radius:6px;padding:10px 12px}
+  .id-block .id-tag{font-family:monospace;font-size:11px;color:#475569;margin-bottom:4px}
+  .id-block .id-stats{font-size:12px;color:#334155}
+  .id-block .id-stats strong{color:#1e293b}
+  .pair-action{font-size:13px;color:#374151;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:8px 12px}
+  .pair-action::before{content:"Ação: ";font-weight:700;color:#15803d}
+  .pair-separator{display:flex;align-items:center;gap:8px;margin:4px 0 8px}
+  .pair-separator .arrow{font-size:18px;color:#94a3b8}
+  .pair-names{font-size:13px;color:#334155;line-height:1.5}
+  .pair-names .name-a,.pair-names .name-b{display:block}
+  .pair-names .name-b{color:#64748b}
+
+  /* Notes list */
+  .notes-list{list-style:none;padding:0;margin-top:12px}
+  .notes-list li{font-size:13px;color:#374151;padding:8px 12px;border-radius:6px;margin-bottom:6px;display:flex;gap:8px;align-items:flex-start}
+  .notes-list li.danger{background:#fef2f2;color:#7f1d1d}
+  .notes-list li.warning{background:#fffbeb;color:#78350f}
+  .notes-list li .note-icon{flex-shrink:0}
+
+  /* Chart */
+  .chart-wrap{display:flex;align-items:center;gap:40px;flex-wrap:wrap;justify-content:center;padding:16px 0}
+  .chart-legend{display:flex;flex-direction:column;gap:12px}
+  .legend-item{display:flex;align-items:center;gap:10px;font-size:13px;color:#374151}
+  .legend-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0}
+  .legend-item strong{font-weight:700;min-width:36px;display:inline-block}
+
+  /* Responsive */
+  @media(max-width:680px){
+    .header{padding:28px 20px 24px}
+    .main{padding:20px 16px}
+    .pair-ids{grid-template-columns:1fr}
+    .kpi-grid{grid-template-columns:repeat(2,1fr)}
+    .tab-btn{padding:10px 14px;font-size:13px}
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Duplicate Analysis — Nextfit</h1>
+  <div class="subtitle">Análise de conteúdos duplicados ou semanticamente similares na IDS que confundem o modelo de busca</div>
+  <div class="meta">
+    <span>460 conteúdos analisados</span>
+    <span>71 pares ALTA (≥0.90)</span>
+    <span>69 pares MÉDIA (0.80–0.89)</span>
+    <span>269 IDs afetados (58% da base)</span>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- KPIs -->
+  <section>
+    <h2>Resumo Executivo</h2>
+    <div class="section-content">
+      <div class="kpi-grid">
+        <div class="kpi-card kpi-blue">
+          <div class="kpi-value">460</div>
+          <div class="kpi-label">Total IDS analisados</div>
+        </div>
+        <div class="kpi-card kpi-red">
+          <div class="kpi-value">71</div>
+          <div class="kpi-label">Pares similaridade ALTA<br><small style="color:#dc2626;font-weight:700">67 com score 1.00!</small></div>
+        </div>
+        <div class="kpi-card kpi-orange">
+          <div class="kpi-value">69</div>
+          <div class="kpi-label">Pares similaridade MÉDIA</div>
+        </div>
+        <div class="kpi-card kpi-purple">
+          <div class="kpi-value">269</div>
+          <div class="kpi-label">IDs únicos afetados<br><small style="color:#7c3aed">58% da base</small></div>
+        </div>
+        <div class="kpi-card kpi-teal">
+          <div class="kpi-value">5</div>
+          <div class="kpi-label">Entradas "lixo"<br>(Página Não Encontrada)</div>
+        </div>
+        <div class="kpi-card kpi-green">
+          <div class="kpi-value">+3–6pp</div>
+          <div class="kpi-label">Impacto estimado em retenção</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Critical Finding -->
+  <section>
+    <h2>Achado Crítico</h2>
+    <div class="section-content">
+      <div class="critical-box">
+        <div class="icon">🚨</div>
+        <div class="text">
+          <strong>67 dos 71 pares ALTA têm título LITERALMENTE IDÊNTICO (score 1.00).</strong>
+          Isso sugere que houve <strong>duplicação massiva durante a importação/migração da IDS</strong>.
+          A limpeza deve ser prioridade <strong>P0</strong>.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Distribution Chart -->
+  <section>
+    <h2>Distribuição de Similaridade</h2>
+    <div class="section-content">
+      <div class="chart-wrap">
+        <svg viewBox="0 0 220 220" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+          <!-- Donut chart: total 437 pairs (71 alta + 69 media + 228 baixa + ~69 ok) -->
+          <!-- We'll display 4 segments based on IDs affected: 71 alta (red), 69 media (orange), 228 baixa (blue), 92 ok (green) -->
+          <!-- Total = 460, using IDs counts: ALTA=71, MEDIA=69, BAIXA=228, OK=92 -->
+          <!-- Angles: ALTA 71/460=15.43%, MEDIA 69/460=15%, BAIXA 228/460=49.57%, OK=92/460=20% -->
+          <!-- cx=110, cy=110, r=80, stroke-width=40 -->
+          <circle cx="110" cy="110" r="80" fill="none" stroke="#e2e8f0" stroke-width="40"/>
+          <!-- OK (green): 20% = 72deg starting at -90deg = -90 to -18 -->
+          <!-- ALTA (red): 15.43% = 55.5deg -->
+          <!-- MEDIA (orange): 15% = 54deg -->
+          <!-- BAIXA (blue): 49.57% = 178.5deg -->
+          <!-- circumference = 2*pi*80 = 502.65 -->
+          <!-- OK: dasharray = 100.5, offset = 0 (start at top) -->
+          <!-- ALTA: dasharray = 77.6, offset = -100.5 -->
+          <!-- MEDIA: dasharray = 75.4, offset = -(100.5+77.6)=-178.1 -->
+          <!-- BAIXA: dasharray = 249, offset = -(178.1+75.4)=-253.5 -->
+
+          <!-- Green OK: 20% -->
+          <circle cx="110" cy="110" r="80" fill="none" stroke="#22c55e" stroke-width="40"
+            stroke-dasharray="100.5 502.65" stroke-dashoffset="125.66"
+            transform="rotate(-90 110 110)"/>
+          <!-- Red ALTA: 15.43% -->
+          <circle cx="110" cy="110" r="80" fill="none" stroke="#dc2626" stroke-width="40"
+            stroke-dasharray="77.6 502.65" stroke-dashoffset="25.16"
+            transform="rotate(-90 110 110)"/>
+          <!-- Orange MEDIA: 15% -->
+          <circle cx="110" cy="110" r="80" fill="none" stroke="#ea580c" stroke-width="40"
+            stroke-dasharray="75.4 502.65" stroke-dashoffset="-52.4"
+            transform="rotate(-90 110 110)"/>
+          <!-- Blue BAIXA: 49.57% -->
+          <circle cx="110" cy="110" r="80" fill="none" stroke="#3b82f6" stroke-width="40"
+            stroke-dasharray="249 502.65" stroke-dashoffset="-127.8"
+            transform="rotate(-90 110 110)"/>
+
+          <!-- Center text -->
+          <text x="110" y="105" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="22" font-weight="800" fill="#1e293b">460</text>
+          <text x="110" y="122" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="10" fill="#64748b">conteúdos</text>
+        </svg>
+        <div class="chart-legend">
+          <div class="legend-item">
+            <div class="legend-dot" style="background:#dc2626"></div>
+            <strong>71</strong> pares ALTA (≥0.90)
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:#ea580c"></div>
+            <strong>69</strong> pares MÉDIA (0.80–0.89)
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:#3b82f6"></div>
+            <strong>228</strong> pares BAIXA (&lt;0.80)
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:#22c55e"></div>
+            <strong>92</strong> conteúdos sem par similar
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pairs Analysis with Tabs -->
+  <section>
+    <h2>Análise de Pares</h2>
+    <div class="tabs">
+      <button class="tab-btn active alta" onclick="showTab('alta', this)">🔴 ALTA — 71 pares</button>
+      <button class="tab-btn media" onclick="showTab('media', this)">🟠 MÉDIA — 69 pares</button>
+    </div>
+
+    <!-- ALTA Tab -->
+    <div id="tab-alta" class="tab-pane active">
+
+      <div class="pair-card alta">
+        <div class="pair-card-header">
+          <div>
+            <div class="pair-names">
+              <span class="name-a">"Como Solicitar Atendimento no Sistema Web ou Equipamentos"</span>
+              <span class="pair-separator"><span class="arrow">↔</span></span>
+              <span class="name-b">"Como Solicitar Atendimento no Sistema Web ou para Equipamentos"</span>
+            </div>
+          </div>
+          <div class="pair-badges">
+            <span class="badge badge-alta">ALTA</span>
+            <span class="badge badge-score">Score 0.954</span>
+            <span class="badge badge-rec">MESCLAR</span>
+          </div>
+        </div>
+        <div class="pair-body">
+          <div class="pair-ids">
+            <div class="id-block">
+              <div class="id-tag">ID A: ...488f</div>
+              <div class="id-stats"><strong>93 tickets</strong> · Retenção: <strong>37.6%</strong></div>
+            </div>
+            <div class="id-block">
+              <div class="id-tag">ID B: ...4890</div>
+              <div class="id-stats"><strong>125 tickets</strong> · Retenção: <strong>33.6%</strong></div>
+            </div>
+          </div>
+          <div class="pair-action">Manter ID B (mais volume), remover ID A. Reclassificar para N2.</div>
+        </div>
+      </div>
+
+      <div class="pair-card alta">
+        <div class="pair-card-header">
+          <div>
+            <div class="pair-names">
+              <span class="name-a">"Como Alterar a Conta de Repasse do Next Fit Pay"</span>
+              <span class="pair-separator"><span class="arrow">↔</span></span>
+              <span class="name-b">"Como Alterar a Conta de Repasse do Next Fit Pay" <em style="color:#dc2626;font-size:11px">(duplicata exata)</em></span>
+            </div>
+          </div>
+          <div class="pair-badges">
+            <span class="badge badge-alta">ALTA</span>
+            <span class="badge badge-score">Score 1.000</span>
+            <span class="badge badge-rec">MESCLAR</span>
+          </div>
+        </div>
+        <div class="pair-body">
+          <div class="pair-ids">
+            <div class="id-block">
+              <div class="id-tag">ID A: ...48dd</div>
+              <div class="id-stats"><strong>29 tickets</strong> · Retenção: <strong>51.7%</strong></div>
+            </div>
+            <div class="id-block">
+              <div class="id-tag">ID B: ...489d</div>
+              <div class="id-stats"><strong>26 tickets</strong> · Retenção: <strong>38.5%</strong></div>
+            </div>
+          </div>
+          <div class="pair-action">Manter ID A (melhor retenção), remover ID B.</div>
+        </div>
+      </div>
+
+      <div class="pair-card alta">
+        <div class="pair-card-header">
+          <div>
+            <div class="pair-names">
+              <span class="name-a">"Como Atribuir um Responsável ao Cliente"</span>
+              <span class="pair-separator"><span class="arrow">↔</span></span>
+              <span class="name-b">"Como Atribuir um Responsável ao Cliente" <em style="color:#dc2626;font-size:11px">(duplicata exata)</em></span>
+            </div>
+          </div>
+          <div class="pair-badges">
+            <span class="badge badge-alta">ALTA</span>
+            <span class="badge badge-score">Score 1.000</span>
+            <span class="badge badge-rec">MESCLAR</span>
+          </div>
+        </div>
+        <div class="pair-body">
+          <div class="pair-ids">
+            <div class="id-block">
+              <div class="id-tag">ID A: ...481f</div>
+              <div class="id-stats"><strong>23 tickets</strong> · Retenção: <strong>56.5%</strong></div>
+            </div>
+            <div class="id-block">
+              <div class="id-tag">ID B: ...4816</div>
+              <div class="id-stats"><strong>19 tickets</strong> · Retenção: <strong>57.9%</strong></div>
+            </div>
+          </div>
+          <div class="pair-action">Manter o conteúdo mais completo, remover o outro.</div>
+        </div>
+      </div>
+
+      <div class="pair-card alta">
+        <div class="pair-card-header">
+          <div>
+            <div class="pair-names">
+              <span class="name-a">"Cadastro e Exclusão da Foto para Reconhecimento Facial"</span>
+              <span class="pair-separator"><span class="arrow">↔</span></span>
+              <span class="name-b">"Cadastro e Exclusão da Foto para Reconhecimento Facial" <em style="color:#dc2626;font-size:11px">(duplicata exata)</em></span>
+            </div>
+          </div>
+          <div class="pair-badges">
+            <span class="badge badge-alta">ALTA</span>
+            <span class="badge badge-score">Score 1.000</span>
+            <span class="badge badge-rec">MESCLAR</span>
+          </div>
+        </div>
+        <div class="pair-body">
+          <div class="pair-ids">
+            <div class="id-block">
+              <div class="id-tag">ID A: ...48e2</div>
+              <div class="id-stats"><strong>29 tickets</strong> · Retenção: <strong>41.4%</strong></div>
+            </div>
+            <div class="id-block">
+              <div class="id-tag">ID B: ...765f</div>
+              <div class="id-stats"><strong>0 tickets</strong> · Sem volume</div>
+            </div>
+          </div>
+          <div class="pair-action">Manter ID A (único com volume), remover ID B.</div>
+        </div>
+      </div>
+
+      <div class="pair-card alta">
+        <div class="pair-card-header">
+          <div>
+            <div class="pair-names">
+              <span class="name-a">"Como Ativar a Integração com o Wellhub (Gympass)"</span>
+              <span class="pair-separator"><span class="arrow">↔</span></span>
+              <span class="name-b">"Como Ativar a Integração com o Wellhub (Gympass)" <em style="color:#dc2626;font-size:11px">(duplicata exata)</em></span>
+            </div>
+          </div>
+          <div class="pair-badges">
+            <span class="badge badge-alta">ALTA</span>
+            <span class="badge badge-score">Score 1.000</span>
+            <span class="badge badge-rec">MESCLAR</span>
+          </div>
+        </div>
+        <div class="pair-body">
+          <div class="pair-ids">
+            <div class="id-block">
+              <div class="id-tag">ID A: ...4882</div>
+              <div class="id-stats"><strong>0 tickets</strong> · Sem volume</div>
+            </div>
+            <div class="id-block">
+              <div class="id-tag">ID B: ...487a</div>
+              <div class="id-stats"><strong>21 tickets</strong> · Retenção: <strong>52.4%</strong></div>
+            </div>
+          </div>
+          <div class="pair-action">Manter ID B (único com volume), remover ID A.</div>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <ul class="notes-list">
+        <li class="danger">
+          <span class="note-icon">🗑️</span>
+          <span>5 entradas <strong>"Página Não Encontrada"</strong> (IDs iniciados em <code>69e11797...</code> e <code>69e11798...</code>) — REMOVER imediatamente. São lixo na IDS e degradam a busca semântica.</span>
+        </li>
+        <li class="warning">
+          <span class="note-icon">⚠️</span>
+          <span><strong>"Cadastro do Cliente"</strong> aparece 3 vezes na IDS — consolidar em entrada única.</span>
+        </li>
+        <li class="warning">
+          <span class="note-icon">⚠️</span>
+          <span><strong>"Controle de Acesso no Next Fit"</strong> aparece 3 vezes na IDS — consolidar em entrada única.</span>
+        </li>
+        <li class="warning">
+          <span class="note-icon">⚠️</span>
+          <span><strong>"Instruções para o Aplicativo do Aluno"</strong> aparece 3 vezes na IDS — consolidar em entrada única.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- MÉDIA Tab -->
+    <div id="tab-media" class="tab-pane">
+
+      <div class="pair-card media">
+        <div class="pair-card-header">
+          <div>
+            <div class="pair-names">
+              <span class="name-a">"Controle de Acesso"</span>
+              <span class="pair-separator"><span class="arrow">↔</span></span>
+              <span class="name-b">"Controle de Acesso - QR Code"</span>
+            </div>
+          </div>
+          <div class="pair-badges">
+            <span class="badge badge-media">MÉDIA</span>
+            <span class="badge badge-score">Score 0.818</span>
+            <span class="badge" style="background:#fef9c3;color:#854d0e">DIFERENCIAR</span>
+          </div>
+        </div>
+        <div class="pair-body">
+          <div class="pair-action">"Controle de Acesso" deve funcionar como índice/sumário geral dos métodos disponíveis. "Controle de Acesso - QR Code" deve focar exclusivamente no método via QR Code, sem repetir informações gerais.</div>
+        </div>
+      </div>
+
+      <div class="pair-card media">
+        <div class="pair-card-header">
+          <div>
+            <div class="pair-names">
+              <span class="name-a">"Como Alterar a Senha pelo App do Aluno"</span>
+              <span class="pair-separator"><span class="arrow">↔</span></span>
+              <span class="name-b">"Como Redefinir a Senha do App do Aluno"</span>
+            </div>
+          </div>
+          <div class="pair-badges">
+            <span class="badge badge-media">MÉDIA</span>
+            <span class="badge badge-score">Score 0.800</span>
+            <span class="badge" style="background:#fef9c3;color:#854d0e">DIFERENCIAR</span>
+          </div>
+        </div>
+        <div class="pair-body">
+          <div class="pair-action">"Alterar senha" para alunos que estão logados e querem mudar a senha por opção. "Redefinir senha" para quem esqueceu a senha e não consegue acessar. Fluxos distintos — manter ambos com títulos e conteúdos diferenciados.</div>
+        </div>
+      </div>
+
+      <div class="pair-card media">
+        <div class="pair-card-header">
+          <div>
+            <div class="pair-names">
+              <span class="name-a">"Guia: Como Funciona Cada Relatório Financeiro"</span>
+              <span class="pair-separator"><span class="arrow">↔</span></span>
+              <span class="name-b">"Guia: Como Funciona Cada Relatório de Clientes"</span>
+            </div>
+          </div>
+          <div class="pair-badges">
+            <span class="badge badge-media">MÉDIA</span>
+            <span class="badge badge-score">Score 0.845</span>
+            <span class="badge" style="background:#dcfce7;color:#15803d">MANTER</span>
+          </div>
+        </div>
+        <div class="pair-body">
+          <div class="pair-action">Manter ambos, mas diferenciar os títulos colocando o tema principal no início (ex.: "Relatórios Financeiros: Como Funciona Cada Um" vs "Relatórios de Clientes: Como Funciona Cada Um") para que o modelo de busca os diferencie melhor.</div>
+        </div>
+      </div>
+
+      <div class="pair-card media">
+        <div class="pair-card-header">
+          <div>
+            <div class="pair-names">
+              <span class="name-a">Série "Guia para Analisar o Dashboard de [X]"</span>
+              <span class="pair-separator"><span class="arrow">↔</span></span>
+              <span class="name-b">9 conteúdos com scores entre si variando de 0.88 a 0.89</span>
+            </div>
+          </div>
+          <div class="pair-badges">
+            <span class="badge badge-media">MÉDIA</span>
+            <span class="badge badge-score">Score 0.88–0.89</span>
+            <span class="badge" style="background:#fef9c3;color:#854d0e">REVISAR</span>
+          </div>
+        </div>
+        <div class="pair-body">
+          <div class="pair-action">Revisar se um guia unificado "Como Analisar os Dashboards do Nextfit" seria mais eficiente do que 9 entradas semelhantes. Se os dashboards têm especificidades relevantes, diferenciar os títulos e incluir seção introdutória em cada um apontando para os demais.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+
+<div class="footer">
+  Gerado por ClaudIA Action Plan Bot v5.1 — Sub-agente Duplicate Analysis | Cloud Humans
+</div>
+
+<script>
+  function showTab(name, btn) {
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+  }
+</script>
+
+</body>
+</html>

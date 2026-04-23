@@ -3,188 +3,752 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Content Gap Analysis — Nextfit | Cloud Humans</title>
+<title>Content Gap Analysis — Nextfit</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f6fa;color:#1a1a2e}
-.header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:40px 48px 36px}
-.header h1{font-size:32px;font-weight:700;margin-bottom:8px;letter-spacing:-.5px}
-.header .subtitle{font-size:15px;opacity:.75;line-height:1.5;max-width:900px}
-.header .meta{margin-top:16px;display:flex;gap:24px;font-size:13px;opacity:.6;flex-wrap:wrap}
-.header-badges{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
-.header-badge{display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;backdrop-filter:blur(10px)}
-.header-badge.tier{background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.4);color:#e0e7ff}
-.header-badge.volume{background:rgba(220,38,38,.2);border:1px solid rgba(220,38,38,.4);color:#fecaca}
-.main{padding:32px 48px;max-width:1200px;margin:0 auto}
-section{background:#fff;border-radius:12px;margin-bottom:24px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}
-section h2{font-size:18px;font-weight:700;color:#1e293b;padding:20px 24px 12px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:8px}
-.section-content{padding:20px 24px}
-.badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.3px}
-.badge.create{background:rgba(22,163,74,.15);color:#15803d;border:1px solid rgba(22,163,74,.3)}
-.badge.adapt{background:rgba(217,119,6,.15);color:#a16207;border:1px solid rgba(217,119,6,.3)}
-.metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:12px 0}
-.metric-card{padding:16px;background:#f8fafc;border-radius:8px;border-left:4px solid #7c3aed;text-align:center}
-.metric-card.critical{border-left-color:#dc2626;background:rgba(254,202,202,.1)}
-.metric-card.attention{border-left-color:#d97706;background:rgba(254,243,199,.1)}
-.metric-card.healthy{border-left-color:#059669;background:rgba(209,250,229,.1)}
-.metric-card .value{font-size:28px;font-weight:800;color:#1e293b;margin-bottom:4px}
-.metric-card.critical .value{color:#dc2626}
-.metric-card.attention .value{color:#d97706}
-.metric-card.healthy .value{color:#059669}
-.metric-card .label{font-size:12px;color:#475569;font-weight:600}
-.gap-table{width:100%;border-collapse:collapse;font-size:13px}
-.gap-table th{background:#f8fafc;padding:12px 16px;text-align:left;font-weight:700;color:#334155;border-bottom:2px solid #e2e8f0;font-size:12px}
-.gap-table td{padding:12px 16px;border-bottom:1px solid #e8eaf0;vertical-align:top}
-.gap-table tr:last-child td{border-bottom:none}
-.details-section{margin:12px 20px;padding:0}
-.details-section summary{cursor:pointer;padding:14px 16px;background:#f8fafc;border-radius:8px;font-weight:600;color:#1e293b;user-select:none;display:flex;align-items:center;gap:10px;transition:background .2s;font-size:14px}
-.details-section summary:hover{background:#f1f5f9}
-.details-section[open] summary{background:#eff6ff;border-bottom:1px solid #e2e8f0;border-radius:8px 8px 0 0}
-.details-content{padding:16px;background:#fff;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 8px 8px}
-.details-content .question{background:#f0fdf4;padding:12px;border-radius:6px;border-left:3px solid #059669;margin:8px 0;font-size:13px;color:#475569;line-height:1.6;font-style:italic}
-.details-content .suggested{background:#eff6ff;padding:14px;border-radius:6px;border-left:3px solid #2563eb;margin:8px 0;font-size:12.5px;color:#1e293b;line-height:1.7;white-space:pre-wrap}
-.details-content .existing{background:#fef9f0;padding:12px;border-radius:6px;border-left:3px solid #d97706;margin:8px 0;font-size:13px;color:#475569;line-height:1.6}
-.details-content h4{font-size:13px;font-weight:700;color:#334155;margin-top:12px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px}
-.footer{text-align:center;padding:32px;color:#94a3b8;font-size:12px}
-.footer a{color:#94a3b8}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f6fa;color:#1a1a2e}
+  .header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:40px 48px 36px}
+  .header h1{font-size:28px;font-weight:700;margin-bottom:8px}
+  .header .subtitle{font-size:15px;opacity:.75;line-height:1.5}
+  .header .meta{margin-top:16px;display:flex;gap:24px;font-size:13px;opacity:.6;flex-wrap:wrap}
+  .main{padding:32px 48px;max-width:1200px;margin:0 auto}
+  section{background:#fff;border-radius:12px;margin-bottom:24px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}
+  section h2{font-size:18px;font-weight:700;color:#1e293b;padding:20px 24px 12px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:8px}
+  .section-content{padding:20px 24px}
+  .footer{text-align:center;padding:32px;color:#94a3b8;font-size:12px}
+
+  /* KPI grid */
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px}
+  .kpi-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:18px 20px;text-align:center}
+  .kpi-card .kpi-value{font-size:32px;font-weight:800;line-height:1;margin-bottom:6px}
+  .kpi-card .kpi-label{font-size:12px;color:#64748b;line-height:1.4}
+  .kpi-card.highlight .kpi-value{color:#0f3460}
+  .kpi-card.green .kpi-value{color:#16a34a}
+  .kpi-card.orange .kpi-value{color:#d97706}
+  .kpi-card.blue .kpi-value{color:#2563eb}
+  .kpi-card.purple .kpi-value{color:#7c3aed}
+
+  /* Note banner */
+  .note-banner{background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:12px 16px;font-size:13px;color:#92400e;display:flex;gap:10px;align-items:flex-start;margin-top:16px}
+  .note-banner .note-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+
+  /* Gap table */
+  .gap-table{width:100%;border-collapse:collapse;font-size:14px}
+  .gap-table th{background:#f1f5f9;text-align:left;padding:10px 14px;font-size:12px;font-weight:600;color:#475569;text-transform:uppercase;letter-spacing:.04em;border-bottom:2px solid #e2e8f0}
+  .gap-table td{padding:11px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+  .gap-table tr:last-child td{border-bottom:none}
+  .gap-table tr:hover td{background:#f8fafc}
+  .gap-table td:first-child{font-weight:700;color:#94a3b8;font-size:13px;width:36px}
+  .badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.03em}
+  .badge-criar{background:#dcfce7;color:#15803d}
+  .badge-adaptar{background:#ffedd5;color:#c2410c}
+  .impact-num{font-weight:700;color:#0f3460}
+
+  /* Chart */
+  .chart-wrap{padding:20px 24px 24px}
+  .chart-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+  .chart-label{width:280px;font-size:13px;color:#334155;flex-shrink:0;text-align:right;line-height:1.3}
+  .chart-bar-track{flex:1;background:#f1f5f9;border-radius:6px;height:22px;position:relative;overflow:hidden}
+  .chart-bar-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,#0f3460,#2563eb);transition:width .6s ease}
+  .chart-bar-val{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:700;color:#fff;white-space:nowrap}
+
+  /* Detail cards */
+  .gap-cards{display:flex;flex-direction:column;gap:16px;padding:20px 24px}
+  details{border:1px solid #e2e8f0;border-radius:10px;overflow:hidden}
+  details[open]{border-color:#cbd5e1}
+  summary{cursor:pointer;padding:14px 18px;display:flex;align-items:center;gap:12px;list-style:none;user-select:none;background:#f8fafc;transition:background .15s}
+  summary:hover{background:#f1f5f9}
+  summary::-webkit-details-marker{display:none}
+  .summary-num{font-size:13px;font-weight:700;color:#94a3b8;width:24px;flex-shrink:0}
+  .summary-title{font-size:15px;font-weight:600;color:#1e293b;flex:1}
+  .summary-meta{display:flex;gap:10px;align-items:center;flex-shrink:0}
+  .summary-conv{font-size:12px;color:#64748b}
+  .chevron{font-size:12px;color:#94a3b8;transition:transform .2s;flex-shrink:0}
+  details[open] .chevron{transform:rotate(90deg)}
+  .card-body{padding:20px 18px;border-top:1px solid #e2e8f0;background:#fff;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .card-col h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#64748b;margin-bottom:8px}
+  .card-col p{font-size:14px;color:#334155;line-height:1.6}
+  .card-col .question-box{background:#f0f9ff;border-left:3px solid #0ea5e9;padding:10px 14px;border-radius:0 6px 6px 0;font-style:italic;font-size:13px;color:#0c4a6e}
+  .card-col .suggest-box{background:#f0fdf4;border-left:3px solid #22c55e;padding:10px 14px;border-radius:0 6px 6px 0;font-size:13px;color:#14532d;line-height:1.6}
+  .card-col .adapt-box{background:#fff7ed;border-left:3px solid #f97316;padding:10px 14px;border-radius:0 6px 6px 0;font-size:13px;color:#7c2d12;line-height:1.6}
+  .card-full{grid-column:1/-1}
+  .content-title{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:6px}
+
+  @media(max-width:768px){
+    .header{padding:28px 20px 24px}
+    .main{padding:20px 16px}
+    .card-body{grid-template-columns:1fr}
+    .chart-label{width:160px;font-size:12px}
+    .gap-table{font-size:13px}
+  }
 </style>
 </head>
 <body>
+
 <div class="header">
-  <h1>Content Gap Analysis — Nextfit</h1>
-  <p class="subtitle">Análise das conversas transferidas por 'No relevant content found' nos últimos 30 dias. Identificação de temas sem cobertura na IDS e sugestão de conteúdos a criar.</p>
-  <div class="header-badges">
-    <span class="header-badge tier">Tier Active</span>
-    <span class="header-badge volume">789 N2 por falta de conteúdo</span>
-  </div>
+  <h1>Content Gap Analysis &#8212; Nextfit</h1>
+  <div class="subtitle">Análise de lacunas de conteúdo a partir de 800 N2/mês por &#8220;No relevant content found&#8221; (22.7% dos N2)</div>
   <div class="meta">
-    <span>Projeto: nextfit</span>
-    <span>Janela: 24/03 – 23/04/2026</span>
-    <span>Gerado em: 23/04/2026</span>
+    <span>Período: 24/03 a 23/04/2026</span>
+    <span>84 conversas analisadas</span>
+    <span>12 clusters</span>
+    <span>7 novos conteúdos + 5 adaptações</span>
   </div>
 </div>
+
 <div class="main">
+
+  <!-- KPIs -->
   <section>
-    <h2>Resumo Executivo</h2>
+    <h2>&#128202; Resumo Executivo</h2>
     <div class="section-content">
-      <div class="metrics-grid">
-        <div class="metric-card critical"><div class="value">789</div><div class="label">conversas sem conteúdo</div></div>
-        <div class="metric-card critical"><div class="value">22.6%</div><div class="label">dos N2 totais</div></div>
-        <div class="metric-card attention"><div class="value">9</div><div class="label">gaps identificados</div></div>
-        <div class="metric-card healthy"><div class="value">+218</div><div class="label">N1 potencial</div></div>
+      <div class="kpi-grid">
+        <div class="kpi-card highlight">
+          <div class="kpi-value">800</div>
+          <div class="kpi-label">N2 por No Relevant Content / mês<br><strong>22.7%</strong> dos N2 totais</div>
+        </div>
+        <div class="kpi-card blue">
+          <div class="kpi-value">84</div>
+          <div class="kpi-label">Conversas analisadas na amostra</div>
+        </div>
+        <div class="kpi-card purple">
+          <div class="kpi-value">12</div>
+          <div class="kpi-label">Clusters identificados</div>
+        </div>
+        <div class="kpi-card green">
+          <div class="kpi-value">7</div>
+          <div class="kpi-label">Conteúdos a CRIAR</div>
+        </div>
+        <div class="kpi-card orange">
+          <div class="kpi-value">5</div>
+          <div class="kpi-label">Conteúdos a ADAPTAR</div>
+        </div>
+        <div class="kpi-card green">
+          <div class="kpi-value">+288</div>
+          <div class="kpi-label">Impacto estimado em N1/mês</div>
+        </div>
       </div>
-      <p style="font-size:14px;color:#475569;line-height:1.7;margin-top:16px">22.6% de todos os N2 da Nextfit são por 'No relevant content found' — a ClaudIA não encontrou nenhum conteúdo na IDS para responder. Foram identificados 9 clusters temáticos: 7 temas totalmente novos (CRIAR) e 2 temas com conteúdo similar mas insuficiente (ADAPTAR). Se todos os conteúdos forem criados/adaptados, o impacto estimado é de +218 N1/mês (conversion rate conservadora de 35%).</p>
+      <div class="note-banner">
+        <span class="note-icon">&#9888;&#65039;</span>
+        <span><strong>Atenção:</strong> 47% das conversas na amostra estavam com label <code>NO_TAG</code> &#8212; parcela significativa dos N2 sequer entra no roteamento por TAG. Recomenda-se revisão do modelo de classificação para ampliar a cobertura dos gaps aqui identificados.</span>
+      </div>
     </div>
   </section>
+
+  <!-- Gaps Table -->
   <section>
-    <h2>Gaps Identificados — Visão Geral</h2>
-    <div class="section-content" style="padding:0;overflow-x:auto">
+    <h2>&#128203; Todos os Gaps Identificados</h2>
+    <div style="overflow-x:auto">
       <table class="gap-table">
-        <thead><tr><th>#</th><th>Tema</th><th>Conv/mês</th><th>Classificação</th><th>Impacto estimado</th></tr></thead>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Tema</th>
+            <th>Conv/mês</th>
+            <th>Classificação</th>
+            <th>Impacto est.</th>
+          </tr>
+        </thead>
         <tbody>
-          <tr><td>1</td><td style="font-weight:600;color:#1e293b">Acesso bloqueado — usuário bloqueado no sistema</td><td>~133</td><td><span class="badge create">CRIAR</span></td><td style="font-weight:700;color:#059669">+47</td></tr>
-          <tr><td>2</td><td style="font-weight:600;color:#1e293b">Cancelamento do contrato com a Next Fit</td><td>~89</td><td><span class="badge create">CRIAR</span></td><td style="font-weight:700;color:#059669">+31</td></tr>
-          <tr><td>3</td><td style="font-weight:600;color:#1e293b">Pinggo desconectando / WhatsApp restrito</td><td>~84</td><td><span class="badge create">CRIAR</span></td><td style="font-weight:700;color:#059669">+29</td></tr>
-          <tr><td>4</td><td style="font-weight:600;color:#1e293b">Cobrança mensal com valor divergente</td><td>~76</td><td><span class="badge adapt">ADAPTAR</span></td><td style="font-weight:700;color:#059669">+27</td></tr>
-          <tr><td>5</td><td style="font-weight:600;color:#1e293b">Transferência de saldo/crédito entre alunos</td><td>~65</td><td><span class="badge create">CRIAR</span></td><td style="font-weight:700;color:#059669">+23</td></tr>
-          <tr><td>6</td><td style="font-weight:600;color:#1e293b">Desconto apenas no 1º mês do recorrente</td><td>~53</td><td><span class="badge create">CRIAR</span></td><td style="font-weight:700;color:#059669">+19</td></tr>
-          <tr><td>7</td><td style="font-weight:600;color:#1e293b">Alteração retroativa de presença</td><td>~45</td><td><span class="badge create">CRIAR</span></td><td style="font-weight:700;color:#059669">+16</td></tr>
-          <tr><td>8</td><td style="font-weight:600;color:#1e293b">Anamnese automática na aula experimental</td><td>~41</td><td><span class="badge create">CRIAR</span></td><td style="font-weight:700;color:#059669">+14</td></tr>
-          <tr><td>9</td><td style="font-weight:600;color:#1e293b">Professor não acessa treinos/avaliações</td><td>~37</td><td><span class="badge adapt">ADAPTAR</span></td><td style="font-weight:700;color:#059669">+13</td></tr>
+          <tr>
+            <td>1</td>
+            <td>Cancelamento do contrato com a Nextfit</td>
+            <td>39</td>
+            <td><span class="badge badge-adaptar">ADAPTAR</span></td>
+            <td><span class="impact-num">23</span></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Mensalidade com valor inesperado</td>
+            <td>31</td>
+            <td><span class="badge badge-adaptar">ADAPTAR</span></td>
+            <td><span class="impact-num">19</span></td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Acesso do gestor bloqueado no painel</td>
+            <td>29</td>
+            <td><span class="badge badge-criar">CRIAR</span></td>
+            <td><span class="impact-num">17</span></td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>Pingoo desconectando / WhatsApp bloqueado</td>
+            <td>27</td>
+            <td><span class="badge badge-criar">CRIAR</span></td>
+            <td><span class="impact-num">16</span></td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>Alterar conta bancária / CPF&#8594;CNPJ no Pay</td>
+            <td>23</td>
+            <td><span class="badge badge-criar">CRIAR</span></td>
+            <td><span class="impact-num">14</span></td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td>Promoção com desconto só no 1º mês</td>
+            <td>20</td>
+            <td><span class="badge badge-criar">CRIAR</span></td>
+            <td><span class="impact-num">12</span></td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td>Desconto por pontualidade no pagamento</td>
+            <td>18</td>
+            <td><span class="badge badge-criar">CRIAR</span></td>
+            <td><span class="impact-num">11</span></td>
+          </tr>
+          <tr>
+            <td>8</td>
+            <td>Alterar presença em aulas finalizadas</td>
+            <td>16</td>
+            <td><span class="badge badge-criar">CRIAR</span></td>
+            <td><span class="impact-num">10</span></td>
+          </tr>
+          <tr>
+            <td>9</td>
+            <td>Módulo de treino sumiu (gestor/professor)</td>
+            <td>14</td>
+            <td><span class="badge badge-criar">CRIAR</span></td>
+            <td><span class="impact-num">8</span></td>
+          </tr>
+          <tr>
+            <td>10</td>
+            <td>GoNutri: funciona, ativar, comissão</td>
+            <td>12</td>
+            <td><span class="badge badge-adaptar">ADAPTAR</span></td>
+            <td><span class="impact-num">7</span></td>
+          </tr>
+          <tr>
+            <td>11</td>
+            <td>Transferência de saldo entre contratos</td>
+            <td>11</td>
+            <td><span class="badge badge-criar">CRIAR</span></td>
+            <td><span class="impact-num">7</span></td>
+          </tr>
+          <tr>
+            <td>12</td>
+            <td>Anamnese automática na aula experimental</td>
+            <td>9</td>
+            <td><span class="badge badge-adaptar">ADAPTAR</span></td>
+            <td><span class="impact-num">5</span></td>
+          </tr>
         </tbody>
       </table>
     </div>
   </section>
+
+  <!-- Impact Chart -->
   <section>
-    <h2>Deep Dive — TOP 5 Gaps</h2>
-    <details class="details-section" open>
-      <summary>1. Acesso bloqueado — ~133 conv/mês | CRIAR</summary>
-      <div class="details-content">
-        <h4>Pergunta-tipo</h4>
-        <div class="question">"Aparece 'usuário com acesso bloqueado ao sistema' — tentei trocar senha e não adiantou"</div>
-        <h4>Conteúdo Sugerido</h4>
-        <div class="suggested">Título: Como resolver o erro "usuário com acesso bloqueado ao sistema"?
+    <h2>&#128200; Impacto Estimado por Gap (N1/mês)</h2>
+    <div class="chart-wrap">
 
-Existem 3 causas principais para o bloqueio de acesso:
-
-1. Inadimplência — verifique se há faturas em aberto em Financeiro → Faturas. O acesso é liberado automaticamente após a quitação.
-
-2. Tentativas incorretas de login — aguarde 15 minutos e tente novamente, ou peça ao administrador para desbloquear em Configurações → Usuários → selecione o usuário → Desbloquear acesso.
-
-3. Contrato não assinado — verifique em Contratos se há contrato pendente de assinatura digital. O acesso fica bloqueado até a assinatura ser concluída.</div>
+      <div class="chart-row">
+        <div class="chart-label">1 · Cancelamento conta gestor</div>
+        <div class="chart-bar-track">
+          <div class="chart-bar-fill" style="width:100%">
+            <span class="chart-bar-val">23</span>
+          </div>
+        </div>
       </div>
-    </details>
-    <details class="details-section" open>
-      <summary>2. Cancelamento contrato Nextfit — ~89 conv/mês | CRIAR</summary>
-      <div class="details-content">
-        <h4>Pergunta-tipo</h4>
-        <div class="question">"Gostaria de cancelar o plano da minha academia / não quero mais usar o Next Fit"</div>
-        <h4>Conteúdo Sugerido</h4>
-        <div class="suggested">Título: Como cancelar o contrato com a Next Fit?
 
-Para solicitar o cancelamento do contrato com a Next Fit, entre em contato com nosso time de Customer Success pelo e-mail suporte@nextfit.com.br ou pelo chat.
-
-Tenha em mãos:
-- Nome da academia
-- CNPJ
-- Motivo do cancelamento
-
-O prazo de processamento é de até 5 dias úteis. Lembre-se de verificar o período de fidelidade e eventuais multas previstas em contrato.</div>
+      <div class="chart-row">
+        <div class="chart-label">2 · Mensalidade inesperada</div>
+        <div class="chart-bar-track">
+          <div class="chart-bar-fill" style="width:82.6%">
+            <span class="chart-bar-val">19</span>
+          </div>
+        </div>
       </div>
-    </details>
-    <details class="details-section" open>
-      <summary>3. Pinggo desconectando / WhatsApp restrito — ~84 conv/mês | CRIAR</summary>
-      <div class="details-content">
-        <h4>Pergunta-tipo</h4>
-        <div class="question">"WhatsApp restringiu por 24h depois que mandei mensagens automáticas para inativos"</div>
-        <h4>Conteúdo Sugerido</h4>
-        <div class="suggested">Título: Pinggo desconectando ou WhatsApp restrito — o que fazer?
 
-Se o WhatsApp restringiu sua conta após disparos automáticos:
-1. Aguarde o período de restrição (geralmente 24h)
-2. Reduza o volume de disparos — recomendamos máximo 200 mensagens/dia para contas novas e 500/dia para contas estabelecidas
-3. Evite disparar para números que nunca interagiram com você
-4. Se o Pinggo desconectou, acesse Configurações → Integrações → Pinggo → Reconectar e escaneie o QR Code novamente. Se o QR Code não aparecer, limpe o cache do navegador.</div>
+      <div class="chart-row">
+        <div class="chart-label">3 · Acesso gestor bloqueado</div>
+        <div class="chart-bar-track">
+          <div class="chart-bar-fill" style="width:73.9%">
+            <span class="chart-bar-val">17</span>
+          </div>
+        </div>
       </div>
-    </details>
-    <details class="details-section" open>
-      <summary>4. Cobrança com valor divergente — ~76 conv/mês | ADAPTAR</summary>
-      <div class="details-content">
-        <h4>Conteúdo existente</h4>
-        <div class="existing">Como pagar a mensalidade do Next Fit (ID 699f1046...47f4) — cobre pagamento mas não contestação de valores</div>
-        <h4>Sugestão de Adaptação</h4>
-        <div class="suggested">Adicionar seção ao conteúdo existente:
 
-"Se o valor cobrado está diferente do contratado, verifique em Financeiro → Faturas se há taxas adicionais (ex: alunos suspensos podem gerar cobrança adicional dependendo do plano). Para contestar, envie e-mail para financeiro@nextfit.com.br com print da fatura e do contrato."</div>
+      <div class="chart-row">
+        <div class="chart-label">4 · Pingoo desconectando</div>
+        <div class="chart-bar-track">
+          <div class="chart-bar-fill" style="width:69.6%">
+            <span class="chart-bar-val">16</span>
+          </div>
+        </div>
       </div>
-    </details>
-    <details class="details-section" open>
-      <summary>5. Transferência de saldo entre alunos — ~65 conv/mês | CRIAR</summary>
-      <div class="details-content">
-        <h4>Pergunta-tipo</h4>
-        <div class="question">"Como faço para transferir o crédito de um aluno para outro?"</div>
-        <h4>Conteúdo Sugerido</h4>
-        <div class="suggested">Título: Como transferir saldo ou crédito entre alunos?
 
-Atualmente o Next Fit não possui funcionalidade nativa de transferência de crédito entre alunos. Para resolver casos pontuais:
-
-1. Faça o estorno do valor no aluno de origem em Financeiro → Estornos
-2. Crie um novo título financeiro no aluno de destino com o valor correspondente
-
-Se precisar de orientação detalhada sobre estornos, consulte nosso conteúdo sobre "Como Cancelar uma Venda e Estornar o Recebimento".</div>
+      <div class="chart-row">
+        <div class="chart-label">5 · Alterar CPF/CNPJ no Pay</div>
+        <div class="chart-bar-track">
+          <div class="chart-bar-fill" style="width:60.9%">
+            <span class="chart-bar-val">14</span>
+          </div>
+        </div>
       </div>
-    </details>
-  </section>
-  <section>
-    <h2>Temas Já Cobertos — Problema de Ativação</h2>
-    <div class="section-content">
-      <p style="font-size:14px;color:#475569;line-height:1.7">3 temas foram identificados como JÁ COBERTOS na IDS mas com problema de ativação: Pix automático (~58 conv), Aluno não aparece na lista de chamada (~29 conv), Credenciais de novo cliente (~19 conv). Recomendação: revisar títulos para incluir sinônimos usados pelos clientes (ex: 'pix recorrente', 'lista de presença').</p>
+
+      <div class="chart-row">
+        <div class="chart-label">6 · Desconto 1º mês</div>
+        <div class="chart-bar-track">
+          <div class="chart-bar-fill" style="width:52.2%">
+            <span class="chart-bar-val">12</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-label">7 · Desconto pontualidade</div>
+        <div class="chart-bar-track">
+          <div class="chart-bar-fill" style="width:47.8%">
+            <span class="chart-bar-val">11</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-label">8 · Alterar presença em aulas</div>
+        <div class="chart-bar-track">
+          <div class="chart-bar-fill" style="width:43.5%">
+            <span class="chart-bar-val">10</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-label">9 · Módulo treino sumiu</div>
+        <div class="chart-bar-track">
+          <div class="chart-bar-fill" style="width:34.8%">
+            <span class="chart-bar-val">8</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-label">10 · GoNutri FAQ unificado</div>
+        <div class="chart-bar-track">
+          <div class="chart-bar-fill" style="width:30.4%">
+            <span class="chart-bar-val">7</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-label">11 · Transferência de saldo</div>
+        <div class="chart-bar-track">
+          <div class="chart-bar-fill" style="width:30.4%">
+            <span class="chart-bar-val">7</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-label">12 · Anamnese automática</div>
+        <div class="chart-bar-track">
+          <div class="chart-bar-fill" style="width:21.7%">
+            <span class="chart-bar-val">5</span>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
+
+  <!-- Detailed Cards -->
+  <section>
+    <h2>&#128269; Detalhamento por Gap</h2>
+    <div class="gap-cards">
+
+      <!-- 1 -->
+      <details>
+        <summary>
+          <span class="summary-num">1</span>
+          <span class="summary-title">Cancelamento do contrato com a Nextfit</span>
+          <span class="summary-meta">
+            <span class="summary-conv">39 conv/mês</span>
+            <span class="badge badge-adaptar">ADAPTAR</span>
+          </span>
+          <span class="chevron">&#9654;</span>
+        </summary>
+        <div class="card-body">
+          <div class="card-col">
+            <h4>Pergunta-tipo</h4>
+            <div class="question-box">"Não quero mais utilizar o nextfit em minha academia, quero cancelar"</div>
+          </div>
+          <div class="card-col">
+            <h4>Conteúdo Existente</h4>
+            <div class="adapt-box">
+              <strong>ID:</strong> "Como Encerrar um Contrato no Next Fit"<br><br>
+              <strong>Problema:</strong> O artigo foca em contratos de alunos, não no cancelamento da conta do gestor/academia junto à Nextfit.
+            </div>
+          </div>
+          <div class="card-col card-full">
+            <h4>Sugestão de Adaptação</h4>
+            <div class="suggest-box">
+              <div class="content-title">Novo título: "Como solicitar o cancelamento da minha conta na Nextfit"</div>
+              Adaptar para incluir: canal correto de solicitação de cancelamento (e-mail/portal), prazo mínimo de aviso prévio, o que acontece com os dados da academia após o cancelamento, impacto em cobranças em aberto e em contratos de alunos ativos com pagamento recorrente no Next Fit Pay.
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- 2 -->
+      <details>
+        <summary>
+          <span class="summary-num">2</span>
+          <span class="summary-title">Mensalidade com valor inesperado</span>
+          <span class="summary-meta">
+            <span class="summary-conv">31 conv/mês</span>
+            <span class="badge badge-adaptar">ADAPTAR</span>
+          </span>
+          <span class="chevron">&#9654;</span>
+        </summary>
+        <div class="card-body">
+          <div class="card-col">
+            <h4>Pergunta-tipo</h4>
+            <div class="question-box">"Veio R$325,80 na fatura mas meu plano é R$225,90. Aluno suspenso conta?"</div>
+          </div>
+          <div class="card-col">
+            <h4>Conteúdo Existente</h4>
+            <div class="adapt-box">
+              <strong>ID:</strong> "Como é Calculada a Média de Alunos Ativos para Pagamento da Mensalidade?"<br><br>
+              <strong>Problema:</strong> Não aborda variações de valor, alunos suspensos ou adicionais contratados.
+            </div>
+          </div>
+          <div class="card-col card-full">
+            <h4>Sugestão de Adaptação</h4>
+            <div class="suggest-box">
+              <div class="content-title">Adicionar seção: "Por que o valor mudou?"</div>
+              Cobrir os cenários mais comuns: (1) alunos suspensos e se entram na contagem, (2) franquia de alunos excedida no período de apuração, (3) adicionais contratados que aumentam o ticket &#8212; Pingoo, GoNutri, módulos extras. Incluir tabela de referência com faixas de preço e gatilhos de mudança de faixa.
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- 3 -->
+      <details>
+        <summary>
+          <span class="summary-num">3</span>
+          <span class="summary-title">Acesso do gestor bloqueado no painel</span>
+          <span class="summary-meta">
+            <span class="summary-conv">29 conv/mês</span>
+            <span class="badge badge-criar">CRIAR</span>
+          </span>
+          <span class="chevron">&#9654;</span>
+        </summary>
+        <div class="card-body">
+          <div class="card-col">
+            <h4>Pergunta-tipo</h4>
+            <div class="question-box">"Coloco e-mail e senha e aparece 'usuário bloqueado'"</div>
+          </div>
+          <div class="card-col">
+            <h4>Conteúdo Sugerido</h4>
+            <div class="suggest-box">
+              <div class="content-title">Título: "Por que meu acesso de gestor está bloqueado no sistema?"</div>
+            </div>
+          </div>
+          <div class="card-col card-full">
+            <h4>Resposta Sugerida</h4>
+            <div class="suggest-box">
+              Cobrir os quatro cenários principais: (1) <strong>Mensalidade vencida</strong> &#8212; sistema bloqueia automaticamente após X dias; ação: regularizar fatura no portal financeiro. (2) <strong>Conta suspensa por política</strong> &#8212; contato com suporte Nextfit. (3) <strong>Perfil desativado por outro admin</strong> &#8212; verificar com o administrador principal da conta. (4) <strong>Múltiplas tentativas de login erradas</strong> &#8212; aguardar desbloqueio automático ou acionar suporte. Para cada cenário: o que o gestor vê na tela, o que ele deve fazer, em quanto tempo o acesso é restaurado.
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- 4 -->
+      <details>
+        <summary>
+          <span class="summary-num">4</span>
+          <span class="summary-title">Pingoo desconectando / WhatsApp bloqueado</span>
+          <span class="summary-meta">
+            <span class="summary-conv">27 conv/mês</span>
+            <span class="badge badge-criar">CRIAR</span>
+          </span>
+          <span class="chevron">&#9654;</span>
+        </summary>
+        <div class="card-body">
+          <div class="card-col">
+            <h4>Pergunta-tipo</h4>
+            <div class="question-box">"Programei envio e o WhatsApp restringiu por 24h. Como evitar?"</div>
+          </div>
+          <div class="card-col">
+            <h4>Conteúdo Sugerido</h4>
+            <div class="suggest-box">
+              <div class="content-title">Título: "Por que o Pingoo desconecta e como evitar bloqueio do WhatsApp"</div>
+            </div>
+          </div>
+          <div class="card-col card-full">
+            <h4>Resposta Sugerida</h4>
+            <div class="suggest-box">
+              Abordar: (1) Limite diário do WhatsApp Business API e como ele funciona para contas novas vs. contas com histórico. (2) Volume seguro de mensagens por hora para evitar flag de spam. (3) Passo a passo para reconectar o número após desconexão (QR Code / reconexão no painel Pingoo). (4) Boas práticas: opt-in dos contatos, variedade de templates, cadência de envio. (5) O que fazer se o número for banido permanentemente.
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- 5 -->
+      <details>
+        <summary>
+          <span class="summary-num">5</span>
+          <span class="summary-title">Alterar conta bancária / CPF&#8594;CNPJ no Pay</span>
+          <span class="summary-meta">
+            <span class="summary-conv">23 conv/mês</span>
+            <span class="badge badge-criar">CRIAR</span>
+          </span>
+          <span class="chevron">&#9654;</span>
+        </summary>
+        <div class="card-body">
+          <div class="card-col">
+            <h4>Pergunta-tipo</h4>
+            <div class="question-box">"Se trocar de CNPJ para CPF preciso criar outra conta?"</div>
+          </div>
+          <div class="card-col">
+            <h4>Conteúdo Sugerido</h4>
+            <div class="suggest-box">
+              <div class="content-title">Título: "O que acontece ao trocar CPF por CNPJ no Next Fit Pay?"</div>
+            </div>
+          </div>
+          <div class="card-col card-full">
+            <h4>Resposta Sugerida</h4>
+            <div class="suggest-box">
+              Explicar: (1) Diferença entre trocar a <strong>conta bancária de recebimento</strong> (pode ser feito no painel) e trocar o <strong>titular do Next Fit Pay</strong> (exige nova conta). (2) Impacto em recorrências ativas: se os débitos automáticos continuam ou precisam ser reconfigurados. (3) O que é preservado na migração: histórico de transações, planos de alunos. (4) Prazo para novo KYC (verificação de identidade) do CNPJ. (5) Como proceder: abrir chamado com o financeiro da Nextfit.
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- 6 -->
+      <details>
+        <summary>
+          <span class="summary-num">6</span>
+          <span class="summary-title">Promoção com desconto só no 1º mês</span>
+          <span class="summary-meta">
+            <span class="summary-conv">20 conv/mês</span>
+            <span class="badge badge-criar">CRIAR</span>
+          </span>
+          <span class="chevron">&#9654;</span>
+        </summary>
+        <div class="card-body">
+          <div class="card-col">
+            <h4>Pergunta-tipo</h4>
+            <div class="question-box">"Como fazer 1º mês R$59,99 e os outros R$94,99?"</div>
+          </div>
+          <div class="card-col">
+            <h4>Conteúdo Sugerido</h4>
+            <div class="suggest-box">
+              <div class="content-title">Título: "Como configurar desconto apenas no primeiro mês de contrato recorrente"</div>
+            </div>
+          </div>
+          <div class="card-col card-full">
+            <h4>Resposta Sugerida</h4>
+            <div class="suggest-box">
+              Apresentar as duas abordagens: (1) <strong>Cupom de uso único</strong> aplicado na primeira cobrança &#8212; como criar, como vincular ao plano, limitações. (2) <strong>Dois contratos em sequência</strong> &#8212; contrato promocional de 1 mês seguido de contrato regular; mais trabalhoso, mas sem risco de cupom mal aplicado. Comparar os riscos de cada abordagem e indicar qual é mais segura operacionalmente. Incluir screenshots do fluxo de criação de cupom.
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- 7 -->
+      <details>
+        <summary>
+          <span class="summary-num">7</span>
+          <span class="summary-title">Desconto por pontualidade no pagamento</span>
+          <span class="summary-meta">
+            <span class="summary-conv">18 conv/mês</span>
+            <span class="badge badge-criar">CRIAR</span>
+          </span>
+          <span class="chevron">&#9654;</span>
+        </summary>
+        <div class="card-body">
+          <div class="card-col">
+            <h4>Pergunta-tipo</h4>
+            <div class="question-box">"Quero R$130 se pagar até vencimento e R$140 depois. Dá?"</div>
+          </div>
+          <div class="card-col">
+            <h4>Conteúdo Sugerido</h4>
+            <div class="suggest-box">
+              <div class="content-title">Título: "Como configurar desconto por pontualidade no pagamento"</div>
+            </div>
+          </div>
+          <div class="card-col card-full">
+            <h4>Resposta Sugerida</h4>
+            <div class="suggest-box">
+              Esclarecer a limitação nativa: o sistema não tem campo de "desconto por pontualidade" de forma automática. Apresentar o workaround mais utilizado: (1) criar plano com valor promocional (R$130) e configurar multa/juros para pagamentos em atraso que resultem no valor cheio (R$140). (2) Explicar como configurar multa percentual e juros diários em Configurações Financeiras. (3) Alertar sobre a comunicação clara ao aluno para evitar reclamações.
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- 8 -->
+      <details>
+        <summary>
+          <span class="summary-num">8</span>
+          <span class="summary-title">Alterar presença em aulas finalizadas</span>
+          <span class="summary-meta">
+            <span class="summary-conv">16 conv/mês</span>
+            <span class="badge badge-criar">CRIAR</span>
+          </span>
+          <span class="chevron">&#9654;</span>
+        </summary>
+        <div class="card-body">
+          <div class="card-col">
+            <h4>Pergunta-tipo</h4>
+            <div class="question-box">"Errei o preenchimento de presença, aula já finalizou, consigo corrigir?"</div>
+          </div>
+          <div class="card-col">
+            <h4>Conteúdo Sugerido</h4>
+            <div class="suggest-box">
+              <div class="content-title">Título: "É possível corrigir presença em aulas já encerradas?"</div>
+            </div>
+          </div>
+          <div class="card-col card-full">
+            <h4>Resposta Sugerida</h4>
+            <div class="suggest-box">
+              Informar a limitação do sistema: após o encerramento do horário, o registro de presença é bloqueado para edição direta. Apresentar a alternativa disponível: reabrir o horário da aula (se dentro da janela permitida), corrigir a presença e fechar novamente. Especificar a janela de tempo em que o horário pode ser reaberto. Indicar quando acionar o suporte Nextfit para correção manual de registros históricos fora da janela.
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- 9 -->
+      <details>
+        <summary>
+          <span class="summary-num">9</span>
+          <span class="summary-title">Módulo de treino sumiu (gestor/professor)</span>
+          <span class="summary-meta">
+            <span class="summary-conv">14 conv/mês</span>
+            <span class="badge badge-criar">CRIAR</span>
+          </span>
+          <span class="chevron">&#9654;</span>
+        </summary>
+        <div class="card-body">
+          <div class="card-col">
+            <h4>Pergunta-tipo</h4>
+            <div class="question-box">"A aba de treinos não aparece, mesmo com permissão habilitada"</div>
+          </div>
+          <div class="card-col">
+            <h4>Conteúdo Sugerido</h4>
+            <div class="suggest-box">
+              <div class="content-title">Título: "Por que a aba de treinos sumiu no sistema ou app?"</div>
+            </div>
+          </div>
+          <div class="card-col card-full">
+            <h4>Resposta Sugerida</h4>
+            <div class="suggest-box">
+              Checklist de resolução em ordem: (1) Verificar se o módulo está ativo em <strong>Configurações &gt; Módulos</strong> &#8212; pode ter sido desativado acidentalmente. (2) Verificar as permissões do perfil do usuário (gestor/professor) &#8212; módulo ativo mas permissão de visualização desativada. (3) Fazer logout e login novamente no app/sistema para forçar atualização das permissões em cache. (4) Limpar cache do navegador ou atualizar o app para a versão mais recente. Se nenhuma etapa resolver, abrir chamado informando versão do app e perfil afetado.
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- 10 -->
+      <details>
+        <summary>
+          <span class="summary-num">10</span>
+          <span class="summary-title">GoNutri: funciona, ativar, comissão</span>
+          <span class="summary-meta">
+            <span class="summary-conv">12 conv/mês</span>
+            <span class="badge badge-adaptar">ADAPTAR</span>
+          </span>
+          <span class="chevron">&#9654;</span>
+        </summary>
+        <div class="card-body">
+          <div class="card-col">
+            <h4>Pergunta-tipo</h4>
+            <div class="question-box">"Como funciona o GoNutri? Como ativo? Tem comissão para o professor?"</div>
+          </div>
+          <div class="card-col">
+            <h4>Conteúdo Existente</h4>
+            <div class="adapt-box">
+              <strong>Situação atual:</strong> 3 artigos separados cobrindo cada tema individualmente.<br><br>
+              <strong>Problema:</strong> O usuário faz 3 perguntas diferentes e não encontra um único recurso que responda tudo, gerando múltiplos N2 sobre o mesmo produto.
+            </div>
+          </div>
+          <div class="card-col card-full">
+            <h4>Sugestão de Adaptação</h4>
+            <div class="suggest-box">
+              <div class="content-title">Novo título: "GoNutri &#8212; FAQ completo: o que é, como ativar e como funciona a comissão"</div>
+              Unificar os 3 artigos em uma única página FAQ estruturada com seções âncora: (1) O que é o GoNutri e como funciona para os alunos. (2) Como ativar o módulo na conta da academia (passo a passo). (3) Modelo de comissão para professores/nutricionistas parceiros. Links de navegação entre seções para facilitar o acesso.
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- 11 -->
+      <details>
+        <summary>
+          <span class="summary-num">11</span>
+          <span class="summary-title">Transferência de saldo entre contratos</span>
+          <span class="summary-meta">
+            <span class="summary-conv">11 conv/mês</span>
+            <span class="badge badge-criar">CRIAR</span>
+          </span>
+          <span class="chevron">&#9654;</span>
+        </summary>
+        <div class="card-body">
+          <div class="card-col">
+            <h4>Pergunta-tipo</h4>
+            <div class="question-box">"Como passo o saldo do contrato de um aluno para outro?"</div>
+          </div>
+          <div class="card-col">
+            <h4>Conteúdo Sugerido</h4>
+            <div class="suggest-box">
+              <div class="content-title">Título: "Como transferir créditos/saldo entre contratos de alunos"</div>
+            </div>
+          </div>
+          <div class="card-col card-full">
+            <h4>Resposta Sugerida</h4>
+            <div class="suggest-box">
+              Abordar: (1) Se o sistema permite transferência direta de saldo entre contratos do mesmo aluno ou de alunos diferentes. (2) Workaround via cancelamento com saldo em aberto e aplicação manual como crédito no novo contrato. (3) Impacto financeiro e contábil da operação. (4) Registro da operação para auditoria. Incluir aviso sobre validação com o departamento financeiro antes de realizar a transferência.
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- 12 -->
+      <details>
+        <summary>
+          <span class="summary-num">12</span>
+          <span class="summary-title">Anamnese automática na aula experimental</span>
+          <span class="summary-meta">
+            <span class="summary-conv">9 conv/mês</span>
+            <span class="badge badge-adaptar">ADAPTAR</span>
+          </span>
+          <span class="chevron">&#9654;</span>
+        </summary>
+        <div class="card-body">
+          <div class="card-col">
+            <h4>Pergunta-tipo</h4>
+            <div class="question-box">"Como enviar questionário automático quando aluno agenda experimental?"</div>
+          </div>
+          <div class="card-col">
+            <h4>Conteúdo Existente</h4>
+            <div class="adapt-box">
+              <strong>Situação atual:</strong> Artigo sobre anamnese existe, mas não cobre o fluxo de agendamento de aula experimental como gatilho de envio automático.<br><br>
+              <strong>Problema:</strong> Gestor não encontra o caminho para vincular anamnese ao evento de agendamento experimental.
+            </div>
+          </div>
+          <div class="card-col card-full">
+            <h4>Sugestão de Adaptação</h4>
+            <div class="suggest-box">
+              <div class="content-title">Novo título: "Como enviar anamnese automática ao agendar aula experimental"</div>
+              Adaptar o artigo existente para incluir seção específica sobre: (1) Configuração do gatilho de envio automático vinculado ao evento "agendamento de aula experimental". (2) Onde na interface configurar essa automação (Pingoo/automações ou configurações da aula experimental). (3) Personalização do formulário de anamnese para o perfil de lead/prospect. (4) Como visualizar as respostas antes da aula.
+            </div>
+          </div>
+        </div>
+      </details>
+
+    </div>
+  </section>
+
 </div>
+
 <div class="footer">
-  Cloud Humans · Content Gap Analysis · Gerado em 23/04/2026 por ch-action-plan v5.1 ·
-  <a href="action-plan-nextfit.html">Voltar ao Plano de Ação</a>
+  Gerado por ClaudIA Action Plan Bot v5.1 &#8212; Sub-agente Content Gap | Cloud Humans<br>
+  <span style="opacity:.6">Período de análise: 24/03 a 23/04/2026 &middot; Cliente: Nextfit</span>
 </div>
+
 </body>
 </html>

@@ -8,153 +8,842 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f6fa;color:#1a1a2e}
 .header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:40px 48px 36px}
-.header h1{font-size:32px;font-weight:700;margin-bottom:8px;letter-spacing:-.5px}
-.header .subtitle{font-size:15px;opacity:.75;line-height:1.5;max-width:900px}
+.header h1{font-size:28px;font-weight:700;margin-bottom:8px}
+.header .subtitle{font-size:15px;opacity:.75;line-height:1.5;max-width:860px}
 .header .meta{margin-top:16px;display:flex;gap:24px;font-size:13px;opacity:.6;flex-wrap:wrap}
-.header-badges{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
-.header-badge{display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;backdrop-filter:blur(10px)}
-.header-badge.tier{background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.4);color:#e0e7ff}
-.header-badge.status-critical{background:rgba(220,38,38,.2);border:1px solid rgba(220,38,38,.4);color:#fecaca}
 .main{padding:32px 48px;max-width:1200px;margin:0 auto}
 section{background:#fff;border-radius:12px;margin-bottom:24px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}
 section h2{font-size:18px;font-weight:700;color:#1e293b;padding:20px 24px 12px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:8px}
 .section-content{padding:20px 24px}
-.badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.3px}
-.badge.rewrite{background:rgba(59,130,246,.15);color:#1e40af;border:1px solid rgba(59,130,246,.3)}
-.badge.improve{background:rgba(100,116,139,.15);color:#1e293b;border:1px solid rgba(100,116,139,.3)}
-.badge.remove{background:rgba(220,38,38,.15);color:#991b1b;border:1px solid rgba(220,38,38,.3)}
-.badge.consolidate{background:rgba(168,85,247,.15);color:#6b21a8;border:1px solid rgba(168,85,247,.3)}
-.badge.restrict{background:rgba(234,179,8,.15);color:#854d0e;border:1px solid rgba(234,179,8,.3)}
-.badge.split{background:rgba(14,165,233,.15);color:#0369a1;border:1px solid rgba(14,165,233,.3)}
-.metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:12px 0}
-.metric-card{padding:16px;background:#f8fafc;border-radius:8px;border-left:4px solid #7c3aed;text-align:center}
-.metric-card.critical{border-left-color:#dc2626;background:rgba(254,202,202,.1)}
-.metric-card.attention{border-left-color:#d97706;background:rgba(254,243,199,.1)}
-.metric-card.healthy{border-left-color:#059669;background:rgba(209,250,229,.1)}
-.metric-card .value{font-size:28px;font-weight:800;color:#1e293b;margin-bottom:4px}
-.metric-card.critical .value{color:#dc2626}
-.metric-card.attention .value{color:#d97706}
-.metric-card.healthy .value{color:#059669}
-.metric-card .label{font-size:12px;color:#475569;font-weight:600}
-.content-table{width:100%;border-collapse:collapse;font-size:13px}
-.content-table th{background:#f8fafc;padding:12px 16px;text-align:left;font-weight:700;color:#334155;border-bottom:2px solid #e2e8f0;font-size:12px}
-.content-table td{padding:12px 16px;border-bottom:1px solid #e8eaf0;vertical-align:top}
-.content-table tr:last-child td{border-bottom:none}
-.content-table .title-cell{font-weight:600;color:#1e293b;max-width:280px}
-.content-table .id-cell{color:#94a3b8;font-size:11px;font-family:'Courier New',monospace}
-.details-section{margin:12px 20px;padding:0}
-.details-section summary{cursor:pointer;padding:14px 16px;background:#f8fafc;border-radius:8px;font-weight:600;color:#1e293b;user-select:none;display:flex;align-items:center;gap:10px;transition:background .2s;font-size:14px}
-.details-section summary:hover{background:#f1f5f9}
-.details-section[open] summary{background:#eff6ff;border-bottom:1px solid #e2e8f0;border-radius:8px 8px 0 0}
-.details-content{padding:16px;background:#fff;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 8px 8px}
-.details-content .problem{background:#fef2f2;padding:12px;border-radius:6px;border-left:3px solid #dc2626;margin:8px 0;font-size:13px;color:#475569;line-height:1.6}
-.details-content .action{background:#f0fdf4;padding:12px;border-radius:6px;border-left:3px solid #059669;margin:8px 0;font-size:13px;color:#475569;line-height:1.6}
-.details-content h4{font-size:13px;font-weight:700;color:#334155;margin-top:12px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px}
 .footer{text-align:center;padding:32px;color:#94a3b8;font-size:12px}
-.footer a{color:#94a3b8}
+
+/* Summary metrics */
+.metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.metric-card{padding:20px 16px;background:#f8fafc;border-radius:10px;text-align:center;border:1px solid #e2e8f0}
+.metric-card.red{border-top:3px solid #dc2626}
+.metric-card.amber{border-top:3px solid #d97706}
+.metric-card.green{border-top:3px solid #059669}
+.metric-card.blue{border-top:3px solid #2563eb}
+.metric-card .val{font-size:30px;font-weight:800;color:#1e293b;margin-bottom:4px;line-height:1}
+.metric-card.red .val{color:#dc2626}
+.metric-card.amber .val{color:#d97706}
+.metric-card.green .val{color:#059669}
+.metric-card.blue .val{color:#2563eb}
+.metric-card .lbl{font-size:12px;color:#64748b;font-weight:500;line-height:1.4}
+
+/* Table */
+.data-table{width:100%;border-collapse:collapse;font-size:13px}
+.data-table th{background:#f8fafc;padding:10px 14px;text-align:left;font-weight:700;color:#334155;border-bottom:2px solid #e2e8f0;font-size:11px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+.data-table td{padding:11px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:#fafbfc}
+.id-mono{font-family:'Courier New',Courier,monospace;font-size:11px;color:#94a3b8;white-space:nowrap}
+.title-bold{font-weight:600;color:#1e293b;line-height:1.4}
+.ret-cell{font-size:13px;font-weight:700}
+.ret-low{color:#dc2626}
+.ret-mid{color:#d97706}
+.ret-ok{color:#059669}
+.impact-pill{display:inline-flex;align-items:center;justify-content:center;min-width:36px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;background:#1e293b;color:#fff}
+.rec-badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;letter-spacing:.2px;white-space:nowrap}
+.rec-reescrever{background:#dbeafe;color:#1d4ed8;border:1px solid #bfdbfe}
+.rec-reclassificar{background:#fce7f3;color:#9d174d;border:1px solid #fbcfe8}
+.rec-consolidar{background:#ede9fe;color:#5b21b6;border:1px solid #ddd6fe}
+.rec-melhorar{background:#dcfce7;color:#166534;border:1px solid #bbf7d0}
+.rec-restringir{background:#fef3c7;color:#92400e;border:1px solid #fde68a}
+.rec-quebrar{background:#e0f2fe;color:#0c4a6e;border:1px solid #bae6fd}
+.tickets-num{font-weight:600;color:#475569}
+
+/* Score dots */
+.scores-row{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.score-item{display:flex;flex-direction:column;align-items:center;gap:4px}
+.score-label{font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+.dots{display:flex;gap:3px}
+.dot{width:10px;height:10px;border-radius:50%}
+.dot.filled-1{background:#dc2626}
+.dot.filled-2{background:#d97706}
+.dot.filled-3{background:#f59e0b}
+.dot.filled-4{background:#22c55e}
+.dot.filled-5{background:#059669}
+.dot.empty{background:#e2e8f0}
+
+/* Detail cards */
+.detail-cards{display:flex;flex-direction:column;gap:12px;padding:16px 24px 20px}
+details.card-detail{border:1px solid #e2e8f0;border-radius:10px;overflow:hidden}
+details.card-detail summary{cursor:pointer;list-style:none;padding:14px 18px;background:#f8fafc;display:flex;align-items:center;justify-content:space-between;gap:12px;user-select:none;transition:background .15s}
+details.card-detail summary::-webkit-details-marker{display:none}
+details.card-detail summary:hover{background:#f1f5f9}
+details.card-detail[open] summary{background:#eff6ff;border-bottom:1px solid #e2e8f0}
+.summary-left{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+.summary-rank{width:26px;height:26px;border-radius:50%;background:#1e293b;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.summary-title{font-weight:600;font-size:14px;color:#1e293b;flex:1;min-width:0}
+.summary-meta{display:flex;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
+.chevron{font-size:12px;color:#94a3b8;transition:transform .2s;flex-shrink:0}
+details.card-detail[open] .chevron{transform:rotate(180deg)}
+.detail-body{padding:18px;background:#fff}
+.detail-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.detail-col{display:flex;flex-direction:column;gap:6px}
+.detail-field-label{font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.4px}
+.detail-field-value{font-size:14px;color:#1e293b;font-weight:500}
+.problem-block{background:#fef2f2;border-left:3px solid #dc2626;border-radius:0 8px 8px 0;padding:12px 16px;font-size:13px;color:#374151;line-height:1.65;margin:12px 0}
+.problem-block strong{color:#991b1b;font-weight:700}
+.action-block{background:#f0fdf4;border-left:3px solid #059669;border-radius:0 8px 8px 0;padding:12px 16px;font-size:13px;color:#374151;line-height:1.65;margin:12px 0}
+.action-block strong{color:#166534;font-weight:700}
+.block-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+.block-label.problem-lbl{color:#dc2626}
+.block-label.action-lbl{color:#059669}
+.scores-detail{display:flex;gap:20px;padding:12px 16px;background:#f8fafc;border-radius:8px;margin:12px 0;flex-wrap:wrap}
+.score-detail-item{display:flex;align-items:center;gap:8px}
+.score-detail-name{font-size:12px;color:#64748b;font-weight:600;width:110px}
+.score-bar-track{flex:1;height:6px;background:#e2e8f0;border-radius:999px;min-width:60px;position:relative}
+.score-bar-fill{height:100%;border-radius:999px}
+.score-val-label{font-size:12px;font-weight:700;color:#1e293b;width:30px}
+
+/* Chart */
+.chart-wrap{position:relative;width:100%}
+
+/* Responsive */
+@media(max-width:768px){
+  .header{padding:28px 20px 24px}
+  .main{padding:20px 12px}
+  .detail-row{grid-template-columns:1fr}
+  .data-table{font-size:12px}
+  .data-table th,.data-table td{padding:8px 10px}
+}
 </style>
 </head>
 <body>
+
 <div class="header">
   <h1>IDS Quality Eval — Nextfit</h1>
-  <p class="subtitle">Avaliação qualitativa + cross com dados de performance dos 10 conteúdos N1 mais críticos. Score de Resolutividade, Acionabilidade e Clareza por conteúdo; texto reescrito pronto para os TOP 4 + direcionadores para os demais.</p>
-  <div class="header-badges">
-    <span class="header-badge tier">Tier Active</span>
-    <span class="header-badge status-critical">Status: Crítico</span>
-  </div>
+  <p class="subtitle">Análise de qualidade dos top 10 conteúdos N1 com maior impacto negativo na retenção</p>
   <div class="meta">
-    <span>Projeto: nextfit</span>
-    <span>Janela: 24/03 – 23/04/2026</span>
-    <span>Gerado em: 23/04/2026</span>
+    <span>Período: 24/03 a 23/04/2026</span>
+    <span>30 conteúdos analisados</span>
+    <span>10 com problemas críticos</span>
+    <span>+338 N1 recuperáveis</span>
   </div>
 </div>
+
 <div class="main">
+
+  <!-- SUMMARY -->
   <section>
-    <h2>Resumo Executivo</h2>
+    <h2>&#128202; Resumo executivo</h2>
     <div class="section-content">
       <div class="metrics-grid">
-        <div class="metric-card critical"><div class="value">10</div><div class="label">conteúdos auditados</div></div>
-        <div class="metric-card critical"><div class="value">298</div><div class="label">tickets/mês recuperáveis</div></div>
-        <div class="metric-card attention"><div class="value">40.1%</div><div class="label">retenção média TOP 10</div></div>
-        <div class="metric-card healthy"><div class="value">+75</div><div class="label">N1 potencial reescrita</div></div>
+        <div class="metric-card blue">
+          <div class="val">30</div>
+          <div class="lbl">conteúdos N1 analisados<br>(top por volume)</div>
+        </div>
+        <div class="metric-card red">
+          <div class="val">10</div>
+          <div class="lbl">com problemas críticos<br>identificados</div>
+        </div>
+        <div class="metric-card amber">
+          <div class="val">487</div>
+          <div class="lbl">tickets/mês impactados<br>(bruto)</div>
+        </div>
+        <div class="metric-card green">
+          <div class="val">+338</div>
+          <div class="lbl">N1/mês recuperáveis<br>após conversões</div>
+        </div>
       </div>
-      <p style="font-size:14px;color:#475569;line-height:1.7;margin-top:16px">Os 10 conteúdos N1 com maior volume e menor retenção concentram ~298 tickets recuperáveis/mês. O maior problema detectado é a presença de um par duplicado ('Como Solicitar Atendimento') que drena 217 tickets/mês combinados com retenção de ~35%. Outros problemas recorrentes: conteúdos que cobrem o fluxo feliz mas ignoram edge cases, e conteúdos com escopo amplo demais que capturam tickets que não conseguem resolver.</p>
     </div>
   </section>
+
+  <!-- TABLE -->
   <section>
-    <h2>Visão Geral — TOP 10 Conteúdos Críticos</h2>
-    <div class="section-content" style="padding:0;overflow-x:auto">
-      <table class="content-table">
-        <thead><tr><th>#</th><th>Conteúdo</th><th>ID</th><th>Volume</th><th>Retenção</th><th>GenCX</th><th>Ação</th><th>Impacto</th></tr></thead>
+    <h2>&#128203; Top 10 conteúdos com problemas críticos</h2>
+    <div style="overflow-x:auto">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>ID</th>
+            <th>Título</th>
+            <th>Retenção</th>
+            <th>GenCX ruim</th>
+            <th>Tickets/mês</th>
+            <th>Impacto</th>
+            <th>Recomendação</th>
+          </tr>
+        </thead>
         <tbody>
-          <tr><td>1</td><td class="title-cell">Solução para Problemas no Controle de Acesso</td><td class="id-cell">699f10b0...4949</td><td>116</td><td style="color:#dc2626;font-weight:700">26.72%</td><td>0%</td><td><span class="badge rewrite">Reescrever</span></td><td style="font-weight:700;color:#059669">+85</td></tr>
-          <tr><td>2</td><td class="title-cell">Como Solicitar Atendimento (Web/Equip)</td><td class="id-cell">699f106a...4890</td><td>125</td><td style="color:#dc2626;font-weight:700">33.60%</td><td>2.17%</td><td><span class="badge remove">Remover</span></td><td style="font-weight:700;color:#059669">+83</td></tr>
-          <tr><td>3</td><td class="title-cell">Como Solicitar Atendimento (Web/Equip) — DUPLICATA</td><td class="id-cell">699f106a...488f</td><td>92</td><td style="color:#d97706;font-weight:700">36.96%</td><td>0%</td><td><span class="badge consolidate">Consolidar</span></td><td style="font-weight:700;color:#059669">+58</td></tr>
-          <tr><td>4</td><td class="title-cell">Como Recuperar Minha Senha</td><td class="id-cell">699f1046...481b</td><td>115</td><td style="color:#d97706;font-weight:700">49.57%</td><td>0%</td><td><span class="badge improve">Melhorar</span></td><td style="font-weight:700;color:#059669">+58</td></tr>
-          <tr><td>5</td><td class="title-cell">Como Ativar o Next Fit Pay</td><td class="id-cell">699f106a...4875</td><td>61</td><td style="color:#dc2626;font-weight:700">34.43%</td><td>0%</td><td><span class="badge rewrite">Reescrever</span></td><td style="font-weight:700;color:#059669">+40</td></tr>
-          <tr><td>6</td><td class="title-cell">Por que minha venda tomou o limite</td><td class="id-cell">699f1090...490f</td><td>75</td><td style="color:#d97706;font-weight:700">48.00%</td><td>0%</td><td><span class="badge improve">Melhorar</span></td><td style="font-weight:700;color:#059669">+39</td></tr>
-          <tr><td>7</td><td class="title-cell">Como Ativar o Pinggo.ai (WhatsApp)</td><td class="id-cell">699f10b0...497c</td><td>58</td><td style="color:#d97706;font-weight:700">41.38%</td><td>0%</td><td><span class="badge rewrite">Reescrever</span></td><td style="font-weight:700;color:#059669">+34</td></tr>
-          <tr><td>8</td><td class="title-cell">Otimização de Usabilidade do Computador</td><td class="id-cell">699f10b0...4959</td><td>56</td><td style="color:#d97706;font-weight:700">44.64%</td><td>0%</td><td><span class="badge restrict">Restringir</span></td><td style="font-weight:700;color:#059669">+31</td></tr>
-          <tr><td>9</td><td class="title-cell">Automações de Campanhas no CRM</td><td class="id-cell">699f1046...4828</td><td>53</td><td style="color:#d97706;font-weight:700">49.06%</td><td>0%</td><td><span class="badge split">Quebrar</span></td><td style="font-weight:700;color:#059669">+27</td></tr>
-          <tr><td>10</td><td class="title-cell">Pix Automático no Next Fit Pay</td><td class="id-cell">699f10b0...4977</td><td>44</td><td style="color:#d97706;font-weight:700">38.64%</td><td>0%</td><td><span class="badge rewrite">Reescrever</span></td><td style="font-weight:700;color:#059669">+27</td></tr>
+          <tr>
+            <td><strong>1</strong></td>
+            <td class="id-mono">...4949</td>
+            <td class="title-bold">Solução para Problemas no Controle de Acesso</td>
+            <td class="ret-cell ret-low">26.7%</td>
+            <td style="color:#94a3b8;font-size:12px">—</td>
+            <td class="tickets-num">116</td>
+            <td><span class="impact-pill" style="background:#dc2626">85</span></td>
+            <td><span class="rec-badge rec-reescrever">Reescrever</span></td>
+          </tr>
+          <tr>
+            <td><strong>2</strong></td>
+            <td class="id-mono">...4890</td>
+            <td class="title-bold">Como Solicitar Atendimento (Sistema Web/Equip)</td>
+            <td class="ret-cell ret-low">33.6%</td>
+            <td style="color:#94a3b8;font-size:12px">—</td>
+            <td class="tickets-num">125</td>
+            <td><span class="impact-pill" style="background:#dc2626">83</span></td>
+            <td><span class="rec-badge rec-reclassificar">Reclassificar</span></td>
+          </tr>
+          <tr>
+            <td><strong>3</strong></td>
+            <td class="id-mono">...488f</td>
+            <td class="title-bold">Como Solicitar Atendimento (Web/Equip) — duplicata</td>
+            <td class="ret-cell ret-low">37.6%</td>
+            <td style="color:#94a3b8;font-size:12px">—</td>
+            <td class="tickets-num">93</td>
+            <td><span class="impact-pill" style="background:#d97706">58</span></td>
+            <td><span class="rec-badge rec-consolidar">Consolidar</span></td>
+          </tr>
+          <tr>
+            <td><strong>4</strong></td>
+            <td class="id-mono">...481b</td>
+            <td class="title-bold">Como Recuperar Minha Senha no Next Fit</td>
+            <td class="ret-cell ret-mid">49.6%</td>
+            <td style="color:#94a3b8;font-size:12px">—</td>
+            <td class="tickets-num">115</td>
+            <td><span class="impact-pill" style="background:#d97706">58</span></td>
+            <td><span class="rec-badge rec-melhorar">Melhorar</span></td>
+          </tr>
+          <tr>
+            <td><strong>5</strong></td>
+            <td class="id-mono">...4875</td>
+            <td class="title-bold">Como Ativar o Next Fit Pay</td>
+            <td class="ret-cell ret-low">35.5%</td>
+            <td style="color:#94a3b8;font-size:12px">—</td>
+            <td class="tickets-num">62</td>
+            <td><span class="impact-pill" style="background:#d97706">40</span></td>
+            <td><span class="rec-badge rec-melhorar">Melhorar</span></td>
+          </tr>
+          <tr>
+            <td><strong>6</strong></td>
+            <td class="id-mono">...490f</td>
+            <td class="title-bold">Por que minha venda tomou o limite do aluno?</td>
+            <td class="ret-cell ret-mid">48.0%</td>
+            <td style="color:#94a3b8;font-size:12px">—</td>
+            <td class="tickets-num">75</td>
+            <td><span class="impact-pill" style="background:#d97706">39</span></td>
+            <td><span class="rec-badge rec-melhorar">Melhorar</span></td>
+          </tr>
+          <tr>
+            <td><strong>7</strong></td>
+            <td class="id-mono">...497c</td>
+            <td class="title-bold">Como Ativar o Pinggo.ai (WhatsApp)</td>
+            <td class="ret-cell ret-mid">42.4%</td>
+            <td style="color:#94a3b8;font-size:12px">—</td>
+            <td class="tickets-num">59</td>
+            <td><span class="impact-pill" style="background:#475569">34</span></td>
+            <td><span class="rec-badge rec-melhorar">Melhorar</span></td>
+          </tr>
+          <tr>
+            <td><strong>8</strong></td>
+            <td class="id-mono">...4959</td>
+            <td class="title-bold">Procedimentos para Otimização do Computador</td>
+            <td class="ret-cell ret-mid">44.6%</td>
+            <td style="color:#94a3b8;font-size:12px">—</td>
+            <td class="tickets-num">56</td>
+            <td><span class="impact-pill" style="background:#475569">31</span></td>
+            <td><span class="rec-badge rec-restringir">Restringir</span></td>
+          </tr>
+          <tr>
+            <td><strong>9</strong></td>
+            <td class="id-mono">...4828</td>
+            <td class="title-bold">Como Criar Automações de Campanhas no CRM</td>
+            <td class="ret-cell ret-mid">46.4%</td>
+            <td style="color:#94a3b8;font-size:12px">—</td>
+            <td class="tickets-num">56</td>
+            <td><span class="impact-pill" style="background:#475569">30</span></td>
+            <td><span class="rec-badge rec-quebrar">Quebrar</span></td>
+          </tr>
+          <tr>
+            <td><strong>10</strong></td>
+            <td class="id-mono">...4977</td>
+            <td class="title-bold">Como Funciona o Pix Automático no Next Fit Pay</td>
+            <td class="ret-cell ret-low">37.0%</td>
+            <td style="color:#94a3b8;font-size:12px">—</td>
+            <td class="tickets-num">46</td>
+            <td><span class="impact-pill" style="background:#475569">29</span></td>
+            <td><span class="rec-badge rec-melhorar">Melhorar</span></td>
+          </tr>
         </tbody>
       </table>
     </div>
   </section>
+
+  <!-- IMPACT CHART -->
   <section>
-    <h2>Deep Dive — TOP 4 Conteúdos Críticos</h2>
-    <details class="details-section" open>
-      <summary>1. Solução para Problemas no Controle de Acesso — 116 tickets, 26.7% retenção</summary>
-      <div class="details-content">
-        <h4>Problema</h4>
-        <div class="problem">Título amplíssimo captura tickets de todos os tipos de problema de acesso (biometria, QR code, facial, catraca), mas o conteúdo resolve apenas o caso de 'processo travado' no Windows. 73% dos tickets viram N2 porque o conteúdo não resolve o problema real.</div>
-        <h4>Ação Recomendada</h4>
-        <div class="action">Renomear para 'Controle de Acesso Não Abre — Como Reinicializar o Processo' + adicionar árvore de redirecionamento para outros problemas de acesso.</div>
-        <h4>Impacto Estimado</h4>
-        <div class="action">+85 N1/mês (25% de 116 + tickets adjacentes capturados por título genérico)</div>
+    <h2>&#128200; Impacto por conteúdo</h2>
+    <div class="section-content">
+      <div style="display:flex;flex-wrap:wrap;gap:16px;margin-bottom:14px;font-size:12px;color:#64748b">
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;border-radius:2px;background:#dc2626;display:inline-block"></span>Reescrever</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;border-radius:2px;background:#db2777;display:inline-block"></span>Reclassificar</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;border-radius:2px;background:#7c3aed;display:inline-block"></span>Consolidar</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;border-radius:2px;background:#059669;display:inline-block"></span>Melhorar</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;border-radius:2px;background:#d97706;display:inline-block"></span>Restringir</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;border-radius:2px;background:#0284c7;display:inline-block"></span>Quebrar</span>
       </div>
-    </details>
-    <details class="details-section" open>
-      <summary>2. Como Solicitar Atendimento — PAR DUPLICADO (217 tickets combinados, ~35% retenção)</summary>
-      <div class="details-content">
-        <h4>Problema</h4>
-        <div class="problem">Meta-conteúdo puro — ensina o cliente a abrir ticket de suporte. Para um bot, é uma rota de fuga sistêmica. DUPLICATA CONFIRMADA: dois conteúdos com título quase idêntico (IDs ...4890 e ...488f) com conteúdo 95% igual. A coexistência confunde o classificador e divide volume.</div>
-        <h4>Ação Recomendada</h4>
-        <div class="action">REMOVER ambos — se necessário manter orientação de atendimento, criar 1 conteúdo único e restritivo que tente resolver o problema antes de redirecionar.</div>
-        <h4>Impacto Estimado</h4>
-        <div class="action">+99 N1/mês (combinados)</div>
+      <div class="chart-wrap" style="height:460px">
+        <canvas id="impactChart" role="img" aria-label="Horizontal bar chart showing impact score for each of the 10 contents, colored by recommendation type">
+          Impact scores: Controle de Acesso 85, Solicitar Atendimento 890 83, Solicitar Atendimento 88f 58, Recuperar Senha 58, Ativar Next Fit Pay 40, Venda tomou limite 39, Pinggo.ai 34, Otimização Computador 31, Automações CRM 30, Pix Automático 29.
+        </canvas>
       </div>
-    </details>
-    <details class="details-section" open>
-      <summary>3. Como Ativar o Next Fit Pay — 61 tickets, 34.4% retenção</summary>
-      <div class="details-content">
-        <h4>Problema</h4>
-        <div class="problem">Cobre apenas o fluxo feliz. Tickets reais são sobre: código de verificação não chegou, documentos rejeitados, conta não aprovada após 3 dias, tipo de conta errado.</div>
-        <h4>Ação Recomendada</h4>
-        <div class="action">Reescrever cobrindo edge cases frequentes: código não recebido (checar spam + reenviar), documentos rejeitados (lista de formatos aceitos), prazo de aprovação (3–5 dias úteis), tipo de conta incorreto (orientar troca).</div>
-        <h4>Impacto Estimado</h4>
-        <div class="action">+40 N1/mês</div>
-      </div>
-    </details>
-    <details class="details-section" open>
-      <summary>4. Como Ativar o Pinggo.ai (WhatsApp) — 58 tickets, 41.4% retenção</summary>
-      <div class="details-content">
-        <h4>Problema</h4>
-        <div class="problem">Cobre ativação mas ignora problemas pós-ativação (QR Code que não escaneia, dispositivo desconectando, mensagens não enviando). Abre com parágrafo de marketing inútil.</div>
-        <h4>Ação Recomendada</h4>
-        <div class="action">Reescrever removendo marketing, adicionando troubleshooting: QR Code (limpar cache + tentar outro navegador), desconexão (verificar WhatsApp Web ativo), mensagens não enviando (limites de disparo seguro).</div>
-        <h4>Impacto Estimado</h4>
-        <div class="action">+34 N1/mês</div>
-      </div>
-    </details>
-    <div style="margin:12px 20px 20px">
-      <p style="font-size:13px;color:#64748b;background:#f8fafc;padding:14px 16px;border-radius:8px;line-height:1.6"><strong style="color:#334155">Padrão Geral — Conteúdos #5 a #10:</strong> Os 6 conteúdos restantes compartilham falhas recorrentes: (a) cobertura apenas do fluxo feliz sem edge cases, (b) escopo amplo demais capturando tickets que não conseguem resolver, (c) ausência de passos claros para troubleshooting. Impacto somado: +113 N1/mês.</p>
     </div>
   </section>
+
+  <!-- DETAIL CARDS -->
+  <section>
+    <h2>&#128270; Análise detalhada — top 10 conteúdos</h2>
+
+    <div class="detail-cards">
+
+      <!-- 1 -->
+      <details class="card-detail">
+        <summary>
+          <div class="summary-left">
+            <span class="summary-rank">1</span>
+            <span class="summary-title">Solução para Problemas no Controle de Acesso</span>
+          </div>
+          <div class="summary-meta">
+            <span class="id-mono">...4949</span>
+            <span class="ret-cell ret-low" style="font-size:13px;font-weight:700">26.7%</span>
+            <span class="impact-pill" style="background:#dc2626">85</span>
+            <span class="rec-badge rec-reescrever">Reescrever</span>
+          </div>
+          <span class="chevron">&#9660;</span>
+        </summary>
+        <div class="detail-body">
+          <div class="scores-detail">
+            <div class="score-detail-item">
+              <span class="score-detail-name">Resolutividade</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:40%;background:#dc2626"></div></div>
+              <span class="score-val-label">2/5</span>
+            </div>
+            <div class="score-detail-item">
+              <span class="score-detail-name">Acionabilidade</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:60%;background:#d97706"></div></div>
+              <span class="score-val-label">3/5</span>
+            </div>
+            <div class="score-detail-item">
+              <span class="score-detail-name">Clareza</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:60%;background:#d97706"></div></div>
+              <span class="score-val-label">3/5</span>
+            </div>
+          </div>
+          <p class="block-label problem-lbl">Problema identificado</p>
+          <div class="problem-block">
+            Título promete solução ampla ("Problemas no Controle de Acesso") mas o corpo cobre apenas o cenário de <strong>processo duplicado no Windows</strong>. Clientes com catraca offline, biometria falhando ou QR Code não reconhecido não encontram resposta — e transferem para N2.
+          </div>
+          <p class="block-label action-lbl">Texto sugerido / ação</p>
+          <div class="action-block">
+            <strong>Expandir para 4 cenários:</strong><br>
+            1. Processo duplicado no Windows (conteúdo atual)<br>
+            2. Acesso negado na catraca (verificar conectividade, reiniciar controlador)<br>
+            3. Sistema não conecta ao módulo de acesso (verificar porta/IP do servidor)<br>
+            4. Biometria ou QR Code não reconhece (recadastrar digital / gerar novo QR Code no painel)
+          </div>
+        </div>
+      </details>
+
+      <!-- 2 -->
+      <details class="card-detail">
+        <summary>
+          <div class="summary-left">
+            <span class="summary-rank">2</span>
+            <span class="summary-title">Como Solicitar Atendimento (Sistema Web/Equip)</span>
+          </div>
+          <div class="summary-meta">
+            <span class="id-mono">...4890</span>
+            <span class="ret-cell ret-low" style="font-size:13px;font-weight:700">33.6%</span>
+            <span class="impact-pill" style="background:#dc2626">83</span>
+            <span class="rec-badge rec-reclassificar">Reclassificar</span>
+          </div>
+          <span class="chevron">&#9660;</span>
+        </summary>
+        <div class="detail-body">
+          <div class="scores-detail">
+            <div class="score-detail-item">
+              <span class="score-detail-name">Resolutividade</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:20%;background:#dc2626"></div></div>
+              <span class="score-val-label">1/5</span>
+            </div>
+            <div class="score-detail-item">
+              <span class="score-detail-name">Acionabilidade</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:80%;background:#22c55e"></div></div>
+              <span class="score-val-label">4/5</span>
+            </div>
+            <div class="score-detail-item">
+              <span class="score-detail-name">Clareza</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:80%;background:#22c55e"></div></div>
+              <span class="score-val-label">4/5</span>
+            </div>
+          </div>
+          <p class="block-label problem-lbl">Problema identificado</p>
+          <div class="problem-block">
+            Conteúdo N1 que apenas instrui o cliente a <strong>abrir um ticket humano</strong> — não resolve absolutamente nada. A existência deste conteúdo no N1 infla o volume de transferências e reduz artificialmente a taxa de retenção. Deve ser reclassificado para N2.
+          </div>
+          <p class="block-label action-lbl">Texto sugerido / ação</p>
+          <div class="action-block">
+            <strong>Reclassificar para N2:</strong> remover do escopo N1 da ClaudIA. Se mantido em N1, adicionar triagem prévia com perguntas qualificadoras para resolver problemas simples antes de encaminhar para atendimento humano.
+          </div>
+        </div>
+      </details>
+
+      <!-- 3 -->
+      <details class="card-detail">
+        <summary>
+          <div class="summary-left">
+            <span class="summary-rank">3</span>
+            <span class="summary-title">Como Solicitar Atendimento (Web/Equip) — duplicata</span>
+          </div>
+          <div class="summary-meta">
+            <span class="id-mono">...488f</span>
+            <span class="ret-cell ret-low" style="font-size:13px;font-weight:700">37.6%</span>
+            <span class="impact-pill" style="background:#d97706">58</span>
+            <span class="rec-badge rec-consolidar">Consolidar</span>
+          </div>
+          <span class="chevron">&#9660;</span>
+        </summary>
+        <div class="detail-body">
+          <div class="scores-detail">
+            <div class="score-detail-item">
+              <span class="score-detail-name">Resolutividade</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:20%;background:#dc2626"></div></div>
+              <span class="score-val-label">1/5</span>
+            </div>
+            <div class="score-detail-item">
+              <span class="score-detail-name">Acionabilidade</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:60%;background:#d97706"></div></div>
+              <span class="score-val-label">3/5</span>
+            </div>
+            <div class="score-detail-item">
+              <span class="score-detail-name">Clareza</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:60%;background:#d97706"></div></div>
+              <span class="score-val-label">3/5</span>
+            </div>
+          </div>
+          <p class="block-label problem-lbl">Problema identificado</p>
+          <div class="problem-block">
+            <strong>Duplicata do conteúdo ...4890.</strong> Duas versões quase idênticas do mesmo fluxo de "solicitar atendimento" coexistem na IDS, gerando confusão no retrieval e dividindo o volume de tickets entre os dois conteúdos. Resultado: nenhum dos dois está sendo otimizado corretamente.
+          </div>
+          <p class="block-label action-lbl">Texto sugerido / ação</p>
+          <div class="action-block">
+            <strong>Consolidar em um único conteúdo</strong> (manter ...4890 ou criar um substituto unificado) e remover ...488f da IDS. Após consolidação, reclassificar o conteúdo resultante para N2 conforme indicado no item 2.
+          </div>
+        </div>
+      </details>
+
+      <!-- 4 -->
+      <details class="card-detail">
+        <summary>
+          <div class="summary-left">
+            <span class="summary-rank">4</span>
+            <span class="summary-title">Como Recuperar Minha Senha no Next Fit</span>
+          </div>
+          <div class="summary-meta">
+            <span class="id-mono">...481b</span>
+            <span class="ret-cell ret-mid" style="font-size:13px;font-weight:700">49.6%</span>
+            <span class="impact-pill" style="background:#d97706">58</span>
+            <span class="rec-badge rec-melhorar">Melhorar</span>
+          </div>
+          <span class="chevron">&#9660;</span>
+        </summary>
+        <div class="detail-body">
+          <div class="scores-detail">
+            <div class="score-detail-item">
+              <span class="score-detail-name">Resolutividade</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:60%;background:#d97706"></div></div>
+              <span class="score-val-label">3/5</span>
+            </div>
+            <div class="score-detail-item">
+              <span class="score-detail-name">Acionabilidade</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:80%;background:#22c55e"></div></div>
+              <span class="score-val-label">4/5</span>
+            </div>
+            <div class="score-detail-item">
+              <span class="score-detail-name">Clareza</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:80%;background:#22c55e"></div></div>
+              <span class="score-val-label">4/5</span>
+            </div>
+          </div>
+          <p class="block-label problem-lbl">Problema identificado</p>
+          <div class="problem-block">
+            O conteúdo cobre o fluxo padrão de recuperação de senha, mas <strong>não cobre cenários de falha</strong>: e-mail não cadastrado, conta bloqueada por inadimplência, ou usuários que acessam via Wellhub/Gympass (que não possuem senha no Next Fit diretamente).
+          </div>
+          <p class="block-label action-lbl">Texto sugerido / ação</p>
+          <div class="action-block">
+            <strong>Adicionar seções para os cenários de falha mais comuns:</strong><br>
+            — "Não recebi o e-mail de recuperação" (checar spam, confirmar e-mail cadastrado)<br>
+            — "Minha conta está bloqueada por inadimplência" (instruções de regularização)<br>
+            — "Acesso pelo Wellhub / Gympass" (login via parceiro não usa senha do Next Fit — orientar acesso pelo app do parceiro)
+          </div>
+        </div>
+      </details>
+
+      <!-- 5 -->
+      <details class="card-detail">
+        <summary>
+          <div class="summary-left">
+            <span class="summary-rank">5</span>
+            <span class="summary-title">Como Ativar o Next Fit Pay</span>
+          </div>
+          <div class="summary-meta">
+            <span class="id-mono">...4875</span>
+            <span class="ret-cell ret-low" style="font-size:13px;font-weight:700">35.5%</span>
+            <span class="impact-pill" style="background:#d97706">40</span>
+            <span class="rec-badge rec-melhorar">Melhorar</span>
+          </div>
+          <span class="chevron">&#9660;</span>
+        </summary>
+        <div class="detail-body">
+          <div class="scores-detail">
+            <div class="score-detail-item">
+              <span class="score-detail-name">Resolutividade</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:60%;background:#d97706"></div></div>
+              <span class="score-val-label">3/5</span>
+            </div>
+            <div class="score-detail-item">
+              <span class="score-detail-name">Acionabilidade</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:80%;background:#22c55e"></div></div>
+              <span class="score-val-label">4/5</span>
+            </div>
+            <div class="score-detail-item">
+              <span class="score-detail-name">Clareza</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:80%;background:#22c55e"></div></div>
+              <span class="score-val-label">4/5</span>
+            </div>
+          </div>
+          <p class="block-label problem-lbl">Problema identificado</p>
+          <div class="problem-block">
+            O conteúdo orienta bem o processo de ativação inicial, mas <strong>não cobre o pós-ativação</strong>: o que fazer se a conta fica pendente de aprovação por mais de 3 dias, se documentos são reprovados pela operadora, ou se há divergência entre conta PJ e conta PF do titular.
+          </div>
+          <p class="block-label action-lbl">Texto sugerido / ação</p>
+          <div class="action-block">
+            <strong>Adicionar seções de pós-ativação:</strong><br>
+            — "Minha conta está pendente há mais de 3 dias" (prazo normal, quando acionar suporte)<br>
+            — "Documentos reprovados" (quais documentos reenviar e como)<br>
+            — "Conta jurídica e pessoal não coincidem" (orientar adequação cadastral)
+          </div>
+        </div>
+      </details>
+
+      <!-- 6 -->
+      <details class="card-detail">
+        <summary>
+          <div class="summary-left">
+            <span class="summary-rank">6</span>
+            <span class="summary-title">Por que minha venda tomou o limite do aluno?</span>
+          </div>
+          <div class="summary-meta">
+            <span class="id-mono">...490f</span>
+            <span class="ret-cell ret-mid" style="font-size:13px;font-weight:700">48.0%</span>
+            <span class="impact-pill" style="background:#475569">39</span>
+            <span class="rec-badge rec-melhorar">Melhorar</span>
+          </div>
+          <span class="chevron">&#9660;</span>
+        </summary>
+        <div class="detail-body">
+          <div class="scores-detail">
+            <div class="score-detail-item">
+              <span class="score-detail-name">Resolutividade</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:60%;background:#d97706"></div></div>
+              <span class="score-val-label">3/5</span>
+            </div>
+            <div class="score-detail-item">
+              <span class="score-detail-name">Acionabilidade</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:40%;background:#dc2626"></div></div>
+              <span class="score-val-label">2/5</span>
+            </div>
+            <div class="score-detail-item">
+              <span class="score-detail-name">Clareza</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:60%;background:#d97706"></div></div>
+              <span class="score-val-label">3/5</span>
+            </div>
+          </div>
+          <p class="block-label problem-lbl">Problema identificado</p>
+          <div class="problem-block">
+            O passo de correção é vago: a instrução <strong>"clique nos 3 pontinhos &gt; Detalhes"</strong> não especifica em qual tela nem em qual contexto. Além disso, o cenário de venda já liquidada não tem saída — o conteúdo para sem oferecer alternativa ao cliente.
+          </div>
+          <p class="block-label action-lbl">Texto sugerido / ação</p>
+          <div class="action-block">
+            <strong>Detalhar navegação exata:</strong> "Na tela de Vendas &gt; selecione a venda &gt; clique nos 3 pontos no canto superior direito &gt; Detalhes". Adicionar seção específica para o caso de venda já liquidada com instrução de contato/estorno.
+          </div>
+        </div>
+      </details>
+
+      <!-- 7 -->
+      <details class="card-detail">
+        <summary>
+          <div class="summary-left">
+            <span class="summary-rank">7</span>
+            <span class="summary-title">Como Ativar o Pinggo.ai (WhatsApp)</span>
+          </div>
+          <div class="summary-meta">
+            <span class="id-mono">...497c</span>
+            <span class="ret-cell ret-mid" style="font-size:13px;font-weight:700">42.4%</span>
+            <span class="impact-pill" style="background:#475569">34</span>
+            <span class="rec-badge rec-melhorar">Melhorar</span>
+          </div>
+          <span class="chevron">&#9660;</span>
+        </summary>
+        <div class="detail-body">
+          <div class="scores-detail">
+            <div class="score-detail-item">
+              <span class="score-detail-name">Resolutividade</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:40%;background:#dc2626"></div></div>
+              <span class="score-val-label">2/5</span>
+            </div>
+            <div class="score-detail-item">
+              <span class="score-detail-name">Acionabilidade</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:60%;background:#d97706"></div></div>
+              <span class="score-val-label">3/5</span>
+            </div>
+            <div class="score-detail-item">
+              <span class="score-detail-name">Clareza</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:60%;background:#d97706"></div></div>
+              <span class="score-val-label">3/5</span>
+            </div>
+          </div>
+          <p class="block-label problem-lbl">Problema identificado</p>
+          <div class="problem-block">
+            O conteúdo cobre bem a ativação inicial, mas <strong>não há troubleshooting pós-ativação</strong>: QR Code expirado antes de escanear, WhatsApp desconectando após configuração, mensagens automáticas não sendo enviadas mesmo com integração ativa.
+          </div>
+          <p class="block-label action-lbl">Texto sugerido / ação</p>
+          <div class="action-block">
+            <strong>Adicionar seção "Problemas comuns após ativação":</strong><br>
+            — QR Code expirado: clicar em "Gerar novo QR Code" e escanear em até 60 segundos<br>
+            — WhatsApp desconectado: reconectar pelo painel Pinggo &gt; Configurações &gt; Reconectar<br>
+            — Mensagens não enviadas: verificar saldo de créditos e status da integração
+          </div>
+        </div>
+      </details>
+
+      <!-- 8 -->
+      <details class="card-detail">
+        <summary>
+          <div class="summary-left">
+            <span class="summary-rank">8</span>
+            <span class="summary-title">Procedimentos para Otimização do Computador</span>
+          </div>
+          <div class="summary-meta">
+            <span class="id-mono">...4959</span>
+            <span class="ret-cell ret-mid" style="font-size:13px;font-weight:700">44.6%</span>
+            <span class="impact-pill" style="background:#475569">31</span>
+            <span class="rec-badge rec-restringir">Restringir</span>
+          </div>
+          <span class="chevron">&#9660;</span>
+        </summary>
+        <div class="detail-body">
+          <div class="scores-detail">
+            <div class="score-detail-item">
+              <span class="score-detail-name">Resolutividade</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:40%;background:#dc2626"></div></div>
+              <span class="score-val-label">2/5</span>
+            </div>
+            <div class="score-detail-item">
+              <span class="score-detail-name">Acionabilidade</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:40%;background:#dc2626"></div></div>
+              <span class="score-val-label">2/5</span>
+            </div>
+            <div class="score-detail-item">
+              <span class="score-detail-name">Clareza</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:60%;background:#d97706"></div></div>
+              <span class="score-val-label">3/5</span>
+            </div>
+          </div>
+          <p class="block-label problem-lbl">Problema identificado</p>
+          <div class="problem-block">
+            O conteúdo instrui o cliente a <strong>baixar e executar um arquivo .bat do Google Drive</strong> — procedimento problemático em ambientes corporativos (bloqueado por GPO, antivírus) e potencialmente inseguro. Além disso, o conteúdo não qualifica previamente em quais situações esse procedimento se aplica, sendo ativado para qualquer lentidão relatada.
+          </div>
+          <p class="block-label action-lbl">Texto sugerido / ação</p>
+          <div class="action-block">
+            <strong>Adicionar qualificador no início do conteúdo</strong> antes dos passos: "Este procedimento se aplica apenas quando o Next Fit apresenta lentidão significativa em computadores com Windows que não possuem restrições corporativas de segurança." Avaliar substituição do .bat por passos manuais documentados no próprio conteúdo.
+          </div>
+        </div>
+      </details>
+
+      <!-- 9 -->
+      <details class="card-detail">
+        <summary>
+          <div class="summary-left">
+            <span class="summary-rank">9</span>
+            <span class="summary-title">Como Criar Automações de Campanhas no CRM</span>
+          </div>
+          <div class="summary-meta">
+            <span class="id-mono">...4828</span>
+            <span class="ret-cell ret-mid" style="font-size:13px;font-weight:700">46.4%</span>
+            <span class="impact-pill" style="background:#475569">30</span>
+            <span class="rec-badge rec-quebrar">Quebrar</span>
+          </div>
+          <span class="chevron">&#9660;</span>
+        </summary>
+        <div class="detail-body">
+          <div class="scores-detail">
+            <div class="score-detail-item">
+              <span class="score-detail-name">Resolutividade</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:40%;background:#dc2626"></div></div>
+              <span class="score-val-label">2/5</span>
+            </div>
+            <div class="score-detail-item">
+              <span class="score-detail-name">Acionabilidade</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:40%;background:#dc2626"></div></div>
+              <span class="score-val-label">2/5</span>
+            </div>
+            <div class="score-detail-item">
+              <span class="score-detail-name">Clareza</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:40%;background:#dc2626"></div></div>
+              <span class="score-val-label">2/5</span>
+            </div>
+          </div>
+          <p class="block-label problem-lbl">Problema identificado</p>
+          <div class="problem-block">
+            Documento enciclopédico com <strong>8+ seções</strong> cobrindo criação de automação, gerenciamento, troubleshooting e compra de saldo em um único conteúdo. A ClaudIA retorna um bloco enorme e não estruturado quando acionada, resultando em baixa retenção e alta taxa de transferência mesmo quando a dúvida do cliente é simples.
+          </div>
+          <p class="block-label action-lbl">Texto sugerido / ação</p>
+          <div class="action-block">
+            <strong>Quebrar em 3 conteúdos N1 independentes:</strong><br>
+            — "Como criar uma automação de campanha no CRM" (fluxo de criação passo a passo)<br>
+            — "Minha automação não está funcionando" (troubleshooting: automação pausada, gatilho não disparando, etc.)<br>
+            — "Como comprar saldo para automações no CRM" (processo de recarga e faturamento)
+          </div>
+        </div>
+      </details>
+
+      <!-- 10 -->
+      <details class="card-detail">
+        <summary>
+          <div class="summary-left">
+            <span class="summary-rank">10</span>
+            <span class="summary-title">Como Funciona o Pix Automático no Next Fit Pay</span>
+          </div>
+          <div class="summary-meta">
+            <span class="id-mono">...4977</span>
+            <span class="ret-cell ret-low" style="font-size:13px;font-weight:700">37.0%</span>
+            <span class="impact-pill" style="background:#475569">29</span>
+            <span class="rec-badge rec-melhorar">Melhorar</span>
+          </div>
+          <span class="chevron">&#9660;</span>
+        </summary>
+        <div class="detail-body">
+          <div class="scores-detail">
+            <div class="score-detail-item">
+              <span class="score-detail-name">Resolutividade</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:40%;background:#dc2626"></div></div>
+              <span class="score-val-label">2/5</span>
+            </div>
+            <div class="score-detail-item">
+              <span class="score-detail-name">Acionabilidade</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:60%;background:#d97706"></div></div>
+              <span class="score-val-label">3/5</span>
+            </div>
+            <div class="score-detail-item">
+              <span class="score-detail-name">Clareza</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:80%;background:#22c55e"></div></div>
+              <span class="score-val-label">4/5</span>
+            </div>
+          </div>
+          <p class="block-label problem-lbl">Problema identificado</p>
+          <div class="problem-block">
+            O conteúdo explica bem o funcionamento do Pix Automático em condições normais, mas <strong>não endereça problemas operacionais</strong>: Pix recusado pelo banco do aluno, cobrança que não disparou na data prevista, como o aluno cancela a autorização de débito automático, e link de autorização expirado.
+          </div>
+          <p class="block-label action-lbl">Texto sugerido / ação</p>
+          <div class="action-block">
+            <strong>Adicionar seção "Problemas comuns com o Pix Automático":</strong><br>
+            — Pix recusado pelo banco: o aluno deve verificar o limite de Pix automático na conta bancária<br>
+            — Cobrança não disparou: verificar se o aluno autorizou o débito e se a data de vencimento está correta no contrato<br>
+            — Cancelar autorização: instruções para o aluno cancelar via app do banco ou direto no Next Fit<br>
+            — Link expirado: gerar novo link de autorização pelo painel (Financeiro &gt; Pix Automático &gt; Reenviar link)
+          </div>
+        </div>
+      </details>
+
+    </div>
+  </section>
+
 </div>
+
 <div class="footer">
-  Cloud Humans · IDS Quality Eval · Gerado em 23/04/2026 por ch-action-plan v5.1 ·
-  <a href="action-plan-nextfit.html">Voltar ao Plano de Ação</a>
+  Gerado por ClaudIA Action Plan Bot v5.1 — Sub-agente IDS Quality Eval | Cloud Humans
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+(function(){
+  var ctx = document.getElementById('impactChart');
+  if(!ctx) return;
+  var labels = [
+    'Controle de Acesso (...4949)',
+    'Solicitar Atend. (...4890)',
+    'Solicitar Atend. (...488f)',
+    'Recuperar Senha (...481b)',
+    'Ativar Next Fit Pay (...4875)',
+    'Venda tomou limite (...490f)',
+    'Ativar Pinggo.ai (...497c)',
+    'Otimização PC (...4959)',
+    'Automações CRM (...4828)',
+    'Pix Automático (...4977)'
+  ];
+  var data = [85, 83, 58, 58, 40, 39, 34, 31, 30, 29];
+  var colors = [
+    '#dc2626',
+    '#db2777',
+    '#7c3aed',
+    '#059669',
+    '#059669',
+    '#059669',
+    '#059669',
+    '#d97706',
+    '#0284c7',
+    '#059669'
+  ];
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Impacto',
+        data: data,
+        backgroundColor: colors,
+        borderRadius: 5,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx){ return ' Impacto: ' + ctx.parsed.x; }
+          }
+        }
+      },
+      scales: {
+        x: {
+          beginAtZero: true,
+          max: 100,
+          grid: { color: 'rgba(0,0,0,0.05)' },
+          ticks: { font: { size: 12 }, color: '#64748b' }
+        },
+        y: {
+          ticks: {
+            font: { size: 12 },
+            color: '#334155',
+            autoSkip: false
+          },
+          grid: { display: false }
+        }
+      },
+      layout: { padding: { right: 16 } }
+    }
+  });
+})();
+</script>
+
 </body>
 </html>
