@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content Gap Analysis — Nextfit | Cloud Humans</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f6fa;color:#1a1a2e}
+.header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:40px 48px 36px}
+.header h1{font-size:32px;font-weight:700;margin-bottom:8px;letter-spacing:-.5px}
+.header .subtitle{font-size:15px;opacity:.75;line-height:1.5;max-width:900px}
+.header .meta{margin-top:16px;display:flex;gap:24px;font-size:13px;opacity:.6;flex-wrap:wrap}
+.header-badges{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+.header-badge{display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;backdrop-filter:blur(10px)}
+.header-badge.tier{background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.4);color:#e0e7ff}
+.header-badge.volume{background:rgba(220,38,38,.2);border:1px solid rgba(220,38,38,.4);color:#fecaca}
+.main{padding:32px 48px;max-width:1200px;margin:0 auto}
+section{background:#fff;border-radius:12px;margin-bottom:24px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}
+section h2{font-size:18px;font-weight:700;color:#1e293b;padding:20px 24px 12px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:8px}
+.section-content{padding:20px 24px}
+.badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.3px}
+.badge.create{background:rgba(22,163,74,.15);color:#15803d;border:1px solid rgba(22,163,74,.3)}
+.badge.adapt{background:rgba(217,119,6,.15);color:#a16207;border:1px solid rgba(217,119,6,.3)}
+.metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:12px 0}
+.metric-card{padding:16px;background:#f8fafc;border-radius:8px;border-left:4px solid #7c3aed;text-align:center}
+.metric-card.critical{border-left-color:#dc2626;background:rgba(254,202,202,.1)}
+.metric-card.attention{border-left-color:#d97706;background:rgba(254,243,199,.1)}
+.metric-card.healthy{border-left-color:#059669;background:rgba(209,250,229,.1)}
+.metric-card .value{font-size:28px;font-weight:800;color:#1e293b;margin-bottom:4px}
+.metric-card.critical .value{color:#dc2626}
+.metric-card.attention .value{color:#d97706}
+.metric-card.healthy .value{color:#059669}
+.metric-card .label{font-size:12px;color:#475569;font-weight:600}
+.gap-table{width:100%;border-collapse:collapse;font-size:13px}
+.gap-table th{background:#f8fafc;padding:12px 16px;text-align:left;font-weight:700;color:#334155;border-bottom:2px solid #e2e8f0;font-size:12px}
+.gap-table td{padding:12px 16px;border-bottom:1px solid #e8eaf0;vertical-align:top}
+.gap-table tr:last-child td{border-bottom:none}
+.details-section{margin:12px 20px;padding:0}
+.details-section summary{cursor:pointer;padding:14px 16px;background:#f8fafc;border-radius:8px;font-weight:600;color:#1e293b;user-select:none;display:flex;align-items:center;gap:10px;transition:background .2s;font-size:14px}
+.details-section summary:hover{background:#f1f5f9}
+.details-section[open] summary{background:#eff6ff;border-bottom:1px solid #e2e8f0;border-radius:8px 8px 0 0}
+.details-content{padding:16px;background:#fff;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 8px 8px}
+.details-content .question{background:#f0fdf4;padding:12px;border-radius:6px;border-left:3px solid #059669;margin:8px 0;font-size:13px;color:#475569;line-height:1.6;font-style:italic}
+.details-content .suggested{background:#eff6ff;padding:14px;border-radius:6px;border-left:3px solid #2563eb;margin:8px 0;font-size:12.5px;color:#1e293b;line-height:1.7;white-space:pre-wrap}
+.details-content .existing{background:#fef9f0;padding:12px;border-radius:6px;border-left:3px solid #d97706;margin:8px 0;font-size:13px;color:#475569;line-height:1.6}
+.details-content h4{font-size:13px;font-weight:700;color:#334155;margin-top:12px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px}
+.footer{text-align:center;padding:32px;color:#94a3b8;font-size:12px}
+.footer a{color:#94a3b8}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>Content Gap Analysis — Nextfit</h1>
+  <p class="subtitle">Análise das conversas transferidas por 'No relevant content found' nos últimos 30 dias. Identificação de temas sem cobertura na IDS e sugestão de conteúdos a criar.</p>
+  <div class="header-badges">
+    <span class="header-badge tier">Tier Active</span>
+    <span class="header-badge volume">789 N2 por falta de conteúdo</span>
+  </div>
+  <div class="meta">
+    <span>Projeto: nextfit</span>
+    <span>Janela: 24/03 – 23/04/2026</span>
+    <span>Gerado em: 23/04/2026</span>
+  </div>
+</div>
+<div class="main">
+  <section>
+    <h2>Resumo Executivo</h2>
+    <div class="section-content">
+      <div class="metrics-grid">
+        <div class="metric-card critical"><div class="value">789</div><div class="label">conversas sem conteúdo</div></div>
+        <div class="metric-card critical"><div class="value">22.6%</div><div class="label">dos N2 totais</div></div>
+        <div class="metric-card attention"><div class="value">9</div><div class="label">gaps identificados</div></div>
+        <div class="metric-card healthy"><div class="value">+218</div><div class="label">N1 potencial</div></div>
+      </div>
+      <p style="font-size:14px;color:#475569;line-height:1.7;margin-top:16px">22.6% de todos os N2 da Nextfit são por 'No relevant content found' — a ClaudIA não encontrou nenhum conteúdo na IDS para responder. Foram identificados 9 clusters temáticos: 7 temas totalmente novos (CRIAR) e 2 temas com conteúdo similar mas insuficiente (ADAPTAR). Se todos os conteúdos forem criados/adaptados, o impacto estimado é de +218 N1/mês (conversion rate conservadora de 35%).</p>
+    </div>
+  </section>
+  <section>
+    <h2>Gaps Identificados — Visão Geral</h2>
+    <div class="section-content" style="padding:0;overflow-x:auto">
+      <table class="gap-table">
+        <thead><tr><th>#</th><th>Tema</th><th>Conv/mês</th><th>Classificação</th><th>Impacto estimado</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td style="font-weight:600;color:#1e293b">Acesso bloqueado — usuário bloqueado no sistema</td><td>~133</td><td><span class="badge create">CRIAR</span></td><td style="font-weight:700;color:#059669">+47</td></tr>
+          <tr><td>2</td><td style="font-weight:600;color:#1e293b">Cancelamento do contrato com a Next Fit</td><td>~89</td><td><span class="badge create">CRIAR</span></td><td style="font-weight:700;color:#059669">+31</td></tr>
+          <tr><td>3</td><td style="font-weight:600;color:#1e293b">Pinggo desconectando / WhatsApp restrito</td><td>~84</td><td><span class="badge create">CRIAR</span></td><td style="font-weight:700;color:#059669">+29</td></tr>
+          <tr><td>4</td><td style="font-weight:600;color:#1e293b">Cobrança mensal com valor divergente</td><td>~76</td><td><span class="badge adapt">ADAPTAR</span></td><td style="font-weight:700;color:#059669">+27</td></tr>
+          <tr><td>5</td><td style="font-weight:600;color:#1e293b">Transferência de saldo/crédito entre alunos</td><td>~65</td><td><span class="badge create">CRIAR</span></td><td style="font-weight:700;color:#059669">+23</td></tr>
+          <tr><td>6</td><td style="font-weight:600;color:#1e293b">Desconto apenas no 1º mês do recorrente</td><td>~53</td><td><span class="badge create">CRIAR</span></td><td style="font-weight:700;color:#059669">+19</td></tr>
+          <tr><td>7</td><td style="font-weight:600;color:#1e293b">Alteração retroativa de presença</td><td>~45</td><td><span class="badge create">CRIAR</span></td><td style="font-weight:700;color:#059669">+16</td></tr>
+          <tr><td>8</td><td style="font-weight:600;color:#1e293b">Anamnese automática na aula experimental</td><td>~41</td><td><span class="badge create">CRIAR</span></td><td style="font-weight:700;color:#059669">+14</td></tr>
+          <tr><td>9</td><td style="font-weight:600;color:#1e293b">Professor não acessa treinos/avaliações</td><td>~37</td><td><span class="badge adapt">ADAPTAR</span></td><td style="font-weight:700;color:#059669">+13</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section>
+    <h2>Deep Dive — TOP 5 Gaps</h2>
+    <details class="details-section" open>
+      <summary>1. Acesso bloqueado — ~133 conv/mês | CRIAR</summary>
+      <div class="details-content">
+        <h4>Pergunta-tipo</h4>
+        <div class="question">"Aparece 'usuário com acesso bloqueado ao sistema' — tentei trocar senha e não adiantou"</div>
+        <h4>Conteúdo Sugerido</h4>
+        <div class="suggested">Título: Como resolver o erro "usuário com acesso bloqueado ao sistema"?
+
+Existem 3 causas principais para o bloqueio de acesso:
+
+1. Inadimplência — verifique se há faturas em aberto em Financeiro → Faturas. O acesso é liberado automaticamente após a quitação.
+
+2. Tentativas incorretas de login — aguarde 15 minutos e tente novamente, ou peça ao administrador para desbloquear em Configurações → Usuários → selecione o usuário → Desbloquear acesso.
+
+3. Contrato não assinado — verifique em Contratos se há contrato pendente de assinatura digital. O acesso fica bloqueado até a assinatura ser concluída.</div>
+      </div>
+    </details>
+    <details class="details-section" open>
+      <summary>2. Cancelamento contrato Nextfit — ~89 conv/mês | CRIAR</summary>
+      <div class="details-content">
+        <h4>Pergunta-tipo</h4>
+        <div class="question">"Gostaria de cancelar o plano da minha academia / não quero mais usar o Next Fit"</div>
+        <h4>Conteúdo Sugerido</h4>
+        <div class="suggested">Título: Como cancelar o contrato com a Next Fit?
+
+Para solicitar o cancelamento do contrato com a Next Fit, entre em contato com nosso time de Customer Success pelo e-mail suporte@nextfit.com.br ou pelo chat.
+
+Tenha em mãos:
+- Nome da academia
+- CNPJ
+- Motivo do cancelamento
+
+O prazo de processamento é de até 5 dias úteis. Lembre-se de verificar o período de fidelidade e eventuais multas previstas em contrato.</div>
+      </div>
+    </details>
+    <details class="details-section" open>
+      <summary>3. Pinggo desconectando / WhatsApp restrito — ~84 conv/mês | CRIAR</summary>
+      <div class="details-content">
+        <h4>Pergunta-tipo</h4>
+        <div class="question">"WhatsApp restringiu por 24h depois que mandei mensagens automáticas para inativos"</div>
+        <h4>Conteúdo Sugerido</h4>
+        <div class="suggested">Título: Pinggo desconectando ou WhatsApp restrito — o que fazer?
+
+Se o WhatsApp restringiu sua conta após disparos automáticos:
+1. Aguarde o período de restrição (geralmente 24h)
+2. Reduza o volume de disparos — recomendamos máximo 200 mensagens/dia para contas novas e 500/dia para contas estabelecidas
+3. Evite disparar para números que nunca interagiram com você
+4. Se o Pinggo desconectou, acesse Configurações → Integrações → Pinggo → Reconectar e escaneie o QR Code novamente. Se o QR Code não aparecer, limpe o cache do navegador.</div>
+      </div>
+    </details>
+    <details class="details-section" open>
+      <summary>4. Cobrança com valor divergente — ~76 conv/mês | ADAPTAR</summary>
+      <div class="details-content">
+        <h4>Conteúdo existente</h4>
+        <div class="existing">Como pagar a mensalidade do Next Fit (ID 699f1046...47f4) — cobre pagamento mas não contestação de valores</div>
+        <h4>Sugestão de Adaptação</h4>
+        <div class="suggested">Adicionar seção ao conteúdo existente:
+
+"Se o valor cobrado está diferente do contratado, verifique em Financeiro → Faturas se há taxas adicionais (ex: alunos suspensos podem gerar cobrança adicional dependendo do plano). Para contestar, envie e-mail para financeiro@nextfit.com.br com print da fatura e do contrato."</div>
+      </div>
+    </details>
+    <details class="details-section" open>
+      <summary>5. Transferência de saldo entre alunos — ~65 conv/mês | CRIAR</summary>
+      <div class="details-content">
+        <h4>Pergunta-tipo</h4>
+        <div class="question">"Como faço para transferir o crédito de um aluno para outro?"</div>
+        <h4>Conteúdo Sugerido</h4>
+        <div class="suggested">Título: Como transferir saldo ou crédito entre alunos?
+
+Atualmente o Next Fit não possui funcionalidade nativa de transferência de crédito entre alunos. Para resolver casos pontuais:
+
+1. Faça o estorno do valor no aluno de origem em Financeiro → Estornos
+2. Crie um novo título financeiro no aluno de destino com o valor correspondente
+
+Se precisar de orientação detalhada sobre estornos, consulte nosso conteúdo sobre "Como Cancelar uma Venda e Estornar o Recebimento".</div>
+      </div>
+    </details>
+  </section>
+  <section>
+    <h2>Temas Já Cobertos — Problema de Ativação</h2>
+    <div class="section-content">
+      <p style="font-size:14px;color:#475569;line-height:1.7">3 temas foram identificados como JÁ COBERTOS na IDS mas com problema de ativação: Pix automático (~58 conv), Aluno não aparece na lista de chamada (~29 conv), Credenciais de novo cliente (~19 conv). Recomendação: revisar títulos para incluir sinônimos usados pelos clientes (ex: 'pix recorrente', 'lista de presença').</p>
+    </div>
+  </section>
+</div>
+<div class="footer">
+  Cloud Humans · Content Gap Analysis · Gerado em 23/04/2026 por ch-action-plan v5.1 ·
+  <a href="action-plan-nextfit.html">Voltar ao Plano de Ação</a>
+</div>
+</body>
+</html>

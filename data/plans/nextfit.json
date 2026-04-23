@@ -1,1 +1,85 @@
-{"_schema":"action-plan-map/plan/v1","project_slug":"nextfit","date":"23/04/2026","summary":"Nextfit apresenta retenção em queda (59%→45%) com GenCX crítico de 16.8%. Transfer message 56.2% (1962 tickets), no relevant content 22.6% (789 tickets) e configs sub-ótimas oferecem potencial de +970 N1/mês.","impact_retention":"+11 a +14pp","total_impact":970,"n1_potential":970,"volume_total":7030,"n2_total":3749,"retention_atual":46,"executed_at":"2026-04-23","skill_version":"v5.1","actions":[{"priority":"P0","title":"Ativar Venda do Bot (FORWARD_TO_HUMAN_CHECK)","desc":"56.2% dos N2 (1962 tickets/mês) são por transfer message. Ativar em CloudBlocks → Flow Prompts → FORWARD_TO_HUMAN_CHECK + MULTIPROMPT.","impact_tickets":1962,"conversion_rate":0.15,"impact_est":294,"type":"config_handover"},{"priority":"P0","title":"Reduzir confidence_n2_threshold de 0.76 para 0.60","desc":"Threshold muito alto rejeita conteúdos válidos da IDS. Reduzir para 0.60 e monitorar GenCX por 2 semanas.","impact_tickets":500,"conversion_rate":0.35,"impact_est":175,"type":"config_threshold"},{"priority":"P0","title":"Aumentar max_no_valid_content de 1 para 3","desc":"ClaudIA desiste na 1ª tentativa. Aumentar para 3 tentativas antes de transferir.","impact_tickets":789,"conversion_rate":0.25,"impact_est":197,"type":"config_search"},{"priority":"P1","title":"Criar 7 novos conteúdos para gaps de cobertura","desc":"Content Gap: Acesso bloqueado (~133 conv/mês), Cancelamento contrato (~89), Pinggo desconectando (~84), Cobrança divergente (~76), etc. Total ~623 conv/mês.","impact_tickets":623,"conversion_rate":0.35,"impact_est":218,"type":"content_new"},{"priority":"P1","title":"Ativar more_interactions e query_transform","desc":"more_interactions=false perde contexto. query_transform=false usa mensagem literal. Ativar ambos.","impact_tickets":400,"conversion_rate":0.3,"impact_est":120,"type":"config_search"},{"priority":"P1","title":"Consolidar duplicatas e reescrever 8 conteúdos N1","desc":"Par duplicado 'Como Solicitar Atendimento' (217 tickets, ~35% retenção), 'Controle de Acesso' (116 tickets, 26.7%), etc. ~298 tickets recuperáveis.","impact_tickets":298,"conversion_rate":0.25,"impact_est":75,"type":"content_improve"},{"priority":"P1","title":"Ativar clarificação com enlightenment_limit","desc":"7% dos N2 (245 tickets) por clarificação. Ativar clarification + enlightenment_limit.","impact_tickets":245,"conversion_rate":0.35,"impact_est":86,"type":"config_classification"},{"priority":"P2","title":"Ativar fup_autodetect","desc":"Ativar auto-detecção de follow-up para reduzir fricção.","impact_tickets":150,"conversion_rate":0.5,"impact_est":75,"type":"config_resolution"},{"priority":"P2","title":"Ativar multitopic_search","desc":"Busca monotópica não captura dúvidas compostas.","impact_tickets":150,"conversion_rate":0.5,"impact_est":75,"type":"config_search"}],"report_html":"reports/action-plan-nextfit.html","sub_reports":{"ids_quality_eval":"reports/ids-quality-eval-nextfit.html","content_gap":"reports/content-gap-nextfit.html","config_deep_dive":"reports/config-deep-dive-nextfit.html"},"doubts_md":"doubts/doubts-nextfit.md"}
+{
+  "_schema": "action-plan-map/plan/v1",
+  "project_slug": "nextfit",
+  "date": "23/04/2026",
+  "summary": "Nextfit apresenta retenção em queda (59%→45%) com GenCX crítico de 16.8%. Transfer message 56.2% (1962 tickets), no relevant content 22.6% (789 tickets) e conteúdos N1 de baixa qualidade oferecem potencial de +700 N1/mês.",
+  "impact_retention": "+10 a +13pp",
+  "total_impact": 700,
+  "n1_potential": 943,
+  "volume_total": 7030,
+  "n2_total": 3749,
+  "retention_atual": 46,
+  "executed_at": "2026-04-23",
+  "skill_version": "v5.1",
+  "actions": [
+    {
+      "priority": "P0",
+      "title": "Ativar Venda do Bot (FORWARD_TO_HUMAN_CHECK)",
+      "desc": "56.2% dos N2 (1962 tickets/mês) são por transfer message. Ativar em CloudBlocks → Flow Prompts → FORWARD_TO_HUMAN_CHECK + MULTIPROMPT.",
+      "impact_tickets": 1962,
+      "conversion_rate": 0.15,
+      "impact_est": 294,
+      "type": "config_handover"
+    },
+    {
+      "priority": "P0",
+      "title": "Criar 7 novos conteúdos para gaps de cobertura",
+      "desc": "Content Gap: Acesso bloqueado (~133 conv/mês), Cancelamento contrato (~89), Pinggo desconectando (~84), Cobrança divergente (~76), Transferência saldo (~65), Desconto 1º mês (~53), Alteração presença (~45). Total ~623 conv/mês sem cobertura.",
+      "impact_tickets": 623,
+      "conversion_rate": 0.35,
+      "impact_est": 218,
+      "type": "content_new"
+    },
+    {
+      "priority": "P1",
+      "title": "Ativar more_interactions e query_transform",
+      "desc": "more_interactions=false perde contexto multi-mensagem. query_transform=false usa mensagem literal. Ativar ambos melhora recall da busca na IDS.",
+      "impact_tickets": 400,
+      "conversion_rate": 0.3,
+      "impact_est": 120,
+      "type": "config_search"
+    },
+    {
+      "priority": "P1",
+      "title": "Consolidar duplicatas e reescrever 8 conteúdos N1 problemáticos",
+      "desc": "IDS Quality Eval: par duplicado 'Como Solicitar Atendimento' (217 tickets, ~35%), 'Controle de Acesso' (116 tickets, 26.7%), 'Ativar Next Fit Pay' (61, 34.4%). ~298 tickets recuperáveis.",
+      "impact_tickets": 298,
+      "conversion_rate": 0.25,
+      "impact_est": 75,
+      "type": "content_improve"
+    },
+    {
+      "priority": "P1",
+      "title": "Ativar clarificação com enlightenment_limit",
+      "desc": "7% dos N2 (245 tickets) por clarificação. Ativar clarification_enabled + enlightenment_limit_enabled.",
+      "impact_tickets": 245,
+      "conversion_rate": 0.35,
+      "impact_est": 86,
+      "type": "config_classification"
+    },
+    {
+      "priority": "P2",
+      "title": "Ativar fup_autodetect",
+      "desc": "Ativar auto-detecção de follow-up para reduzir fricção no FUP.",
+      "impact_tickets": 150,
+      "conversion_rate": 0.5,
+      "impact_est": 75,
+      "type": "config_resolution"
+    },
+    {
+      "priority": "P2",
+      "title": "Ativar multitopic_search",
+      "desc": "Busca monotópica não captura dúvidas compostas. Ativar para melhorar cobertura.",
+      "impact_tickets": 150,
+      "conversion_rate": 0.5,
+      "impact_est": 75,
+      "type": "config_search"
+    }
+  ],
+  "report_html": "reports/action-plan-nextfit.html",
+  "sub_reports": {
+    "ids_quality_eval": "reports/ids-quality-eval-nextfit.html",
+    "content_gap": "reports/content-gap-nextfit.html"
+  },
+  "doubts_md": "doubts/doubts-nextfit.md"
+}

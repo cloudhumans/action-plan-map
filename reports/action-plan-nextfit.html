@@ -3,437 +3,212 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Plano de Ação — Nextfit — 23/04/2026</title>
+<title>Action Plan — Nextfit | Cloud Humans</title>
 <style>
-:root { color-scheme: light; }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f6fa; color: #1a1a2e; }
-.header { background: #6C3CE1; color: white; padding: 32px 40px; }
-.header h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
-.header p { margin-top: 6px; opacity: 0.85; font-size: 14px; }
-.container { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
-.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 32px; }
-.kpi-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-.kpi-card .label { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
-.kpi-card .value { font-size: 28px; font-weight: 800; margin-top: 6px; }
-.kpi-card .sub { font-size: 12px; color: #888; margin-top: 4px; }
-.kpi-card.red .value { color: #e53e3e; }
-.kpi-card.green .value { color: #38a169; }
-.kpi-card.purple .value { color: #6C3CE1; }
-.section { background: white; border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-.section h2 { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
-.trend-chart { display: flex; align-items: flex-end; gap: 12px; height: 160px; padding: 0 8px; }
-.bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; justify-content: flex-end; }
-.bar { width: 100%; border-radius: 6px 6px 0 0; transition: height 0.3s; }
-.bar-label { font-size: 11px; color: #666; text-align: center; }
-.bar-val { font-size: 11px; font-weight: 700; text-align: center; }
-.n2-bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-.n2-bar-label { width: 160px; font-size: 13px; color: #444; flex-shrink: 0; text-align: right; }
-.n2-bar-outer { flex: 1; background: #f0f0f5; border-radius: 4px; height: 22px; position: relative; }
-.n2-bar-inner { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; }
-.n2-bar-text { font-size: 12px; font-weight: 600; color: white; white-space: nowrap; }
-.n2-bar-tickets { width: 80px; font-size: 12px; color: #666; flex-shrink: 0; }
-.priority-section { margin-bottom: 24px; }
-.p-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 8px 8px 0 0; }
-.p-badge { font-size: 13px; font-weight: 800; padding: 3px 10px; border-radius: 20px; color: white; }
-.p0 .p-badge { background: #e53e3e; }
-.p1 .p-badge { background: #d69e2e; }
-.p2 .p-badge { background: #38a169; }
-.p0 .p-header { background: #fff5f5; border-left: 4px solid #e53e3e; }
-.p1 .p-header { background: #fffff0; border-left: 4px solid #d69e2e; }
-.p2 .p-header { background: #f0fff4; border-left: 4px solid #38a169; }
-.action-card { border: 1px solid #e8e8f0; border-top: none; padding: 16px; background: white; }
-.action-card:last-child { border-radius: 0 0 8px 8px; }
-.action-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
-.action-desc { font-size: 13px; color: #555; margin-bottom: 10px; line-height: 1.5; }
-.action-metrics { display: flex; gap: 16px; flex-wrap: wrap; }
-.metric-chip { background: #f5f6fa; border-radius: 6px; padding: 4px 10px; font-size: 12px; }
-.metric-chip strong { color: #6C3CE1; }
-.impact-table { width: 100%; border-collapse: collapse; }
-.impact-table th { background: #6C3CE1; color: white; padding: 10px 14px; text-align: left; font-size: 13px; }
-.impact-table td { padding: 10px 14px; border-bottom: 1px solid #e8e8f0; font-size: 13px; }
-.impact-table tr:last-child td { background: #f5f3ff; font-weight: 700; border-bottom: none; }
-.impact-table tr:hover:not(:last-child) td { background: #fafafa; }
-.tabs { display: flex; gap: 0; border-bottom: 2px solid #e8e8f0; margin-bottom: 20px; }
-.tabs input[type=radio] { display: none; }
-.tabs label { padding: 10px 20px; font-size: 13px; font-weight: 600; cursor: pointer; color: #666; border-bottom: 2px solid transparent; margin-bottom: -2px; }
-.tabs input[type=radio]:checked + label { color: #6C3CE1; border-bottom-color: #6C3CE1; }
-.tab-content { display: none; }
-#tab1:checked ~ .tab-panels #panel1,
-#tab2:checked ~ .tab-panels #panel2,
-#tab3:checked ~ .tab-panels #panel3 { display: block; }
-.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.data-table th { background: #f5f6fa; padding: 8px 12px; text-align: left; font-weight: 600; color: #444; border-bottom: 2px solid #e8e8f0; }
-.data-table td { padding: 8px 12px; border-bottom: 1px solid #f0f0f5; }
-.data-table tr:hover td { background: #fafafa; }
-.tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
-.tag-green { background: #c6f6d5; color: #276749; }
-.tag-red { background: #fed7d7; color: #9b2c2c; }
-.tag-yellow { background: #fefcbf; color: #7b6010; }
-.tag-gray { background: #e8e8f0; color: #444; }
-.footer { text-align: center; padding: 24px; color: #888; font-size: 13px; }
-.footer a { color: #6C3CE1; text-decoration: none; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f6fa;color:#1a1a2e}
+.header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:40px 48px 36px}
+.header h1{font-size:32px;font-weight:700;margin-bottom:8px;letter-spacing:-.5px}
+.header .subtitle{font-size:15px;opacity:.75;line-height:1.5;max-width:900px}
+.header .meta{margin-top:16px;display:flex;gap:24px;font-size:13px;opacity:.6;flex-wrap:wrap}
+.header-badges{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+.header-badge{display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;backdrop-filter:blur(10px)}
+.header-badge.tier{background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.4);color:#e0e7ff}
+.header-badge.health-warning{background:rgba(217,119,6,.2);border:1px solid rgba(217,119,6,.4);color:#fef3c7}
+.main{padding:32px 48px;max-width:1200px;margin:0 auto}
+section{background:#fff;border-radius:12px;margin-bottom:24px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}
+section h2{font-size:18px;font-weight:700;color:#1e293b;padding:20px 24px 12px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:8px}
+.section-content{padding:20px 24px}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;padding:20px 24px}
+.kpi{padding:16px;background:#f8fafc;border-radius:8px;border-left:3px solid #3b82f6}
+.kpi.critical{border-left-color:#dc2626}
+.kpi.attention{border-left-color:#d97706}
+.kpi.healthy{border-left-color:#16a34a}
+.kpi-label{font-size:12px;color:#64748b;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.kpi-value{font-size:28px;font-weight:700;color:#0f172a;margin-top:6px;line-height:1}
+.kpi-sub{font-size:12px;color:#94a3b8;margin-top:6px}
+.chart-container{margin:16px 0;padding:24px 16px 40px;background:#f8fafc;border-radius:8px}
+.chart-bars{display:flex;gap:10px;align-items:flex-end;height:160px;margin:0 0 28px}
+.bar{flex:1;background:linear-gradient(180deg,#3b82f6,#1e40af);border-radius:4px 4px 0 0;position:relative;transition:opacity .2s;min-height:4px}
+.bar.declining{background:linear-gradient(180deg,#ef4444,#b91c1c)}
+.bar.improving{background:linear-gradient(180deg,#22c55e,#15803d)}
+.bar:hover{opacity:.85}
+.bar-value{position:absolute;top:-22px;font-size:12px;color:#1e293b;width:100%;text-align:center;font-weight:700}
+.bar-label{position:absolute;bottom:-24px;font-size:11px;color:#64748b;width:100%;text-align:center}
+.n2-reasons{display:flex;flex-direction:column;gap:8px;padding:20px 24px}
+.n2-row{display:grid;grid-template-columns:1fr 90px 90px;gap:12px;padding:8px 12px;background:#f8fafc;border-radius:6px;font-size:13px;align-items:center}
+.n2-row.top{background:rgba(220,38,38,.08)}
+.n2-label{color:#334155;font-weight:500}
+.n2-count{color:#64748b;text-align:right;font-variant-numeric:tabular-nums}
+.n2-pct{color:#1e293b;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+.actions-list{display:flex;flex-direction:column;gap:14px;padding:20px 24px}
+.action-card{background:#fff;border:1px solid #e2e8f0;border-left-width:4px;border-radius:8px;padding:16px 20px;transition:box-shadow .2s}
+.action-card:hover{box-shadow:0 2px 6px rgba(0,0,0,.08)}
+.action-card.P0{border-left-color:#dc2626}
+.action-card.P1{border-left-color:#d97706}
+.action-card.P2{border-left-color:#2563eb}
+.action-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:8px;flex-wrap:wrap}
+.action-title{font-size:15px;font-weight:700;color:#0f172a;line-height:1.4;flex:1;min-width:260px}
+.action-badges{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.3px}
+.badge.P0{background:rgba(220,38,38,.1);color:#b91c1c}
+.badge.P1{background:rgba(217,119,6,.1);color:#a16207}
+.badge.P2{background:rgba(37,99,235,.1);color:#1d4ed8}
+.badge.type{background:#f1f5f9;color:#475569;font-weight:600}
+.badge.impact{background:rgba(22,163,74,.1);color:#15803d;font-weight:700}
+.action-desc{font-size:13.5px;color:#475569;line-height:1.6;margin-top:4px}
+.action-meta{font-size:12px;color:#94a3b8;margin-top:10px;display:flex;gap:14px;flex-wrap:wrap}
+.action-meta span strong{color:#64748b}
+.impact-summary{margin:20px 24px;padding:20px;background:linear-gradient(135deg,rgba(34,197,94,.05) 0%,rgba(34,197,94,.1) 100%);border:1px solid rgba(34,197,94,.2);border-radius:8px}
+.impact-summary h3{font-size:15px;color:#15803d;margin-bottom:10px;font-weight:700}
+.impact-summary p{font-size:14px;color:#14532d;line-height:1.7}
+.impact-summary strong{color:#15803d}
+.metrics-table{width:100%;border-collapse:collapse;font-size:14px;line-height:1.6}
+.metrics-table th{background:#f8fafc;padding:12px 16px;text-align:left;font-weight:700;color:#334155;border-bottom:2px solid #e2e8f0;font-size:13px}
+.metrics-table td{padding:12px 16px;border-bottom:1px solid #e8eaf0}
+.metrics-table tr:last-child td{border-bottom:none}
+.metrics-table .value{font-weight:600;color:#1e293b}
+.metrics-table .critical{color:#dc2626;font-weight:700}
+.metrics-table .attention{color:#d97706}
+.metrics-table .healthy{color:#16a34a;font-weight:600}
+.sub-reports{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;padding:20px 24px}
+.sub-report{display:block;padding:16px 18px;background:#f8fafc;border-left:3px solid #7c3aed;border-radius:6px;text-decoration:none;color:#0f172a;transition:all .2s}
+.sub-report:hover{background:#f1f5f9;transform:translateY(-1px)}
+.sub-report-title{font-weight:700;font-size:14px;margin-bottom:4px}
+.sub-report-desc{font-size:12px;color:#64748b;line-height:1.5}
+.footer{text-align:center;padding:32px;color:#94a3b8;font-size:12px}
 </style>
 </head>
 <body>
 <div class="header">
-  <h1>Plano de Ação — Nextfit</h1>
-  <p>Gerado em 23/04/2026 · Skill v5.1 · CS Owner: Helder Viana</p>
-</div>
-<div class="container">
-
-<!-- KPI Cards -->
-<div class="kpi-grid">
-  <div class="kpi-card red">
-    <div class="label">Retenção Atual</div>
-    <div class="value">46%</div>
-    <div class="sub">Meta: 50% · Delta: -4pp</div>
+  <h1>Action Plan — Nextfit</h1>
+  <p class="subtitle">Plano priorizado de crescimento de retenção baseado em análise dos motivos de transferência (30d) + deep dive em conteúdos N1 críticos, gaps de conteúdo e configurações sub-ótimas.</p>
+  <div class="header-badges">
+    <span class="header-badge tier">Tier Active</span>
+    <span class="header-badge health-warning">Health: Warning</span>
   </div>
-  <div class="kpi-card">
-    <div class="label">Volume Total</div>
-    <div class="value">7.030</div>
-    <div class="sub">conversas/mês</div>
-  </div>
-  <div class="kpi-card">
-    <div class="label">N2 (Transferidos)</div>
-    <div class="value">3.749</div>
-    <div class="sub">53.3% do total</div>
-  </div>
-  <div class="kpi-card red">
-    <div class="label">GenCX</div>
-    <div class="value">16.8%</div>
-    <div class="sub">Crítico (ref &lt;5%)</div>
-  </div>
-  <div class="kpi-card purple">
-    <div class="label">Impacto Estimado</div>
-    <div class="value">+970</div>
-    <div class="sub">N1/mês potencial</div>
-  </div>
-  <div class="kpi-card green">
-    <div class="label">Potencial Retenção</div>
-    <div class="value">~60%</div>
-    <div class="sub">se ações executadas</div>
+  <div class="meta">
+    <span>📅 Data: 23/04/2026</span>
+    <span>📊 Janela: 19/03 – 23/04/2026 (35d)</span>
   </div>
 </div>
-
-<!-- Retention Trend -->
-<div class="section">
-  <h2>Tendência de Retenção</h2>
-  <div class="trend-chart">
-    <div class="bar-wrap">
-      <div class="bar-val">59.4%</div>
-      <div class="bar" style="height:95%;background:#6C3CE1;opacity:0.85;"></div>
-      <div class="bar-label">16/Mar</div>
+<div class="main">
+  <section>
+    <h2>KPIs Principais</h2>
+    <div class="kpi-grid">
+      <div class="kpi critical"><div class="kpi-label">Retenção N1 — 30d</div><div class="kpi-value">46%</div><div class="kpi-sub">Meta ≥60%</div></div>
+      <div class="kpi attention"><div class="kpi-label">Retenção N1 — Última semana</div><div class="kpi-value">45.4%</div><div class="kpi-sub">Semana 20–23/Abr</div></div>
+      <div class="kpi"><div class="kpi-label">Volume total — 30d</div><div class="kpi-value">7.030</div><div class="kpi-sub">N1: 3.281 · N2: 3.749</div></div>
+      <div class="kpi critical"><div class="kpi-label">GenCX Ruim %</div><div class="kpi-value">16.8%</div><div class="kpi-sub">Meta ≤5%</div></div>
+      <div class="kpi healthy"><div class="kpi-label">Potencial N1 (plano)</div><div class="kpi-value">+700</div><div class="kpi-sub">+10 a +13pp retenção</div></div>
     </div>
-    <div class="bar-wrap">
-      <div class="bar-val">55.4%</div>
-      <div class="bar" style="height:88%;background:#6C3CE1;opacity:0.80;"></div>
-      <div class="bar-label">23/Mar</div>
-    </div>
-    <div class="bar-wrap">
-      <div class="bar-val">44.2%</div>
-      <div class="bar" style="height:70%;background:#e53e3e;opacity:0.85;"></div>
-      <div class="bar-label">30/Mar</div>
-    </div>
-    <div class="bar-wrap">
-      <div class="bar-val">40.9%</div>
-      <div class="bar" style="height:65%;background:#e53e3e;opacity:0.90;"></div>
-      <div class="bar-label">06/Abr</div>
-    </div>
-    <div class="bar-wrap">
-      <div class="bar-val">49.1%</div>
-      <div class="bar" style="height:78%;background:#d69e2e;opacity:0.85;"></div>
-      <div class="bar-label">13/Abr</div>
-    </div>
-    <div class="bar-wrap">
-      <div class="bar-val">45.4%</div>
-      <div class="bar" style="height:72%;background:#e53e3e;opacity:0.85;"></div>
-      <div class="bar-label">20/Abr</div>
-    </div>
-  </div>
-</div>
-
-<!-- N2 Reasons -->
-<div class="section">
-  <h2>Motivos de Transferência (N2)</h2>
-  <div style="margin-top:16px;">
-    <div class="n2-bar-row">
-      <div class="n2-bar-label">Transfer message</div>
-      <div class="n2-bar-outer">
-        <div class="n2-bar-inner" style="width:56.2%;background:#e53e3e;">
-          <span class="n2-bar-text">56.2%</span>
+  </section>
+  <section>
+    <h2>Tendência de Retenção — por Semana</h2>
+    <div class="section-content">
+      <div class="chart-container">
+        <div class="chart-bars">
+          <div class="bar improving" style="height:99%"><span class="bar-value">59.4%</span><span class="bar-label">16–22/Mar</span></div>
+          <div class="bar declining" style="height:92%"><span class="bar-value">55.4%</span><span class="bar-label">23–29/Mar</span></div>
+          <div class="bar declining" style="height:74%"><span class="bar-value">44.2%</span><span class="bar-label">30/Mar–05/Abr</span></div>
+          <div class="bar declining" style="height:68%"><span class="bar-value">40.9%</span><span class="bar-label">06–12/Abr</span></div>
+          <div class="bar improving" style="height:82%"><span class="bar-value">49.1%</span><span class="bar-label">13–19/Abr</span></div>
+          <div class="bar declining" style="height:76%"><span class="bar-value">45.4%</span><span class="bar-label">20–23/Abr</span></div>
         </div>
-      </div>
-      <div class="n2-bar-tickets">1.962 tickets</div>
-    </div>
-    <div class="n2-bar-row">
-      <div class="n2-bar-label">No relevant content</div>
-      <div class="n2-bar-outer">
-        <div class="n2-bar-inner" style="width:22.6%;background:#d69e2e;">
-          <span class="n2-bar-text">22.6%</span>
-        </div>
-      </div>
-      <div class="n2-bar-tickets">789 tickets</div>
-    </div>
-    <div class="n2-bar-row">
-      <div class="n2-bar-label">Conteúdo N2</div>
-      <div class="n2-bar-outer">
-        <div class="n2-bar-inner" style="width:8.2%;background:#6C3CE1;">
-          <span class="n2-bar-text">8.2%</span>
-        </div>
-      </div>
-      <div class="n2-bar-tickets">287 tickets</div>
-    </div>
-    <div class="n2-bar-row">
-      <div class="n2-bar-label">Clarificação</div>
-      <div class="n2-bar-outer">
-        <div class="n2-bar-inner" style="width:7%;background:#805ad5;">
-          <span class="n2-bar-text">7.0%</span>
-        </div>
-      </div>
-      <div class="n2-bar-tickets">245 tickets</div>
-    </div>
-    <div class="n2-bar-row">
-      <div class="n2-bar-label">FUP negativo</div>
-      <div class="n2-bar-outer">
-        <div class="n2-bar-inner" style="width:2.5%;background:#a0aec0;">
-          <span class="n2-bar-text" style="color:#333;">2.5%</span>
-        </div>
-      </div>
-      <div class="n2-bar-tickets">87 tickets</div>
-    </div>
-    <div class="n2-bar-row">
-      <div class="n2-bar-label">Outros</div>
-      <div class="n2-bar-outer">
-        <div class="n2-bar-inner" style="width:3.5%;background:#cbd5e0;">
-          <span class="n2-bar-text" style="color:#333;">3.5%</span>
-        </div>
-      </div>
-      <div class="n2-bar-tickets">379 tickets</div>
-    </div>
-  </div>
-</div>
-
-<!-- P0 Actions -->
-<div class="section">
-  <h2>Ações Prioritárias</h2>
-  
-  <div class="priority-section p0">
-    <div class="p-header">
-      <span class="p-badge">P0</span>
-      <span style="font-weight:600;font-size:14px;color:#c53030;">Crítico — Executar esta semana</span>
-    </div>
-    <div class="action-card">
-      <div class="action-title">1. Ativar Venda do Bot (FORWARD_TO_HUMAN_CHECK)</div>
-      <div class="action-desc">56.2% dos N2 (1962 tickets/mês) são por transfer message. Ativar em CloudBlocks → Flow Prompts → FORWARD_TO_HUMAN_CHECK + MULTIPROMPT para interceptar antes da transferência.</div>
-      <div class="action-metrics">
-        <span class="metric-chip">Tickets impactados: <strong>1.962</strong></span>
-        <span class="metric-chip">Taxa conversão: <strong>15%</strong></span>
-        <span class="metric-chip">Impacto estimado: <strong>+294 N1/mês</strong></span>
-        <span class="metric-chip">Tipo: <strong>config_handover</strong></span>
+        <p style="font-size:13px;color:#64748b;line-height:1.6;margin-top:8px">Queda acentuada de 59% para 41% entre março e abril, com recuperação parcial na penúltima semana. A retenção se estabilizou na faixa de 45–49% — 14 pontos abaixo da meta de 60%. Transfer message (56%) e no relevant content (22.6%) são os principais drivers da queda.</p>
       </div>
     </div>
-    <div class="action-card">
-      <div class="action-title">2. Reduzir confidence_n2_threshold de 0.76 para 0.60</div>
-      <div class="action-desc">Threshold muito alto rejeita conteúdos válidos da IDS. Reduzir para 0.60 e monitorar GenCX por 2 semanas. Verificar impacto em falsos positivos.</div>
-      <div class="action-metrics">
-        <span class="metric-chip">Tickets impactados: <strong>500</strong></span>
-        <span class="metric-chip">Taxa conversão: <strong>35%</strong></span>
-        <span class="metric-chip">Impacto estimado: <strong>+175 N1/mês</strong></span>
-        <span class="metric-chip">Tipo: <strong>config_threshold</strong></span>
+  </section>
+  <section>
+    <h2>Motivos de N2 — Top 11</h2>
+    <div class="n2-reasons">
+      <div class="n2-row" style="font-weight:700;color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:.5px;background:none"><span>Motivo</span><span style="text-align:right">Tickets</span><span style="text-align:right">% N2</span></div>
+      <div class="n2-row top"><span class="n2-label">Transfer message</span><span class="n2-count">1.962</span><span class="n2-pct">56,20%</span></div>
+      <div class="n2-row top"><span class="n2-label">No relevant content</span><span class="n2-count">789</span><span class="n2-pct">22,60%</span></div>
+      <div class="n2-row"><span class="n2-label">Conteúdo N2 usado</span><span class="n2-count">287</span><span class="n2-pct">8,22%</span></div>
+      <div class="n2-row"><span class="n2-label">Clarificação (limite atingido)</span><span class="n2-count">245</span><span class="n2-pct">7,02%</span></div>
+      <div class="n2-row"><span class="n2-label">FUP negativo</span><span class="n2-count">87</span><span class="n2-pct">2,49%</span></div>
+      <div class="n2-row"><span class="n2-label">Seção repetida</span><span class="n2-count">35</span><span class="n2-pct">1,00%</span></div>
+      <div class="n2-row"><span class="n2-label">Timeout</span><span class="n2-count">31</span><span class="n2-pct">0,89%</span></div>
+      <div class="n2-row"><span class="n2-label">Limite de mensagens</span><span class="n2-count">22</span><span class="n2-pct">0,63%</span></div>
+      <div class="n2-row"><span class="n2-label">Frustração detectada</span><span class="n2-count">19</span><span class="n2-pct">0,54%</span></div>
+      <div class="n2-row"><span class="n2-label">Count limit</span><span class="n2-count">11</span><span class="n2-pct">0,32%</span></div>
+      <div class="n2-row"><span class="n2-label">Forced N2</span><span class="n2-count">3</span><span class="n2-pct">0,09%</span></div>
+    </div>
+    <div class="section-content" style="padding-top:0">
+      <p style="font-size:13px;color:#64748b;line-height:1.6;background:#fef9f0;padding:12px 16px;border-radius:6px;border-left:3px solid #d97706">2 drivers concentram 79% dos N2 — Transfer message e No relevant content. Transfer message (56.2%) indica forte oportunidade com Venda do Bot. No relevant content (22.6%) indica gaps de cobertura na IDS que precisam de novos conteúdos urgentemente.</p>
+    </div>
+  </section>
+  <section>
+    <h2>Plano de Ação Priorizado</h2>
+    <div class="actions-list">
+      <div class="action-card P0">
+        <div class="action-head"><div class="action-title">Ativar Venda do Bot (FORWARD_TO_HUMAN_CHECK)</div><div class="action-badges"><span class="badge P0">P0</span><span class="badge type">config_handover</span><span class="badge impact">+294 N1</span></div></div>
+        <div class="action-desc">56.2% dos N2 (1.962 tickets/mês) são por transfer message — o usuário pede explicitamente para falar com humano. Com detect_transfer_msg ativo mas sem FORWARD_TO_HUMAN_CHECK, a ClaudIA transfere diretamente sem tentar reter. Ativar em CloudBlocks → Flow Prompts → FORWARD_TO_HUMAN_CHECK + MULTIPROMPT com prompt contextualizado para Nextfit.</div>
+        <div class="action-meta"><span><strong>Tickets:</strong> 1.962</span><span><strong>Conversão:</strong> 15%</span><span><strong>Impacto:</strong> +294 N1</span></div>
+      </div>
+      <div class="action-card P0">
+        <div class="action-head"><div class="action-title">Criar 7 novos conteúdos para gaps de cobertura identificados</div><div class="action-badges"><span class="badge P0">P0</span><span class="badge type">content_new</span><span class="badge impact">+218 N1</span></div></div>
+        <div class="action-desc">Content Gap Analysis identificou 9 temas sem cobertura na IDS (7 para criar, 2 para adaptar). Principais: Acesso bloqueado (~133 conv/mês), Cancelamento contrato Nextfit (~89), Pinggo desconectando/WhatsApp restrito (~84), Cobrança mensal com valor divergente (~76), Transferência de saldo entre alunos (~65), Desconto apenas no 1º mês (~53), Alteração retroativa de presença (~45). Ver relatório detalhado em Content Gap.</div>
+        <div class="action-meta"><span><strong>Tickets:</strong> 623</span><span><strong>Conversão:</strong> 35%</span><span><strong>Impacto:</strong> +218 N1</span></div>
+      </div>
+      <div class="action-card P1">
+        <div class="action-head"><div class="action-title">Ativar more_interactions e query_transform</div><div class="action-badges"><span class="badge P1">P1</span><span class="badge type">config_search</span><span class="badge impact">+120 N1</span></div></div>
+        <div class="action-desc">more_interactions=false impede uso do histórico de conversa na busca. query_transform=false usa mensagem literal sem reformulação semântica. Ambos desligados prejudicam o recall da busca — especialmente em conversas multi-etapa. Ativar ambos em CloudBlocks → contentSearchConfiguration.</div>
+        <div class="action-meta"><span><strong>Tickets:</strong> 400</span><span><strong>Conversão:</strong> 30%</span><span><strong>Impacto:</strong> +120 N1</span></div>
+      </div>
+      <div class="action-card P1">
+        <div class="action-head"><div class="action-title">Consolidar duplicatas e reescrever 8 conteúdos N1 problemáticos</div><div class="action-badges"><span class="badge P1">P1</span><span class="badge type">content_improve</span><span class="badge impact">+75 N1</span></div></div>
+        <div class="action-desc">IDS Quality Eval identificou 10 conteúdos N1 com retenção &lt;50%: par duplicado 'Como Solicitar Atendimento' (217 tickets combinados, ~35% retenção), 'Solução para Problemas no Controle de Acesso' (116 tickets, 26.7%), 'Como Ativar o Next Fit Pay' (61 tickets, 34.4%), 'Pinggo.ai' (58, 41.4%). Ver relatório detalhado em IDS Quality Eval.</div>
+        <div class="action-meta"><span><strong>Tickets:</strong> 298</span><span><strong>Conversão:</strong> 25%</span><span><strong>Impacto:</strong> +75 N1</span></div>
+      </div>
+      <div class="action-card P1">
+        <div class="action-head"><div class="action-title">Ativar clarificação com enlightenment_limit</div><div class="action-badges"><span class="badge P1">P1</span><span class="badge type">config_classification</span><span class="badge impact">+86 N1</span></div></div>
+        <div class="action-desc">7% dos N2 (245 tickets/mês) são por limite de clarificação. Ativar clarification_enabled=true com max_attempts=2 + enlightenment_limit_enabled=true (limit=3 já configurado mas flag OFF). Permite resolver ambiguidades antes de transferir.</div>
+        <div class="action-meta"><span><strong>Tickets:</strong> 245</span><span><strong>Conversão:</strong> 35%</span><span><strong>Impacto:</strong> +86 N1</span></div>
+      </div>
+      <div class="action-card P2">
+        <div class="action-head"><div class="action-title">Ativar fup_autodetect</div><div class="action-badges"><span class="badge P2">P2</span><span class="badge type">config_resolution</span><span class="badge impact">+75 N1</span></div></div>
+        <div class="action-desc">Auto-detecção de follow-up desligada gera fricção extra. Ativar para reduzir perguntas repetitivas no encerramento de conversa.</div>
+        <div class="action-meta"><span><strong>Tickets:</strong> 150</span><span><strong>Conversão:</strong> 50%</span><span><strong>Impacto:</strong> +75 N1</span></div>
+      </div>
+      <div class="action-card P2">
+        <div class="action-head"><div class="action-title">Ativar multitopic_search</div><div class="action-badges"><span class="badge P2">P2</span><span class="badge type">config_search</span><span class="badge impact">+75 N1</span></div></div>
+        <div class="action-desc">Busca monotópica não captura dúvidas compostas. Ativar para melhorar cobertura da IDS em perguntas multi-tema. Monitorar latência de resposta.</div>
+        <div class="action-meta"><span><strong>Tickets:</strong> 150</span><span><strong>Conversão:</strong> 50%</span><span><strong>Impacto:</strong> +75 N1</span></div>
       </div>
     </div>
-    <div class="action-card">
-      <div class="action-title">3. Aumentar max_no_valid_content de 1 para 3</div>
-      <div class="action-desc">ClaudIA desiste na 1ª tentativa sem encontrar conteúdo relevante. Aumentar para 3 tentativas com buscas alternativas antes de transferir para humano.</div>
-      <div class="action-metrics">
-        <span class="metric-chip">Tickets impactados: <strong>789</strong></span>
-        <span class="metric-chip">Taxa conversão: <strong>25%</strong></span>
-        <span class="metric-chip">Impacto estimado: <strong>+197 N1/mês</strong></span>
-        <span class="metric-chip">Tipo: <strong>config_search</strong></span>
-      </div>
+    <div class="impact-summary">
+      <h3>Impacto Consolidado</h3>
+      <p>Executando as 7 ações, o impacto bruto somado é de <strong>+943 N1/mês</strong>. Aplicando fator de sobreposição de ~25%, o impacto líquido esperado é de <strong>+700 N1/mês</strong>, movendo a retenção de 46% → ~56% (<strong>+10 a +13pp</strong>). As 2 ações P0 concentram +512 N1 (54% do impacto total).</p>
     </div>
-  </div>
-
-  <!-- P1 Actions -->
-  <div class="priority-section p1" style="margin-top:16px;">
-    <div class="p-header">
-      <span class="p-badge">P1</span>
-      <span style="font-weight:600;font-size:14px;color:#975a16;">Alto — Executar nas próximas 2 semanas</span>
-    </div>
-    <div class="action-card">
-      <div class="action-title">4. Criar 7 novos conteúdos para gaps de cobertura</div>
-      <div class="action-desc">Content Gap: Acesso bloqueado (~133 conv/mês), Cancelamento contrato (~89), Pinggo desconectando (~84), Cobrança divergente (~76), Mudança de plano (~74), Relatório de acessos (~92), Login falha (~75). Total ~623 conv/mês descobertas.</div>
-      <div class="action-metrics">
-        <span class="metric-chip">Tickets impactados: <strong>623</strong></span>
-        <span class="metric-chip">Taxa conversão: <strong>35%</strong></span>
-        <span class="metric-chip">Impacto estimado: <strong>+218 N1/mês</strong></span>
-        <span class="metric-chip">Tipo: <strong>content_new</strong></span>
-      </div>
-    </div>
-    <div class="action-card">
-      <div class="action-title">5. Ativar more_interactions e query_transform</div>
-      <div class="action-desc">more_interactions=false perde contexto de mensagens anteriores. query_transform=false usa mensagem literal sem reformulação. Ativar ambos para melhorar busca semântica.</div>
-      <div class="action-metrics">
-        <span class="metric-chip">Tickets impactados: <strong>400</strong></span>
-        <span class="metric-chip">Taxa conversão: <strong>30%</strong></span>
-        <span class="metric-chip">Impacto estimado: <strong>+120 N1/mês</strong></span>
-        <span class="metric-chip">Tipo: <strong>config_search</strong></span>
-      </div>
-    </div>
-    <div class="action-card">
-      <div class="action-title">6. Consolidar duplicatas e reescrever 8 conteúdos N1</div>
-      <div class="action-desc">Par duplicado 'Como Solicitar Atendimento' (217 tickets, ~35% retenção), 'Controle de Acesso' (116 tickets, 26.7%), 'Gestão de Usuários' (98 tickets), etc. ~298 tickets recuperáveis por melhoria de conteúdo.</div>
-      <div class="action-metrics">
-        <span class="metric-chip">Tickets impactados: <strong>298</strong></span>
-        <span class="metric-chip">Taxa conversão: <strong>25%</strong></span>
-        <span class="metric-chip">Impacto estimado: <strong>+75 N1/mês</strong></span>
-        <span class="metric-chip">Tipo: <strong>content_improve</strong></span>
-      </div>
-    </div>
-    <div class="action-card">
-      <div class="action-title">7. Ativar clarificação com enlightenment_limit</div>
-      <div class="action-desc">7% dos N2 (245 tickets) são por ambiguidade de intenção. Ativar clarification para pedir confirmação ao usuário + enlightenment_limit para limitar tentativas.</div>
-      <div class="action-metrics">
-        <span class="metric-chip">Tickets impactados: <strong>245</strong></span>
-        <span class="metric-chip">Taxa conversão: <strong>35%</strong></span>
-        <span class="metric-chip">Impacto estimado: <strong>+86 N1/mês</strong></span>
-        <span class="metric-chip">Tipo: <strong>config_classification</strong></span>
-      </div>
-    </div>
-  </div>
-
-  <!-- P2 Actions -->
-  <div class="priority-section p2" style="margin-top:16px;">
-    <div class="p-header">
-      <span class="p-badge">P2</span>
-      <span style="font-weight:600;font-size:14px;color:#276749;">Médio — Executar no próximo mês</span>
-    </div>
-    <div class="action-card">
-      <div class="action-title">8. Ativar fup_autodetect</div>
-      <div class="action-desc">Ativar auto-detecção de follow-up para reduzir fricção em conversas de acompanhamento. Usuário não precisa repetir contexto.</div>
-      <div class="action-metrics">
-        <span class="metric-chip">Tickets impactados: <strong>150</strong></span>
-        <span class="metric-chip">Taxa conversão: <strong>50%</strong></span>
-        <span class="metric-chip">Impacto estimado: <strong>+75 N1/mês</strong></span>
-        <span class="metric-chip">Tipo: <strong>config_resolution</strong></span>
-      </div>
-    </div>
-    <div class="action-card">
-      <div class="action-title">9. Ativar multitopic_search</div>
-      <div class="action-desc">Busca monotópica não captura dúvidas compostas (ex: "como faço X e também Y"). Ativar multitopic_search para resolver múltiplos tópicos em uma conversa.</div>
-      <div class="action-metrics">
-        <span class="metric-chip">Tickets impactados: <strong>150</strong></span>
-        <span class="metric-chip">Taxa conversão: <strong>50%</strong></span>
-        <span class="metric-chip">Impacto estimado: <strong>+75 N1/mês</strong></span>
-        <span class="metric-chip">Tipo: <strong>config_search</strong></span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Impact Summary Table -->
-<div class="section">
-  <h2>Resumo de Impacto</h2>
-  <table class="impact-table">
-    <thead>
-      <tr><th>Prioridade</th><th>Ação</th><th>Tickets</th><th>Taxa Conv.</th><th>Impacto N1/mês</th></tr>
-    </thead>
-    <tbody>
-      <tr><td><span class="tag tag-red">P0</span></td><td>Ativar Venda do Bot</td><td>1.962</td><td>15%</td><td><strong>+294</strong></td></tr>
-      <tr><td><span class="tag tag-red">P0</span></td><td>Reduzir confidence_threshold</td><td>500</td><td>35%</td><td><strong>+175</strong></td></tr>
-      <tr><td><span class="tag tag-red">P0</span></td><td>Aumentar max_no_valid_content</td><td>789</td><td>25%</td><td><strong>+197</strong></td></tr>
-      <tr><td><span class="tag tag-yellow">P1</span></td><td>Criar 7 novos conteúdos</td><td>623</td><td>35%</td><td><strong>+218</strong></td></tr>
-      <tr><td><span class="tag tag-yellow">P1</span></td><td>Ativar more_interactions + query_transform</td><td>400</td><td>30%</td><td><strong>+120</strong></td></tr>
-      <tr><td><span class="tag tag-yellow">P1</span></td><td>Consolidar duplicatas e reescrever conteúdos</td><td>298</td><td>25%</td><td><strong>+75</strong></td></tr>
-      <tr><td><span class="tag tag-yellow">P1</span></td><td>Ativar clarificação</td><td>245</td><td>35%</td><td><strong>+86</strong></td></tr>
-      <tr><td><span class="tag tag-green">P2</span></td><td>Ativar fup_autodetect</td><td>150</td><td>50%</td><td><strong>+75</strong></td></tr>
-      <tr><td><span class="tag tag-green">P2</span></td><td>Ativar multitopic_search</td><td>150</td><td>50%</td><td><strong>+75</strong></td></tr>
-      <tr><td colspan="4"><strong>TOTAL</strong></td><td><strong style="color:#6C3CE1;font-size:16px;">+970 N1/mês</strong></td></tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- Deep Dive Tabs -->
-<div class="section">
-  <h2>Deep Dive</h2>
-  <input type="radio" name="tabs" id="tab1" checked>
-  <label for="tab1">IDS Quality Eval</label>
-  <input type="radio" name="tabs" id="tab2">
-  <label for="tab2">Content Gap</label>
-  <input type="radio" name="tabs" id="tab3">
-  <label for="tab3">Config Deep Dive</label>
-  
-  <div style="margin-top:16px;">
-    <div id="panel1" class="tab-panel">
-      <table class="data-table">
-        <thead><tr><th>Conteúdo</th><th>Tickets/mês</th><th>Retenção</th><th>Acionável</th><th>Claro</th><th>Status</th></tr></thead>
+  </section>
+  <section>
+    <h2>Sumário de Impacto por Prioridade</h2>
+    <div class="section-content">
+      <table class="metrics-table">
+        <thead><tr><th>Prioridade</th><th>Ações</th><th>Tickets endereçados</th><th>Impacto estimado</th><th>% do total</th></tr></thead>
         <tbody>
-          <tr><td>Como Solicitar Atendimento</td><td>217</td><td>35%</td><td><span class="tag tag-yellow">Médio</span></td><td><span class="tag tag-yellow">Médio</span></td><td><span class="tag tag-red">Duplicado</span></td></tr>
-          <tr><td>Controle de Acesso</td><td>116</td><td>26.7%</td><td><span class="tag tag-red">Baixo</span></td><td><span class="tag tag-red">Baixo</span></td><td><span class="tag tag-red">Reescrever</span></td></tr>
-          <tr><td>Gestão de Usuários</td><td>98</td><td>42.1%</td><td><span class="tag tag-green">Alto</span></td><td><span class="tag tag-yellow">Médio</span></td><td><span class="tag tag-yellow">Melhorar</span></td></tr>
-          <tr><td>Configurar Notificações</td><td>87</td><td>55.2%</td><td><span class="tag tag-green">Alto</span></td><td><span class="tag tag-green">Alto</span></td><td><span class="tag tag-green">OK</span></td></tr>
-          <tr><td>Integração API</td><td>76</td><td>48.7%</td><td><span class="tag tag-yellow">Médio</span></td><td><span class="tag tag-yellow">Médio</span></td><td><span class="tag tag-yellow">Melhorar</span></td></tr>
-          <tr><td>Relatórios e Exportação</td><td>65</td><td>61.5%</td><td><span class="tag tag-green">Alto</span></td><td><span class="tag tag-green">Alto</span></td><td><span class="tag tag-green">OK</span></td></tr>
-          <tr><td>Planos e Cobrança</td><td>58</td><td>31.0%</td><td><span class="tag tag-red">Baixo</span></td><td><span class="tag tag-red">Baixo</span></td><td><span class="tag tag-red">Reescrever</span></td></tr>
-          <tr><td>Suporte Técnico Pinggo</td><td>54</td><td>22.2%</td><td><span class="tag tag-red">Baixo</span></td><td><span class="tag tag-red">Baixo</span></td><td><span class="tag tag-red">Reescrever</span></td></tr>
-          <tr><td>Recuperação de Senha</td><td>43</td><td>72.1%</td><td><span class="tag tag-green">Alto</span></td><td><span class="tag tag-green">Alto</span></td><td><span class="tag tag-green">OK</span></td></tr>
-          <tr><td>Configurar Integrações</td><td>38</td><td>44.7%</td><td><span class="tag tag-yellow">Médio</span></td><td><span class="tag tag-green">Alto</span></td><td><span class="tag tag-yellow">Melhorar</span></td></tr>
+          <tr><td class="value">P0</td><td>2</td><td>2.585</td><td class="critical">+512</td><td>54%</td></tr>
+          <tr><td class="value">P1</td><td>3</td><td>943</td><td class="attention">+281</td><td>30%</td></tr>
+          <tr><td class="value">P2</td><td>2</td><td>300</td><td>+150</td><td>16%</td></tr>
+          <tr style="border-top:2px solid #e2e8f0;font-weight:700"><td>Total (bruto)</td><td>7</td><td>3.828</td><td>+943</td><td>100%</td></tr>
+          <tr><td style="color:#64748b">Total líquido (-25%)</td><td>—</td><td>—</td><td class="healthy">+700</td><td>—</td></tr>
         </tbody>
       </table>
     </div>
-    <div id="panel2" class="tab-panel" style="display:none;">
-      <table class="data-table">
-        <thead><tr><th>Tópico Faltante</th><th>Conv/mês</th><th>Urgência</th><th>Ação</th></tr></thead>
-        <tbody>
-          <tr><td>Acesso bloqueado / conta suspensa</td><td>~133</td><td><span class="tag tag-red">Alta</span></td><td>Criar conteúdo novo</td></tr>
-          <tr><td>Cancelamento de contrato</td><td>~89</td><td><span class="tag tag-red">Alta</span></td><td>Criar conteúdo novo</td></tr>
-          <tr><td>Pinggo desconectando / instável</td><td>~84</td><td><span class="tag tag-red">Alta</span></td><td>Criar conteúdo novo</td></tr>
-          <tr><td>Cobrança divergente / duplicada</td><td>~76</td><td><span class="tag tag-red">Alta</span></td><td>Criar conteúdo novo</td></tr>
-          <tr><td>Mudança de plano / upgrade</td><td>~74</td><td><span class="tag tag-yellow">Média</span></td><td>Criar conteúdo novo</td></tr>
-          <tr><td>Relatório de acessos por usuário</td><td>~92</td><td><span class="tag tag-yellow">Média</span></td><td>Criar conteúdo novo</td></tr>
-          <tr><td>Falha de login / SSO</td><td>~75</td><td><span class="tag tag-yellow">Média</span></td><td>Criar conteúdo novo</td></tr>
-          <tr><td>Exportar dados / LGPD</td><td>~51</td><td><span class="tag tag-gray">Baixa</span></td><td>Avaliar prioridade</td></tr>
-          <tr><td>Configurar permissões por grupo</td><td>~49</td><td><span class="tag tag-gray">Baixa</span></td><td>Avaliar prioridade</td></tr>
-        </tbody>
-      </table>
+  </section>
+  <section>
+    <h2>Relatórios Complementares</h2>
+    <div class="sub-reports">
+      <a class="sub-report" href="ids-quality-eval-nextfit.html"><div class="sub-report-title">IDS Quality Eval</div><div class="sub-report-desc">Avaliação dos 10 conteúdos N1 mais críticos com texto reescrito, scores de qualidade e cross com dados reais do Metabase.</div></a>
+      <a class="sub-report" href="content-gap-nextfit.html"><div class="sub-report-title">Content Gap Analysis</div><div class="sub-report-desc">Análise das 789 conversas transferidas por 'No relevant content' — 7 conteúdos a CRIAR e 2 a ADAPTAR com textos sugeridos.</div></a>
     </div>
-    <div id="panel3" class="tab-panel" style="display:none;">
-      <table class="data-table">
-        <thead><tr><th>Config</th><th>Atual</th><th>Recomendado</th><th>Impacto</th><th>Status</th></tr></thead>
-        <tbody>
-          <tr><td>confidence_n2_threshold</td><td>0.76</td><td>0.60</td><td><span class="tag tag-red">Alto</span></td><td><span class="tag tag-red">Alterar</span></td></tr>
-          <tr><td>max_no_valid_content</td><td>1</td><td>3</td><td><span class="tag tag-red">Alto</span></td><td><span class="tag tag-red">Alterar</span></td></tr>
-          <tr><td>FORWARD_TO_HUMAN_CHECK</td><td>false</td><td>true</td><td><span class="tag tag-red">Alto</span></td><td><span class="tag tag-red">Ativar</span></td></tr>
-          <tr><td>more_interactions</td><td>false</td><td>true</td><td><span class="tag tag-yellow">Médio</span></td><td><span class="tag tag-yellow">Ativar</span></td></tr>
-          <tr><td>query_transform</td><td>false</td><td>true</td><td><span class="tag tag-yellow">Médio</span></td><td><span class="tag tag-yellow">Ativar</span></td></tr>
-          <tr><td>clarification</td><td>false</td><td>true</td><td><span class="tag tag-yellow">Médio</span></td><td><span class="tag tag-yellow">Ativar</span></td></tr>
-          <tr><td>enlightenment_limit</td><td>null</td><td>3</td><td><span class="tag tag-yellow">Médio</span></td><td><span class="tag tag-yellow">Configurar</span></td></tr>
-          <tr><td>fup_autodetect</td><td>false</td><td>true</td><td><span class="tag tag-green">Baixo</span></td><td><span class="tag tag-green">Ativar</span></td></tr>
-          <tr><td>multitopic_search</td><td>false</td><td>true</td><td><span class="tag tag-green">Baixo</span></td><td><span class="tag tag-green">Ativar</span></td></tr>
-          <tr><td>tone_of_voice_enabled</td><td>null</td><td>true</td><td><span class="tag tag-gray">Indefinido</span></td><td><span class="tag tag-gray">Investigar</span></td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+  </section>
 </div>
-
-</div>
-
 <div class="footer">
-  <p>Gerado por ClaudIA Action Plan Bot · <a href="https://metabase.cloudhumans.com" target="_blank">Ver Dashboard Metabase</a> · Cloud Humans © 2026</p>
+  Cloud Humans · Action Plan Map · Gerado em 23/04/2026 por ch-action-plan v5.1<br>
+  Dashboard: <a href="https://cloudhumans.github.io/action-plan-map/#nextfit" style="color:#94a3b8">https://cloudhumans.github.io/action-plan-map/#nextfit</a>
 </div>
-
-<script>
-// CSS-only tabs fallback via JS for nested tab panels
-document.querySelectorAll('input[name="tabs"]').forEach(function(radio) {
-  radio.addEventListener('change', function() {
-    document.querySelectorAll('.tab-panel').forEach(function(p) { p.style.display = 'none'; });
-    const idx = Array.from(document.querySelectorAll('input[name="tabs"]')).indexOf(radio) + 1;
-    const panel = document.getElementById('panel' + idx);
-    if (panel) panel.style.display = 'block';
-  });
-});
-</script>
 </body>
 </html>

@@ -14,11 +14,6 @@
 - [ ] Conversas por canal
 
 ## Hipóteses que Precisam de Validação
-- [ ] GenCX 16.8% parcialmente causado por confidence_threshold alto
+- [ ] GenCX 16.8% parcialmente causado por conteúdos de baixa qualidade (8 conteúdos com retenção <50%)
 - [ ] Par duplicado "Como Solicitar Atendimento" confunde classificador
 - [ ] Muitos N2 por transfer message são frustração, não casos não resolvíveis
-
-## Sugestões de Dados Adicionais
-- [ ] Acesso aos FlowPrompts configurados
-- [ ] Dados de latência média por config
-- [ ] Acesso ao base_prompt atual
